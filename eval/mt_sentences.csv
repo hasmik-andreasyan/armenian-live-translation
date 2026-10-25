@@ -1,0 +1,12 @@
+id,hy,en_ref,source,notes
+clip01,"Այսօր եղանակը շատ լավ է։","The weather is very nice today.",recorded,EXP-01 clip
+clip02,"Վաղը առավոտյան ես պետք է գնամ համալսարան և հանդիպեմ իմ ընկերների հետ։","Tomorrow morning I have to go to the university and meet my friends.",recorded,EXP-01 clip
+clip03,"Մենք օգտագործում ենք Python ծրագրավորման լեզուն, որպեսզի ստեղծենք հավելված, որը թարգմանում է հայերեն խոսքը անգլերեն։","We use the Python programming language to create an application that translates Armenian speech into English.",recorded,EXP-01 clip; English term
+t01,"Բարև, ինչպե՞ս ես։","Hi, how are you?",text,example from the brief
+t02,"Լավ եմ, շնորհակալություն։","I'm fine, thank you.",text,example from the brief
+t03,"Դու ինձ լսո՞ւմ ես։","Can you hear me?",text,call phrase
+t04,"Կարո՞ղ ես կրկնել, խնդրում եմ։","Can you repeat that, please?",text,call phrase
+t05,"Հանդիպումը կսկսվի ժամը երեքին։","The meeting will start at three o'clock.",text,time expression
+t06,"Ես երեկ ուշ եմ աշխատել, դրա համար այսօր հոգնած եմ։","I worked late yesterday, so I'm tired today.",text,two clauses
+t07,"Խնդրում եմ, ուղարկիր ինձ ֆայլը մինչև երեկո։","Please send me the file by the evening.",text,request
+t08,"Մենք պետք է թեստավորենք API-ն մինչև ուրբաթ։","We need to test the API by Friday.",text,English term in Latin script

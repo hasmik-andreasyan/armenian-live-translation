@@ -1,0 +1,3 @@
+# Translation experiment dependencies (CHK-02 / EXP-02). Install only after the dry run.
+ctranslate2   # Fast int8 CPU inference for NLLB; also provides the converter. MIT.
+sacrebleu     # Standard chrF / BLEU implementation, so scores are comparable with published numbers.

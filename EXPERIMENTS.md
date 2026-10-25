@@ -47,6 +47,81 @@ Random weights, 4 threads, median of 3 runs. Quantisation engine: `onednn`. Buil
 6. **Vocabulary is character-level for Armenian:** 80 pieces, covering all upper/lowercase letters, `և`, and Armenian punctuation (`։ ՝ ՞ ՛ ՜ ֊`). Latin letters, digits and `. , ? ! - :` are also present. **Words are separated by a plain space** (the tokenizer config says `word_delimiter_token: " "`), not by `▁` as the converter source suggested. The model *may* output casing and punctuation, and EXP-01 will show whether it does.
 7. **Model card says "Parity verification ✅ Verified"**: fairseq2 and HF outputs match within `atol=1e-4`. The sample clip was **English**, so Armenian accuracy is still unmeasured.
 
+## CHK-02 · NLLB-200-distilled-600M repo + tokenizer (`benchmarks/check_nllb_repo.py`)
+
+| Date | Revision | ctranslate2 / sacrebleu | CT2 CPU compute types | Weights | Checks | Raw file |
+|---|---|---|---|---|---|---|
+| 2026-10-26 | `f8d333a0` | 4.8.4 / 2.6.0 | float32, int16, **int8**, int8_float32 | `pytorch_model.bin` 2.46 GB (no safetensors) | **6/6 pass** | `results/chk02_nllb_repo_20261026_022236.json` |
+
+- Language tokens: `hye_Armn` = 256072, `eng_Latn` = 256047. All 11 sentences tokenize without `<unk>`, both original and ASR-style (lowercase, no punctuation).
+- **Input lengths are 6–32 tokens.** ASR-style versions are 1–3 tokens shorter. The longest is clip03 (32).
+- The weights are a PyTorch pickle (`.bin`), not safetensors. They come from Meta's official repo, are hash-verified, and are loaded by torch's default safe mode (`weights_only`). To mention in the README.
+- Sentences: `eval/mt_sentences.csv`, reviewed by the native speaker. t03 was corrected to «Դու ինձ լսո՞ւմ ես։».
+
+**Download + conversion (`tools/prepare_nllb.py`, 2026-10-26):** all files size-verified, and `pytorch_model.bin`, `tokenizer.json` and `sentencepiece.bpe.model` SHA-256-verified. Converter ran with `low_cpu_mem_usage=True`.
+
+| CT2 folder | Conversion time | Folder size | Process peak RAM |
+|---|---|---|---|
+| `models/nllb-600m-ct2-int8` | 28 s | **651 MB** | 3661 MB |
+| `models/nllb-600m-ct2-float32` | 43 s | 2493 MB | 3661 MB (same process) |
+
+## EXP-02 · Translation, NLLB-200-distilled-600M via CTranslate2 (`benchmarks/exp02_mt_eval.py`)
+
+Conditions: **A** original Armenian · **B** ASR-style (lowercase, no punctuation, no recognition errors) · **C** real int8 ASR output from EXP-01 (3 clips). 4 threads, 1 warm-up + 3 runs, median latency. chrF against one reference (sacrebleu 2.6.0).
+
+| Precision | Beam | Condition | n | corpus chrF | Median latency | Max latency | s / token | Raw file |
+|---|---|---|---|---|---|---|---|---|
+| int8 | 1 | A original | 11 | 75.2 | **0.46 s** | 0.85 s | 0.060 | `results/exp02_int8_20261026_023934.json` |
+| int8 | 1 | B asr_style | 11 | 73.8 | **0.44 s** | 1.17 s | 0.061 | |
+| int8 | 1 | C asr_output | 3 | 60.4 | 1.02 s | 1.16 s | 0.060 | |
+| int8 | 4 | A original | 11 | **83.3** | 0.84 s | 1.67 s | 0.088 | |
+| int8 | 4 | B asr_style | 11 | 69.7 | 0.78 s | 2.31 s | 0.100 | |
+| int8 | 4 | C asr_output | 3 | 62.0 | 1.28 s | **4.92 s** | 0.076 | |
+
+| float32 | 1 | A original | 11 | 81.9 | 1.57 s | 3.13 s | 0.192 | `results/exp02_float32_20261026_024844.json` |
+| float32 | 1 | B asr_style | 11 | 71.3 | 1.60 s | 3.87 s | 0.194 | |
+| float32 | 1 | C asr_output | 3 | 66.7 | 2.54 s | 4.29 s | 0.169 | |
+| float32 | 4 | A original | 11 | 81.2 | 2.05 s | 4.63 s | 0.261 | |
+| float32 | 4 | B asr_style | 11 | 69.7 | 1.89 s | 4.86 s | 0.257 | |
+| float32 | 4 | C asr_output | 3 | 61.4 | 3.51 s | 5.93 s | 0.220 | |
+
+**Memory:** int8 RSS 1189 MB after load (peak 1302), **776 MB at the end** (steady state). float32: 588 MB right after load (the model is mapped in lazily), **2607 MB at the end**, peak 2872 MB. All outputs are deterministic in both precisions.
+
+**float32 vs int8:**
+- **float32 is ~3.2× slower per token** (0.19 vs 0.06 s/token, as estimated in D-016: 0.18). Beam 1 has a 1.6 s median and up to 3.9 s, so it's **over the translation budget**. float32 is **out** for live use.
+- **Quality:** 31/50 outputs are identical, and most differences are stylistic. float32 is better in two meaningful cases: t02-B "I'm fine. Thank you." (int8: "Thank you very much.") and clip02-C "friends" (int8: "classmates"). It's worse in one: t06-B "I'm tired **of it** today". chrF is mixed (beam 1: A 81.9 vs 75.2, B 71.3 vs 73.8, C 66.7 vs 60.4). The human ratings decide.
+- **Memory:** int8 uses ~3.4× less at steady state (0.8 vs 2.6 GB).
+
+**int8 findings:**
+1. **Latency: beam 1 fits the budget.** Median ~0.45 s, max 1.17 s for the longest sentence (23 output tokens). That's ~0.06 s/token, close to the D-016 estimate of 0.05. **Beam 4 doesn't fit:** clip03 took 2.3 s (B) and 4.9 s (C, 30 tokens, consistent over 3 runs). Its cost grows faster than linearly with length.
+2. **Missing punctuation (A → B) mostly costs little, with two important failures:**
+   - **t03, a question that became a statement:** `դու ինձ լսում ես` → "You hear me." instead of "Can you hear me?". In Armenian a yes/no question is often marked **only** by `՞`, which the ASR never outputs. **This affects every spoken yes/no question. A README limitation, and a candidate for later improvement.**
+   - **t02, half the meaning lost:** `լավ եմ շնորհակալություն` → "Thank you very much." ("I'm fine" disappeared without the comma).
+   - Minor: t06 "so" → "and"; t05 (beam 4) adds "p.m.".
+3. **ASR errors (B → C) can change the meaning:**
+   - **clip02:** one dropped letter (`նկերների`) turned "friends" into **"classmates"**. Fluent, but wrong.
+   - **clip03:** three small spelling errors made the translation lose most of its meaning.
+   - "Python" is recovered correctly, even from `փայսոն`.
+4. **Beam 4 vs beam 1:** beam 4 is better on clean text (A: 83 vs 75 chrF), not better on realistic input (B, C), and 2–4× slower. chrF with one reference over 11 sentences is noisy, so human ratings (Step 6) decide.
+
+### EXP-02 human ratings (`benchmarks/exp02_rate.py`, `results/exp02_ratings.json`)
+
+Blind rating by the native speaker: 46 distinct translations, shuffled, configuration hidden. Outputs differing only in casing or final punctuation were merged. Scale: 0 = wrong/misleading, 1 = understandable, 2 = good, judged against what the speaker meant.
+
+| Configuration | A original: mean · ≥1 · =2 | B asr_style: mean · ≥1 · =2 | C asr_output: mean · ≥1 · =2 | Median latency (B) |
+|---|---|---|---|---|
+| **int8 / beam 1** | 1.91 · 11/11 · 10/11 | **1.45 · 10/11** · 6/11 | 1.00 · 2/3 · 1/3 | **0.44 s** |
+| int8 / beam 4 | 1.91 · 11/11 · 10/11 | 1.55 · 10/11 · 7/11 | 1.00 · 3/3 · 0/3 | 0.78 s (max 4.9 s on C) |
+| float32 / beam 1 | 1.91 · 11/11 · 10/11 | 1.55 · 11/11 · 6/11 | 1.67 · 3/3 · 2/3 | 1.60 s |
+| float32 / beam 4 | 1.91 · 11/11 · 10/11 | 1.55 · 10/11 · 7/11 | 1.67 · 3/3 · 2/3 | 1.89 s |
+
+**Findings:**
+1. **On clean Armenian (A), all configurations are equal** (1.91). Precision and beam size don't matter there.
+2. **Missing punctuation (B) costs ~0.4 points.** The only rating 0 is **t02-B "Thank you very much."** ("I'm fine" lost without the comma; 3 of 4 configs). **t03-B "You hear me."** was rated 1 (understandable, but the question is lost). It stays a documented limitation, because it affects every spoken yes/no question.
+3. **ASR errors (C) cost the most.** int8/beam 1 got the other 0 (clip03-C). float32 was more robust on C (1.67 vs 1.00), but n = 3 and it's too slow.
+4. **Beam 4 vs beam 1 on B: 1.55 vs 1.45, within rater noise.** Near-identical outputs sometimes differed by 1 point (e.g. "meet with my classmates" = 2, "meet some of my classmates" = 1). Beam 4 costs 2–4× the latency and up to 4.9 s.
+5. **Decision rule (D-017):** int8/beam 1 has 10/11 understandable on B (≥ 9) at a 0.44 s median latency (≤ ~1 s), so it **passes**.
+
 ## ASR runs (EXP-01 onwards)
 
 **Latency** = ASR time for one clip (median of 3 warm runs). **RTF** = latency / clip length. **Peak RAM** = process peak working set. CER/WER are normalised (lowercase, punctuation removed).

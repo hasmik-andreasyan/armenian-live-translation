@@ -1,0 +1,90 @@
+{
+  "timestamp": "2026-10-26T02:21:55",
+  "repo": "facebook/nllb-200-distilled-600M",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "python": "3.12.3",
+  "versions": {
+    "ctranslate2": "4.8.4",
+    "sacrebleu": "2.6.0",
+    "transformers": "5.20.2",
+    "tokenizers": "0.23.3",
+    "torch": "2.14.1"
+  },
+  "ct2_cpu_compute_types": [
+    "float32",
+    "int16",
+    "int8",
+    "int8_float32"
+  ],
+  "revision": "f8d333a098d19b4fd9a8b18f94170487ad3f821d",
+  "repo_files": {
+    ".gitattributes": 1284,
+    "README.md": 7667,
+    "config.json": 846,
+    "generation_config.json": 189,
+    "pytorch_model.bin": 2460457927,
+    "sentencepiece.bpe.model": 4852054,
+    "special_tokens_map.json": 3548,
+    "tokenizer.json": 17331176,
+    "tokenizer_config.json": 564
+  },
+  "model_dir": "C:\\Users\\Hasmik\\Desktop\\Mathrix-Claude-Project\\models\\facebook__nllb-200-distilled-600M",
+  "tokenizer_class": "NllbTokenizer",
+  "input_token_lengths": {
+    "clip01/original": 9,
+    "clip01/asr_style": 8,
+    "clip02/original": 23,
+    "clip02/asr_style": 21,
+    "clip03/original": 32,
+    "clip03/asr_style": 30,
+    "t01/original": 9,
+    "t01/asr_style": 6,
+    "t02/original": 8,
+    "t02/asr_style": 6,
+    "t03/original": 8,
+    "t03/asr_style": 7,
+    "t04/original": 12,
+    "t04/asr_style": 9,
+    "t05/original": 15,
+    "t05/asr_style": 12,
+    "t06/original": 16,
+    "t06/asr_style": 14,
+    "t07/original": 16,
+    "t07/asr_style": 13,
+    "t08/original": 17,
+    "t08/asr_style": 15
+  },
+  "checks": [
+    {
+      "check": "CTranslate2 supports int8 on this CPU",
+      "ok": true,
+      "detail": "float32, int16, int8, int8_float32"
+    },
+    {
+      "check": "weights present",
+      "ok": true,
+      "detail": "pytorch_model.bin (2.46 GB)"
+    },
+    {
+      "check": "fast tokenizer file (tokenizer.json) present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "language token hye_Armn exists",
+      "ok": true,
+      "detail": "id 256072"
+    },
+    {
+      "check": "language token eng_Latn exists",
+      "ok": true,
+      "detail": "id 256047"
+    },
+    {
+      "check": "all sentences tokenize without <unk>",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "all_checks_passed": true
+}

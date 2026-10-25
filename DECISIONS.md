@@ -156,6 +156,66 @@ A possible later rescue for Whisper is whisper.cpp's `audio_ctx` option, which s
   - English terms come out in Armenian letters (`Python` → `փայսոն`).
   - Output has no punctuation and no capitals.
   - Occasional missing or extra spaces between words.
+- **Status:** **Accepted 2026-10-26** (provisional, as above). Re-check with more voices and realistic conversation audio.
+
+## D-016 · Translation candidates (desk research, 2026-10-26)
+
+| Candidate | Armenian → English | License | Size | CPU latency outlook | Verdict |
+|---|---|---|---|---|---|
+| **NLLB-200 distilled 600M** (Meta) | **Confirmed:** `hye_Armn` is in the model card's language list | **CC-BY-NC-4.0**. The card says "research model, not released for production deployment". Fine for this challenge, stated in the README. | ~600 M params. Official weights ~2.5 GB (fp32) | See the estimate below: plausible with int8 | **Test first** |
+| NLLB-200 distilled 1.3B | Same | Same | ~2× compute | Probably over budget on this CPU | Only if 600M quality is insufficient |
+| M2M-100 418M | Armenian supported *(from memory, not re-verified)* | MIT | 418 M | Similar to NLLB-600M | Reserve candidate (permissive license) |
+| Opus-MT hy→en (Helsinki-NLP) | **Couldn't confirm the model exists** (absent from the lists I could check) | — | — | — | Dropped unless found |
+| TranslateGemma 4B / Armenian Gemma (LLMs) | TranslateGemma's language list unconfirmed | various | 4 B+ | Far too slow for ~1 s on this CPU | Out of scope |
+
+**Latency estimate for NLLB-600M (why int8 matters here):** generating text one token at a time is limited by **memory bandwidth**, and EXP-00 measured only ~10 GB/s. Each output token reads the 12 decoder layers (~200 M weights) **plus the output layer over NLLB's 256 k-token vocabulary (~262 M weights)**.
+- fp32: ~1.8 GB read per token → ~0.18 s/token → a 20-token sentence takes **~3.5 s (too slow)**.
+- int8: ~0.46 GB per token → ~0.05 s/token → **~1 s per 20-token sentence**.
+
+So int8 is required, and an efficient runtime matters. A later optimisation is to restrict the output vocabulary to English tokens; CTranslate2 calls this a vocabulary map. These are estimates. EXP-02 measures the real numbers.
+
+**Runtime choice:** **CTranslate2** (MIT, built for fast int8 CPU inference of exactly this kind of model) instead of plain `transformers.generate`.
+- It costs one new dependency, `ctranslate2`, whose Windows/Python 3.12 support is checked with a dry run (CHK-02).
+- The conversion is done **locally from Meta's official weights**, not from a community upload, so there's a single trusted source.
+
+**EXP-02 design** (see D-017 below).
+
+**Updated MT latency budget:** with int8 ASR at ~1.5 s for a 6 s phrase, the 5 s total leaves **≤ ~1.5 s for translation**. Under 1 s is the target.
+- **Status:** Accepted for testing.
+
+## D-017 · EXP-02 design: translation *(proposed)*
+- **Question:** How good, how fast and how memory-hungry is NLLB-600M (CTranslate2) for Armenian → English? And how much do **missing punctuation** and **ASR errors** hurt it?
+- **Inputs (`eval/mt_sentences.csv`):** 11 sentences, each with a reference English translation: the 3 recorded EXP-01 clips plus 8 short call-style sentences (text only). **To be checked by you as a native speaker.**
+- **Three input conditions, so each effect is isolated:**
+  - **A, original:** the Armenian sentence with punctuation and capitals.
+  - **B, ASR-style:** the same sentence lowercased, without punctuation. This is what our ASR outputs, **minus its errors**. A → B measures the cost of missing punctuation.
+  - **C, real ASR output:** the int8 hypotheses from EXP-01, for the 3 recorded clips. B → C measures the cost of recognition errors.
+- **Configurations:** compute type int8 vs float32, **each in its own process** (clean RAM numbers). Within each: beam size 1 (greedy, fastest) vs 4 (usually better). 1 warm-up + 3 timed runs per sentence.
+- **Metrics:**
+  - **Quality:** chrF (sacrebleu) against the reference, plus **your rating** of each English output: 0 = wrong/misleading, 1 = understandable, 2 = good. The brief asks whether the English is *understandable*, and with only 11 sentences a human judgment is more meaningful than any automatic score.
+  - **Latency:** per sentence (median), plus seconds per generated token.
+  - **Memory:** RSS after load and peak.
+- **Provisional decision rule** (judgment calls, written before the results):
+  - int8 understandable (rating ≥ 1) on ≥ 9/11 in condition B, and **≤ ~1 s** median latency → adopt NLLB-600M int8.
+  - Latency ok but quality poor → try NLLB 1.3B or M2M-100.
+  - Quality ok but too slow → try greedy decoding and an English-only output vocabulary.
+- **Status:** Done (2026-10-26). Results in EXPERIMENTS.md and D-018.
+
+## D-018 · Adopt NLLB-200-distilled-600M, CTranslate2 **int8, beam size 1** *(provisional, proposed for your confirmation)*
+- **Evidence (EXP-02 + blind human ratings):**
+  - int8/beam 1: 10/11 understandable on ASR-style input, median latency 0.44 s, max 1.17 s, steady-state RAM ≈ 0.8 GB.
+  - float32 is 3.2× slower (over budget) and 3.4× more RAM, and equal on clean input.
+  - Beam 4's gain (+0.1 mean rating) is within rater noise, and it costs up to 4.9 s.
+- **End-to-end budget check (6 s phrase):** VAD ~0.6 s + ASR ~1.5 s + MT ~0.5–1.2 s ≈ **2.6–3.3 s before speaker ID**. That leaves ~1.5 s for speaker ID and queueing under the 5 s limit. **Total model RAM ≈ 1.8 GB** (ASR 1.0 + MT 0.8).
+- **Known weaknesses (README):**
+  1. **Yes/no questions become statements.** The ASR doesn't output `՞`, the only written question marker in many Armenian questions.
+  2. Phrases that rely on a comma can lose part of their meaning (t02).
+  3. **ASR errors propagate and can change the meaning** (clip02 "classmates", clip03). **Improving ASR accuracy is the main quality lever**, not the MT settings.
+  4. License: CC-BY-NC-4.0, research model.
+- **Ideas for later, if time allows (not now):**
+  - Restrict the output vocabulary to English (faster).
+  - Beam 2 as a middle ground.
+  - Light punctuation / question restoration.
 - **Status:** Proposed. Waiting for your confirmation.
 
 ## D-015 · Microphone for evaluation and demo

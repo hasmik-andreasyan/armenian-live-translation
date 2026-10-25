@@ -1,0 +1,985 @@
+{
+  "experiment": "EXP-02",
+  "timestamp": "2026-10-26T02:48:44",
+  "precision": "float32",
+  "threads": 4,
+  "runs": 3,
+  "beams": [
+    1,
+    4
+  ],
+  "model_source": [
+    "facebook/nllb-200-distilled-600M",
+    "f8d333a098d19b4fd9a8b18f94170487ad3f821d",
+    "quantization=float32",
+    "ctranslate2=4.8.4"
+  ],
+  "asr_results_file": "exp01_int8_20261026_014417.json",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "python": "3.12.3",
+  "versions": {
+    "ctranslate2": "4.8.4",
+    "transformers": "5.20.2",
+    "sacrebleu": "2.6.0"
+  },
+  "summary": {
+    "beam1/A_original": {
+      "n": 11,
+      "corpus_chrf": 81.9,
+      "median_latency_s": 1.574,
+      "max_latency_s": 3.127,
+      "median_s_per_token": 0.1924
+    },
+    "beam1/B_asr_style": {
+      "n": 11,
+      "corpus_chrf": 71.3,
+      "median_latency_s": 1.596,
+      "max_latency_s": 3.868,
+      "median_s_per_token": 0.1943
+    },
+    "beam1/C_asr_output": {
+      "n": 3,
+      "corpus_chrf": 66.7,
+      "median_latency_s": 2.538,
+      "max_latency_s": 4.291,
+      "median_s_per_token": 0.1692
+    },
+    "beam4/A_original": {
+      "n": 11,
+      "corpus_chrf": 81.2,
+      "median_latency_s": 2.05,
+      "max_latency_s": 4.63,
+      "median_s_per_token": 0.2606
+    },
+    "beam4/B_asr_style": {
+      "n": 11,
+      "corpus_chrf": 69.7,
+      "median_latency_s": 1.893,
+      "max_latency_s": 4.857,
+      "median_s_per_token": 0.2567
+    },
+    "beam4/C_asr_output": {
+      "n": 3,
+      "corpus_chrf": 61.4,
+      "median_latency_s": 3.512,
+      "max_latency_s": 5.927,
+      "median_s_per_token": 0.2195
+    },
+    "memory": {
+      "start": {
+        "rss_mb": 32,
+        "peak_mb": 32
+      },
+      "after_load": {
+        "rss_mb": 588,
+        "peak_mb": 2032
+      },
+      "end": {
+        "rss_mb": 2607,
+        "peak_mb": 2872
+      }
+    }
+  },
+  "results": [
+    {
+      "id": "clip01",
+      "condition": "A_original",
+      "beam": 1,
+      "input_hy": "Այսօր եղանակը շատ լավ է։",
+      "reference_en": "The weather is very nice today.",
+      "output_en": "The weather is very good today.",
+      "deterministic": true,
+      "output_tokens": 7,
+      "latency_s": 1.574,
+      "all_latencies_s": [
+        1.524,
+        1.574,
+        1.786
+      ],
+      "s_per_token": 0.2249,
+      "chrf": 71.7
+    },
+    {
+      "id": "clip01",
+      "condition": "B_asr_style",
+      "beam": 1,
+      "input_hy": "այսօր եղանակը շատ լավ է",
+      "reference_en": "The weather is very nice today.",
+      "output_en": "Today's weather is very good.",
+      "deterministic": true,
+      "output_tokens": 8,
+      "latency_s": 1.596,
+      "all_latencies_s": [
+        1.606,
+        1.596,
+        1.591
+      ],
+      "s_per_token": 0.1994,
+      "chrf": 52.8
+    },
+    {
+      "id": "clip01",
+      "condition": "C_asr_output",
+      "beam": 1,
+      "input_hy": "այսօր եղանակը շատ լավ է",
+      "reference_en": "The weather is very nice today.",
+      "output_en": "Today's weather is very good.",
+      "deterministic": true,
+      "output_tokens": 8,
+      "latency_s": 1.555,
+      "all_latencies_s": [
+        1.59,
+        1.555,
+        1.54
+      ],
+      "s_per_token": 0.1944,
+      "chrf": 52.8
+    },
+    {
+      "id": "clip02",
+      "condition": "A_original",
+      "beam": 1,
+      "input_hy": "Վաղը առավոտյան ես պետք է գնամ համալսարան և հանդիպեմ իմ ընկերների հետ։",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning I have to go to university and meet with my friends.",
+      "deterministic": true,
+      "output_tokens": 14,
+      "latency_s": 2.387,
+      "all_latencies_s": [
+        2.394,
+        2.387,
+        2.363
+      ],
+      "s_per_token": 0.1705,
+      "chrf": 85.4
+    },
+    {
+      "id": "clip02",
+      "condition": "B_asr_style",
+      "beam": 1,
+      "input_hy": "վաղը առավոտյան ես պետք է գնամ համալսարան եւ հանդիպեմ իմ ընկերների հետ",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning, I have to go to university and meet my friends.",
+      "deterministic": true,
+      "output_tokens": 14,
+      "latency_s": 2.466,
+      "all_latencies_s": [
+        2.332,
+        2.488,
+        2.466
+      ],
+      "s_per_token": 0.1762,
+      "chrf": 85.5
+    },
+    {
+      "id": "clip02",
+      "condition": "C_asr_output",
+      "beam": 1,
+      "input_hy": "վաղը առավոտյան ես պետք է գնամհամալսարան եւ հանդիպեմ իմ նկերների հետ",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning, I have to go to university and meet with my friends.",
+      "deterministic": true,
+      "output_tokens": 15,
+      "latency_s": 2.538,
+      "all_latencies_s": [
+        2.482,
+        2.538,
+        2.54
+      ],
+      "s_per_token": 0.1692,
+      "chrf": 80.3
+    },
+    {
+      "id": "clip03",
+      "condition": "A_original",
+      "beam": 1,
+      "input_hy": "Մենք օգտագործում ենք Python ծրագրավորման լեզուն, որպեսզի ստեղծենք հավելված, որը թարգմանում է հայերեն խոսքը անգլերեն։",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We use the Python programming language to create an app that translates Armenian into English.",
+      "deterministic": true,
+      "output_tokens": 19,
+      "latency_s": 3.127,
+      "all_latencies_s": [
+        3.129,
+        3.107,
+        3.127
+      ],
+      "s_per_token": 0.1646,
+      "chrf": 81.7
+    },
+    {
+      "id": "clip03",
+      "condition": "B_asr_style",
+      "beam": 1,
+      "input_hy": "մենք օգտագործում ենք python ծրագրավորման լեզուն որպեսզի ստեղծենք հավելված որը թարգմանում է հայերեն խոսքը անգլերեն",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We use Python as a programming language to create an app that translates the word into English from Armenian.",
+      "deterministic": true,
+      "output_tokens": 23,
+      "latency_s": 3.868,
+      "all_latencies_s": [
+        3.868,
+        3.788,
+        4.357
+      ],
+      "s_per_token": 0.1682,
+      "chrf": 69.6
+    },
+    {
+      "id": "clip03",
+      "condition": "C_asr_output",
+      "beam": 1,
+      "input_hy": "մենք օգտագործում ենք փայսոն ծրագրավորման լեզուն որպիսի ստեղծենք ավելված որը թարգմանում է հայրեն խոսքը անգլեր են",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We use Python as a programming language, which we can create an add-on that translates the native language into English.",
+      "deterministic": true,
+      "output_tokens": 27,
+      "latency_s": 4.291,
+      "all_latencies_s": [
+        5.058,
+        4.291,
+        4.229
+      ],
+      "s_per_token": 0.1589,
+      "chrf": 62.3
+    },
+    {
+      "id": "t01",
+      "condition": "A_original",
+      "beam": 1,
+      "input_hy": "Բարև, ինչպե՞ս ես։",
+      "reference_en": "Hi, how are you?",
+      "output_en": "Hi, how are you?",
+      "deterministic": true,
+      "output_tokens": 6,
+      "latency_s": 1.205,
+      "all_latencies_s": [
+        1.199,
+        1.205,
+        1.237
+      ],
+      "s_per_token": 0.2008,
+      "chrf": 100.0
+    },
+    {
+      "id": "t01",
+      "condition": "B_asr_style",
+      "beam": 1,
+      "input_hy": "բարեւ ինչպես ես",
+      "reference_en": "Hi, how are you?",
+      "output_en": "Hi, how are you?",
+      "deterministic": true,
+      "output_tokens": 6,
+      "latency_s": 1.278,
+      "all_latencies_s": [
+        1.278,
+        1.306,
+        1.236
+      ],
+      "s_per_token": 0.213,
+      "chrf": 100.0
+    },
+    {
+      "id": "t02",
+      "condition": "A_original",
+      "beam": 1,
+      "input_hy": "Լավ եմ, շնորհակալություն։",
+      "reference_en": "I'm fine, thank you.",
+      "output_en": "I'm fine, thank you.",
+      "deterministic": true,
+      "output_tokens": 8,
+      "latency_s": 1.596,
+      "all_latencies_s": [
+        1.596,
+        1.618,
+        1.492
+      ],
+      "s_per_token": 0.1995,
+      "chrf": 100.0
+    },
+    {
+      "id": "t02",
+      "condition": "B_asr_style",
+      "beam": 1,
+      "input_hy": "լավ եմ շնորհակալություն",
+      "reference_en": "I'm fine, thank you.",
+      "output_en": "I'm fine. Thank you.",
+      "deterministic": true,
+      "output_tokens": 8,
+      "latency_s": 1.487,
+      "all_latencies_s": [
+        1.486,
+        1.487,
+        1.586
+      ],
+      "s_per_token": 0.1859,
+      "chrf": 67.1
+    },
+    {
+      "id": "t03",
+      "condition": "A_original",
+      "beam": 1,
+      "input_hy": "Դու ինձ լսո՞ւմ ես։",
+      "reference_en": "Can you hear me?",
+      "output_en": "Can you hear me?",
+      "deterministic": true,
+      "output_tokens": 5,
+      "latency_s": 1.067,
+      "all_latencies_s": [
+        1.074,
+        1.066,
+        1.067
+      ],
+      "s_per_token": 0.2135,
+      "chrf": 100.0
+    },
+    {
+      "id": "t03",
+      "condition": "B_asr_style",
+      "beam": 1,
+      "input_hy": "դու ինձ լսում ես",
+      "reference_en": "Can you hear me?",
+      "output_en": "You hear me.",
+      "deterministic": true,
+      "output_tokens": 4,
+      "latency_s": 0.925,
+      "all_latencies_s": [
+        0.925,
+        0.924,
+        0.932
+      ],
+      "s_per_token": 0.2312,
+      "chrf": 54.2
+    },
+    {
+      "id": "t04",
+      "condition": "A_original",
+      "beam": 1,
+      "input_hy": "Կարո՞ղ ես կրկնել, խնդրում եմ։",
+      "reference_en": "Can you repeat that, please?",
+      "output_en": "Can you repeat, please?",
+      "deterministic": true,
+      "output_tokens": 7,
+      "latency_s": 1.347,
+      "all_latencies_s": [
+        1.347,
+        1.355,
+        1.345
+      ],
+      "s_per_token": 0.1924,
+      "chrf": 79.1
+    },
+    {
+      "id": "t04",
+      "condition": "B_asr_style",
+      "beam": 1,
+      "input_hy": "կարող ես կրկնել խնդրում եմ",
+      "reference_en": "Can you repeat that, please?",
+      "output_en": "Can you repeat please",
+      "deterministic": true,
+      "output_tokens": 5,
+      "latency_s": 1.078,
+      "all_latencies_s": [
+        1.078,
+        1.065,
+        1.104
+      ],
+      "s_per_token": 0.2155,
+      "chrf": 63.1
+    },
+    {
+      "id": "t05",
+      "condition": "A_original",
+      "beam": 1,
+      "input_hy": "Հանդիպումը կսկսվի ժամը երեքին։",
+      "reference_en": "The meeting will start at three o'clock.",
+      "output_en": "The meeting will begin at 3:00.",
+      "deterministic": true,
+      "output_tokens": 7,
+      "latency_s": 1.43,
+      "all_latencies_s": [
+        1.394,
+        1.431,
+        1.43
+      ],
+      "s_per_token": 0.2043,
+      "chrf": 40.8
+    },
+    {
+      "id": "t05",
+      "condition": "B_asr_style",
+      "beam": 1,
+      "input_hy": "հանդիպումը կսկսվի ժամը երեքին",
+      "reference_en": "The meeting will start at three o'clock.",
+      "output_en": "The meeting will begin at three o'clock.",
+      "deterministic": true,
+      "output_tokens": 11,
+      "latency_s": 2.094,
+      "all_latencies_s": [
+        2.094,
+        2.096,
+        2.085
+      ],
+      "s_per_token": 0.1904,
+      "chrf": 75.8
+    },
+    {
+      "id": "t06",
+      "condition": "A_original",
+      "beam": 1,
+      "input_hy": "Ես երեկ ուշ եմ աշխատել, դրա համար այսօր հոգնած եմ։",
+      "reference_en": "I worked late yesterday, so I'm tired today.",
+      "output_en": "I worked late yesterday, so I'm tired today.",
+      "deterministic": true,
+      "output_tokens": 12,
+      "latency_s": 2.186,
+      "all_latencies_s": [
+        2.205,
+        2.186,
+        2.038
+      ],
+      "s_per_token": 0.1821,
+      "chrf": 100.0
+    },
+    {
+      "id": "t06",
+      "condition": "B_asr_style",
+      "beam": 1,
+      "input_hy": "ես երեկ ուշ եմ աշխատել դրա համար այսօր հոգնած եմ",
+      "reference_en": "I worked late yesterday, so I'm tired today.",
+      "output_en": "I worked late yesterday, and I'm tired of it today.",
+      "deterministic": true,
+      "output_tokens": 14,
+      "latency_s": 2.334,
+      "all_latencies_s": [
+        2.42,
+        2.334,
+        2.317
+      ],
+      "s_per_token": 0.1667,
+      "chrf": 77.4
+    },
+    {
+      "id": "t07",
+      "condition": "A_original",
+      "beam": 1,
+      "input_hy": "Խնդրում եմ, ուղարկիր ինձ ֆայլը մինչև երեկո։",
+      "reference_en": "Please send me the file by the evening.",
+      "output_en": "Please send me the file by tonight.",
+      "deterministic": true,
+      "output_tokens": 8,
+      "latency_s": 1.491,
+      "all_latencies_s": [
+        1.491,
+        1.488,
+        1.493
+      ],
+      "s_per_token": 0.1864,
+      "chrf": 70.6
+    },
+    {
+      "id": "t07",
+      "condition": "B_asr_style",
+      "beam": 1,
+      "input_hy": "խնդրում եմ ուղարկիր ինձ ֆայլը մինչեւ երեկո",
+      "reference_en": "Please send me the file by the evening.",
+      "output_en": "Please send me the file by tonight",
+      "deterministic": true,
+      "output_tokens": 7,
+      "latency_s": 1.36,
+      "all_latencies_s": [
+        1.361,
+        1.36,
+        1.356
+      ],
+      "s_per_token": 0.1943,
+      "chrf": 70.5
+    },
+    {
+      "id": "t08",
+      "condition": "A_original",
+      "beam": 1,
+      "input_hy": "Մենք պետք է թեստավորենք API-ն մինչև ուրբաթ։",
+      "reference_en": "We need to test the API by Friday.",
+      "output_en": "We need to test the API by Friday.",
+      "deterministic": true,
+      "output_tokens": 9,
+      "latency_s": 1.641,
+      "all_latencies_s": [
+        1.643,
+        1.624,
+        1.641
+      ],
+      "s_per_token": 0.1824,
+      "chrf": 100.0
+    },
+    {
+      "id": "t08",
+      "condition": "B_asr_style",
+      "beam": 1,
+      "input_hy": "մենք պետք է թեստավորենք api ն մինչեւ ուրբաթ",
+      "reference_en": "We need to test the API by Friday.",
+      "output_en": "We have to test the api by Friday.",
+      "deterministic": true,
+      "output_tokens": 9,
+      "latency_s": 1.809,
+      "all_latencies_s": [
+        1.809,
+        1.875,
+        1.644
+      ],
+      "s_per_token": 0.201,
+      "chrf": 54.8
+    },
+    {
+      "id": "clip01",
+      "condition": "A_original",
+      "beam": 4,
+      "input_hy": "Այսօր եղանակը շատ լավ է։",
+      "reference_en": "The weather is very nice today.",
+      "output_en": "The weather is very good today.",
+      "deterministic": true,
+      "output_tokens": 7,
+      "latency_s": 1.869,
+      "all_latencies_s": [
+        1.869,
+        1.912,
+        1.844
+      ],
+      "s_per_token": 0.267,
+      "chrf": 71.7
+    },
+    {
+      "id": "clip01",
+      "condition": "B_asr_style",
+      "beam": 4,
+      "input_hy": "այսօր եղանակը շատ լավ է",
+      "reference_en": "The weather is very nice today.",
+      "output_en": "Today's weather is very good.",
+      "deterministic": true,
+      "output_tokens": 8,
+      "latency_s": 1.881,
+      "all_latencies_s": [
+        1.896,
+        1.881,
+        1.874
+      ],
+      "s_per_token": 0.2351,
+      "chrf": 52.8
+    },
+    {
+      "id": "clip01",
+      "condition": "C_asr_output",
+      "beam": 4,
+      "input_hy": "այսօր եղանակը շատ լավ է",
+      "reference_en": "The weather is very nice today.",
+      "output_en": "Today's weather is very good.",
+      "deterministic": true,
+      "output_tokens": 8,
+      "latency_s": 1.866,
+      "all_latencies_s": [
+        1.866,
+        1.875,
+        1.859
+      ],
+      "s_per_token": 0.2332,
+      "chrf": 52.8
+    },
+    {
+      "id": "clip02",
+      "condition": "A_original",
+      "beam": 4,
+      "input_hy": "Վաղը առավոտյան ես պետք է գնամ համալսարան և հանդիպեմ իմ ընկերների հետ։",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning I have to go to university and meet with my friends.",
+      "deterministic": true,
+      "output_tokens": 14,
+      "latency_s": 3.649,
+      "all_latencies_s": [
+        3.517,
+        3.649,
+        3.905
+      ],
+      "s_per_token": 0.2606,
+      "chrf": 85.4
+    },
+    {
+      "id": "clip02",
+      "condition": "B_asr_style",
+      "beam": 4,
+      "input_hy": "վաղը առավոտյան ես պետք է գնամ համալսարան եւ հանդիպեմ իմ ընկերների հետ",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning, I have to go to university and meet my friends.",
+      "deterministic": true,
+      "output_tokens": 14,
+      "latency_s": 3.414,
+      "all_latencies_s": [
+        3.414,
+        3.508,
+        3.385
+      ],
+      "s_per_token": 0.2439,
+      "chrf": 85.5
+    },
+    {
+      "id": "clip02",
+      "condition": "C_asr_output",
+      "beam": 4,
+      "input_hy": "վաղը առավոտյան ես պետք է գնամհամալսարան եւ հանդիպեմ իմ նկերների հետ",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning, I have to go to college and meet some of my friends.",
+      "deterministic": true,
+      "output_tokens": 16,
+      "latency_s": 3.512,
+      "all_latencies_s": [
+        3.645,
+        3.372,
+        3.512
+      ],
+      "s_per_token": 0.2195,
+      "chrf": 62.0
+    },
+    {
+      "id": "clip03",
+      "condition": "A_original",
+      "beam": 4,
+      "input_hy": "Մենք օգտագործում ենք Python ծրագրավորման լեզուն, որպեսզի ստեղծենք հավելված, որը թարգմանում է հայերեն խոսքը անգլերեն։",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We use the Python programming language to create an app that translates Armenian into English.",
+      "deterministic": true,
+      "output_tokens": 19,
+      "latency_s": 4.63,
+      "all_latencies_s": [
+        4.535,
+        4.63,
+        5.168
+      ],
+      "s_per_token": 0.2437,
+      "chrf": 81.7
+    },
+    {
+      "id": "clip03",
+      "condition": "B_asr_style",
+      "beam": 4,
+      "input_hy": "մենք օգտագործում ենք python ծրագրավորման լեզուն որպեսզի ստեղծենք հավելված որը թարգմանում է հայերեն խոսքը անգլերեն",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We use the Python programming language to create an app that translates the Armenian language into English.",
+      "deterministic": true,
+      "output_tokens": 21,
+      "latency_s": 4.857,
+      "all_latencies_s": [
+        4.601,
+        4.857,
+        4.972
+      ],
+      "s_per_token": 0.2313,
+      "chrf": 78.1
+    },
+    {
+      "id": "clip03",
+      "condition": "C_asr_output",
+      "beam": 4,
+      "input_hy": "մենք օգտագործում ենք փայսոն ծրագրավորման լեզուն որպիսի ստեղծենք ավելված որը թարգմանում է հայրեն խոսքը անգլեր են",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We're using a Python programming language that we can create an add-on that translates the native language into English.",
+      "deterministic": true,
+      "output_tokens": 27,
+      "latency_s": 5.927,
+      "all_latencies_s": [
+        6.028,
+        5.927,
+        5.856
+      ],
+      "s_per_token": 0.2195,
+      "chrf": 63.3
+    },
+    {
+      "id": "t01",
+      "condition": "A_original",
+      "beam": 4,
+      "input_hy": "Բարև, ինչպե՞ս ես։",
+      "reference_en": "Hi, how are you?",
+      "output_en": "Hello, how are you?",
+      "deterministic": true,
+      "output_tokens": 6,
+      "latency_s": 1.525,
+      "all_latencies_s": [
+        1.525,
+        1.539,
+        1.514
+      ],
+      "s_per_token": 0.2542,
+      "chrf": 77.2
+    },
+    {
+      "id": "t01",
+      "condition": "B_asr_style",
+      "beam": 4,
+      "input_hy": "բարեւ ինչպես ես",
+      "reference_en": "Hi, how are you?",
+      "output_en": "Hi how are you?",
+      "deterministic": true,
+      "output_tokens": 5,
+      "latency_s": 1.334,
+      "all_latencies_s": [
+        1.354,
+        1.334,
+        1.323
+      ],
+      "s_per_token": 0.2669,
+      "chrf": 76.1
+    },
+    {
+      "id": "t02",
+      "condition": "A_original",
+      "beam": 4,
+      "input_hy": "Լավ եմ, շնորհակալություն։",
+      "reference_en": "I'm fine, thank you.",
+      "output_en": "I'm fine, thank you.",
+      "deterministic": true,
+      "output_tokens": 8,
+      "latency_s": 2.05,
+      "all_latencies_s": [
+        2.05,
+        2.047,
+        2.102
+      ],
+      "s_per_token": 0.2562,
+      "chrf": 100.0
+    },
+    {
+      "id": "t02",
+      "condition": "B_asr_style",
+      "beam": 4,
+      "input_hy": "լավ եմ շնորհակալություն",
+      "reference_en": "I'm fine, thank you.",
+      "output_en": "Thank you very much.",
+      "deterministic": true,
+      "output_tokens": 5,
+      "latency_s": 1.847,
+      "all_latencies_s": [
+        1.867,
+        1.814,
+        1.847
+      ],
+      "s_per_token": 0.3693,
+      "chrf": 33.0
+    },
+    {
+      "id": "t03",
+      "condition": "A_original",
+      "beam": 4,
+      "input_hy": "Դու ինձ լսո՞ւմ ես։",
+      "reference_en": "Can you hear me?",
+      "output_en": "Can you hear me?",
+      "deterministic": true,
+      "output_tokens": 5,
+      "latency_s": 1.564,
+      "all_latencies_s": [
+        1.594,
+        1.558,
+        1.564
+      ],
+      "s_per_token": 0.3128,
+      "chrf": 100.0
+    },
+    {
+      "id": "t03",
+      "condition": "B_asr_style",
+      "beam": 4,
+      "input_hy": "դու ինձ լսում ես",
+      "reference_en": "Can you hear me?",
+      "output_en": "You hear me.",
+      "deterministic": true,
+      "output_tokens": 4,
+      "latency_s": 1.344,
+      "all_latencies_s": [
+        1.316,
+        1.344,
+        1.444
+      ],
+      "s_per_token": 0.3361,
+      "chrf": 54.2
+    },
+    {
+      "id": "t04",
+      "condition": "A_original",
+      "beam": 4,
+      "input_hy": "Կարո՞ղ ես կրկնել, խնդրում եմ։",
+      "reference_en": "Can you repeat that, please?",
+      "output_en": "Can you repeat, please?",
+      "deterministic": true,
+      "output_tokens": 7,
+      "latency_s": 2.047,
+      "all_latencies_s": [
+        2.047,
+        1.924,
+        2.079
+      ],
+      "s_per_token": 0.2925,
+      "chrf": 79.1
+    },
+    {
+      "id": "t04",
+      "condition": "B_asr_style",
+      "beam": 4,
+      "input_hy": "կարող ես կրկնել խնդրում եմ",
+      "reference_en": "Can you repeat that, please?",
+      "output_en": "Can you repeat please",
+      "deterministic": true,
+      "output_tokens": 5,
+      "latency_s": 1.507,
+      "all_latencies_s": [
+        1.544,
+        1.507,
+        1.504
+      ],
+      "s_per_token": 0.3015,
+      "chrf": 63.1
+    },
+    {
+      "id": "t05",
+      "condition": "A_original",
+      "beam": 4,
+      "input_hy": "Հանդիպումը կսկսվի ժամը երեքին։",
+      "reference_en": "The meeting will start at three o'clock.",
+      "output_en": "The meeting will begin at 3:00.",
+      "deterministic": true,
+      "output_tokens": 7,
+      "latency_s": 1.695,
+      "all_latencies_s": [
+        1.659,
+        1.695,
+        1.699
+      ],
+      "s_per_token": 0.2421,
+      "chrf": 40.8
+    },
+    {
+      "id": "t05",
+      "condition": "B_asr_style",
+      "beam": 4,
+      "input_hy": "հանդիպումը կսկսվի ժամը երեքին",
+      "reference_en": "The meeting will start at three o'clock.",
+      "output_en": "The meeting will begin at 3:00 p.m.",
+      "deterministic": true,
+      "output_tokens": 11,
+      "latency_s": 2.569,
+      "all_latencies_s": [
+        2.485,
+        2.789,
+        2.569
+      ],
+      "s_per_token": 0.2336,
+      "chrf": 40.1
+    },
+    {
+      "id": "t06",
+      "condition": "A_original",
+      "beam": 4,
+      "input_hy": "Ես երեկ ուշ եմ աշխատել, դրա համար այսօր հոգնած եմ։",
+      "reference_en": "I worked late yesterday, so I'm tired today.",
+      "output_en": "I worked late yesterday, so I'm tired today.",
+      "deterministic": true,
+      "output_tokens": 12,
+      "latency_s": 2.967,
+      "all_latencies_s": [
+        2.824,
+        3.67,
+        2.967
+      ],
+      "s_per_token": 0.2472,
+      "chrf": 100.0
+    },
+    {
+      "id": "t06",
+      "condition": "B_asr_style",
+      "beam": 4,
+      "input_hy": "ես երեկ ուշ եմ աշխատել դրա համար այսօր հոգնած եմ",
+      "reference_en": "I worked late yesterday, so I'm tired today.",
+      "output_en": "I worked late yesterday. I'm tired of it today.",
+      "deterministic": true,
+      "output_tokens": 13,
+      "latency_s": 2.862,
+      "all_latencies_s": [
+        2.831,
+        2.862,
+        3.021
+      ],
+      "s_per_token": 0.2202,
+      "chrf": 75.8
+    },
+    {
+      "id": "t07",
+      "condition": "A_original",
+      "beam": 4,
+      "input_hy": "Խնդրում եմ, ուղարկիր ինձ ֆայլը մինչև երեկո։",
+      "reference_en": "Please send me the file by the evening.",
+      "output_en": "Please send me the file by tonight.",
+      "deterministic": true,
+      "output_tokens": 8,
+      "latency_s": 2.1,
+      "all_latencies_s": [
+        2.261,
+        2.098,
+        2.1
+      ],
+      "s_per_token": 0.2625,
+      "chrf": 70.6
+    },
+    {
+      "id": "t07",
+      "condition": "B_asr_style",
+      "beam": 4,
+      "input_hy": "խնդրում եմ ուղարկիր ինձ ֆայլը մինչեւ երեկո",
+      "reference_en": "Please send me the file by the evening.",
+      "output_en": "Please send me the file by tonight",
+      "deterministic": true,
+      "output_tokens": 7,
+      "latency_s": 1.893,
+      "all_latencies_s": [
+        1.893,
+        1.857,
+        1.926
+      ],
+      "s_per_token": 0.2705,
+      "chrf": 70.5
+    },
+    {
+      "id": "t08",
+      "condition": "A_original",
+      "beam": 4,
+      "input_hy": "Մենք պետք է թեստավորենք API-ն մինչև ուրբաթ։",
+      "reference_en": "We need to test the API by Friday.",
+      "output_en": "We need to test the API by Friday.",
+      "deterministic": true,
+      "output_tokens": 9,
+      "latency_s": 3.349,
+      "all_latencies_s": [
+        2.968,
+        3.751,
+        3.349
+      ],
+      "s_per_token": 0.3721,
+      "chrf": 100.0
+    },
+    {
+      "id": "t08",
+      "condition": "B_asr_style",
+      "beam": 4,
+      "input_hy": "մենք պետք է թեստավորենք api ն մինչեւ ուրբաթ",
+      "reference_en": "We need to test the API by Friday.",
+      "output_en": "We have to test the API by Friday.",
+      "deterministic": true,
+      "output_tokens": 9,
+      "latency_s": 2.311,
+      "all_latencies_s": [
+        2.274,
+        2.311,
+        2.339
+      ],
+      "s_per_token": 0.2567,
+      "chrf": 77.9
+    }
+  ]
+}

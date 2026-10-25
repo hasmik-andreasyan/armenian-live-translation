@@ -1,0 +1,828 @@
+{
+  "sources": [
+    "exp02_int8_20261026_023934.json",
+    "exp02_float32_20261026_024844.json"
+  ],
+  "ratings": {
+    "clip03|B_asr_style|we're using the python programming language to create an app that translates the armenian language into english": {
+      "rating": 2,
+      "comment": "it is still good, but not the same as the reference sentence."
+    },
+    "clip03|C_asr_output|we're using a python programming language like this. we're creating an add-on that translates the native language into english": {
+      "rating": 1,
+      "comment": ""
+    },
+    "t02|B_asr_style|i'm fine. thank you": {
+      "rating": 2,
+      "comment": "Very good."
+    },
+    "clip02|C_asr_output|tomorrow morning, i have to go to university and meet some of my classmates": {
+      "rating": 1,
+      "comment": "Translation is little bit off."
+    },
+    "t01|A_original|hello, how are you": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip02|C_asr_output|tomorrow morning, i have to go to college and meet some of my friends": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t02|B_asr_style|thank you very much": {
+      "rating": 0,
+      "comment": ""
+    },
+    "t04|B_asr_style|can you repeat please": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip02|C_asr_output|tomorrow morning, i have to go to university and meet with my friends": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip01|C_asr_output|today the weather is very good": {
+      "rating": 1,
+      "comment": ""
+    },
+    "t06|A_original|i worked late yesterday, so i'm tired today": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip01|C_asr_output|today's weather is very good": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t06|B_asr_style|i worked late yesterday. i'm tired today": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t01|B_asr_style|hi how are you": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip02|C_asr_output|tomorrow morning, i have to go to university and meet with my classmates": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t04|A_original|can you repeat, please": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t05|B_asr_style|the meeting will begin at 3:00 p.m": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t06|B_asr_style|i worked late yesterday, and i'm tired today": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t08|B_asr_style|we have to test the api by friday": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t03|A_original|can you hear me": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t03|B_asr_style|you hear me": {
+      "rating": 1,
+      "comment": ""
+    },
+    "t01|B_asr_style|hi, how are you": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t01|A_original|hi, how are you": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip03|C_asr_output|we use python as a programming language, which we can create in addition to what is translated into english": {
+      "rating": 0,
+      "comment": ""
+    },
+    "clip03|C_asr_output|we're using a python programming language that we can create an add-on that translates the native language into english": {
+      "rating": 1,
+      "comment": ""
+    },
+    "t06|B_asr_style|i worked late yesterday, and i'm tired of it today": {
+      "rating": 1,
+      "comment": ""
+    },
+    "t07|A_original|please send me the file by tonight": {
+      "rating": 1,
+      "comment": ""
+    },
+    "clip01|A_original|the weather is very good today": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip03|C_asr_output|we use python as a programming language, which we can create an add-on that translates the native language into english": {
+      "rating": 1,
+      "comment": ""
+    },
+    "clip03|B_asr_style|we use python as a programming language to create an app that translates the word into english from armenian": {
+      "rating": 1,
+      "comment": ""
+    },
+    "t08|A_original|we need to test the api by friday": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip03|A_original|we use python to create an app that translates armenian into english": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t05|B_asr_style|the meeting will begin at three o'clock": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t07|B_asr_style|please send me the file by tonight": {
+      "rating": 1,
+      "comment": ""
+    },
+    "clip01|B_asr_style|today's weather is very good": {
+      "rating": 1,
+      "comment": ""
+    },
+    "t02|A_original|i'm fine, thank you": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip02|A_original|tomorrow morning i have to go to the university and meet with my friends": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t05|A_original|the meeting will begin at 3:00": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip02|A_original|tomorrow morning i have to go to university and meet with my friends": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip02|B_asr_style|tomorrow morning, i have to go to university and meet my friends": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip03|A_original|we use the python programming language to create an app that translates armenian into english": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip03|B_asr_style|we use python as a programming language to create an app that translates the word from armenian to english": {
+      "rating": 1,
+      "comment": ""
+    },
+    "clip03|B_asr_style|we use the python programming language to create an app that translates the armenian language into english": {
+      "rating": 2,
+      "comment": ""
+    },
+    "clip01|B_asr_style|today the weather is very good": {
+      "rating": 1,
+      "comment": ""
+    },
+    "clip02|B_asr_style|tomorrow morning i have to go to university and meet my friends": {
+      "rating": 2,
+      "comment": ""
+    },
+    "t06|B_asr_style|i worked late yesterday. i'm tired of it today": {
+      "rating": 2,
+      "comment": ""
+    }
+  },
+  "items": [
+    {
+      "key": "clip03|B_asr_style|we're using the python programming language to create an app that translates the armenian language into english",
+      "id": "clip03",
+      "condition": "B_asr_style",
+      "input_hy": "մենք օգտագործում ենք python ծրագրավորման լեզուն որպեսզի ստեղծենք հավելված որը թարգմանում է հայերեն խոսքը անգլերեն",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We're using the Python programming language to create an app that translates the Armenian language into English.",
+      "configs": [
+        "int8/beam4"
+      ]
+    },
+    {
+      "key": "clip03|C_asr_output|we're using a python programming language like this. we're creating an add-on that translates the native language into english",
+      "id": "clip03",
+      "condition": "C_asr_output",
+      "input_hy": "մենք օգտագործում ենք փայսոն ծրագրավորման լեզուն որպիսի ստեղծենք ավելված որը թարգմանում է հայրեն խոսքը անգլեր են",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We're using a Python programming language like this. We're creating an add-on that translates the native language into English.",
+      "configs": [
+        "int8/beam4"
+      ]
+    },
+    {
+      "key": "t02|B_asr_style|i'm fine. thank you",
+      "id": "t02",
+      "condition": "B_asr_style",
+      "input_hy": "լավ եմ շնորհակալություն",
+      "reference_en": "I'm fine, thank you.",
+      "output_en": "I'm fine. Thank you.",
+      "configs": [
+        "float32/beam1"
+      ]
+    },
+    {
+      "key": "clip02|C_asr_output|tomorrow morning, i have to go to university and meet some of my classmates",
+      "id": "clip02",
+      "condition": "C_asr_output",
+      "input_hy": "վաղը առավոտյան ես պետք է գնամհամալսարան եւ հանդիպեմ իմ նկերների հետ",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning, I have to go to university and meet some of my classmates.",
+      "configs": [
+        "int8/beam4"
+      ]
+    },
+    {
+      "key": "t01|A_original|hello, how are you",
+      "id": "t01",
+      "condition": "A_original",
+      "input_hy": "Բարև, ինչպե՞ս ես։",
+      "reference_en": "Hi, how are you?",
+      "output_en": "Hello, how are you?",
+      "configs": [
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip02|C_asr_output|tomorrow morning, i have to go to college and meet some of my friends",
+      "id": "clip02",
+      "condition": "C_asr_output",
+      "input_hy": "վաղը առավոտյան ես պետք է գնամհամալսարան եւ հանդիպեմ իմ նկերների հետ",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning, I have to go to college and meet some of my friends.",
+      "configs": [
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "t02|B_asr_style|thank you very much",
+      "id": "t02",
+      "condition": "B_asr_style",
+      "input_hy": "լավ եմ շնորհակալություն",
+      "reference_en": "I'm fine, thank you.",
+      "output_en": "Thank you very much.",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "t04|B_asr_style|can you repeat please",
+      "id": "t04",
+      "condition": "B_asr_style",
+      "input_hy": "կարող ես կրկնել խնդրում եմ",
+      "reference_en": "Can you repeat that, please?",
+      "output_en": "Can you repeat please",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip02|C_asr_output|tomorrow morning, i have to go to university and meet with my friends",
+      "id": "clip02",
+      "condition": "C_asr_output",
+      "input_hy": "վաղը առավոտյան ես պետք է գնամհամալսարան եւ հանդիպեմ իմ նկերների հետ",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning, I have to go to university and meet with my friends.",
+      "configs": [
+        "float32/beam1"
+      ]
+    },
+    {
+      "key": "clip01|C_asr_output|today the weather is very good",
+      "id": "clip01",
+      "condition": "C_asr_output",
+      "input_hy": "այսօր եղանակը շատ լավ է",
+      "reference_en": "The weather is very nice today.",
+      "output_en": "Today the weather is very good.",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4"
+      ]
+    },
+    {
+      "key": "t06|A_original|i worked late yesterday, so i'm tired today",
+      "id": "t06",
+      "condition": "A_original",
+      "input_hy": "Ես երեկ ուշ եմ աշխատել, դրա համար այսօր հոգնած եմ։",
+      "reference_en": "I worked late yesterday, so I'm tired today.",
+      "output_en": "I worked late yesterday, so I'm tired today.",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip01|C_asr_output|today's weather is very good",
+      "id": "clip01",
+      "condition": "C_asr_output",
+      "input_hy": "այսօր եղանակը շատ լավ է",
+      "reference_en": "The weather is very nice today.",
+      "output_en": "Today's weather is very good.",
+      "configs": [
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "t06|B_asr_style|i worked late yesterday. i'm tired today",
+      "id": "t06",
+      "condition": "B_asr_style",
+      "input_hy": "ես երեկ ուշ եմ աշխատել դրա համար այսօր հոգնած եմ",
+      "reference_en": "I worked late yesterday, so I'm tired today.",
+      "output_en": "I worked late yesterday. I'm tired today.",
+      "configs": [
+        "int8/beam4"
+      ]
+    },
+    {
+      "key": "t01|B_asr_style|hi how are you",
+      "id": "t01",
+      "condition": "B_asr_style",
+      "input_hy": "բարեւ ինչպես ես",
+      "reference_en": "Hi, how are you?",
+      "output_en": "Hi how are you?",
+      "configs": [
+        "int8/beam4",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip02|C_asr_output|tomorrow morning, i have to go to university and meet with my classmates",
+      "id": "clip02",
+      "condition": "C_asr_output",
+      "input_hy": "վաղը առավոտյան ես պետք է գնամհամալսարան եւ հանդիպեմ իմ նկերների հետ",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning, I have to go to university and meet with my classmates.",
+      "configs": [
+        "int8/beam1"
+      ]
+    },
+    {
+      "key": "t04|A_original|can you repeat, please",
+      "id": "t04",
+      "condition": "A_original",
+      "input_hy": "Կարո՞ղ ես կրկնել, խնդրում եմ։",
+      "reference_en": "Can you repeat that, please?",
+      "output_en": "Can you repeat, please?",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "t05|B_asr_style|the meeting will begin at 3:00 p.m",
+      "id": "t05",
+      "condition": "B_asr_style",
+      "input_hy": "հանդիպումը կսկսվի ժամը երեքին",
+      "reference_en": "The meeting will start at three o'clock.",
+      "output_en": "The meeting will begin at 3:00 p.m.",
+      "configs": [
+        "int8/beam4",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "t06|B_asr_style|i worked late yesterday, and i'm tired today",
+      "id": "t06",
+      "condition": "B_asr_style",
+      "input_hy": "ես երեկ ուշ եմ աշխատել դրա համար այսօր հոգնած եմ",
+      "reference_en": "I worked late yesterday, so I'm tired today.",
+      "output_en": "I worked late yesterday, and I'm tired today.",
+      "configs": [
+        "int8/beam1"
+      ]
+    },
+    {
+      "key": "t08|B_asr_style|we have to test the api by friday",
+      "id": "t08",
+      "condition": "B_asr_style",
+      "input_hy": "մենք պետք է թեստավորենք api ն մինչեւ ուրբաթ",
+      "reference_en": "We need to test the API by Friday.",
+      "output_en": "We have to test the API by Friday.",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "t03|A_original|can you hear me",
+      "id": "t03",
+      "condition": "A_original",
+      "input_hy": "Դու ինձ լսո՞ւմ ես։",
+      "reference_en": "Can you hear me?",
+      "output_en": "Can you hear me?",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "t03|B_asr_style|you hear me",
+      "id": "t03",
+      "condition": "B_asr_style",
+      "input_hy": "դու ինձ լսում ես",
+      "reference_en": "Can you hear me?",
+      "output_en": "You hear me.",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "t01|B_asr_style|hi, how are you",
+      "id": "t01",
+      "condition": "B_asr_style",
+      "input_hy": "բարեւ ինչպես ես",
+      "reference_en": "Hi, how are you?",
+      "output_en": "Hi, how are you?",
+      "configs": [
+        "int8/beam1",
+        "float32/beam1"
+      ]
+    },
+    {
+      "key": "t01|A_original|hi, how are you",
+      "id": "t01",
+      "condition": "A_original",
+      "input_hy": "Բարև, ինչպե՞ս ես։",
+      "reference_en": "Hi, how are you?",
+      "output_en": "Hi, how are you?",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam1"
+      ]
+    },
+    {
+      "key": "clip03|C_asr_output|we use python as a programming language, which we can create in addition to what is translated into english",
+      "id": "clip03",
+      "condition": "C_asr_output",
+      "input_hy": "մենք օգտագործում ենք փայսոն ծրագրավորման լեզուն որպիսի ստեղծենք ավելված որը թարգմանում է հայրեն խոսքը անգլեր են",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We use Python as a programming language, which we can create in addition to what is translated into English.",
+      "configs": [
+        "int8/beam1"
+      ]
+    },
+    {
+      "key": "clip03|C_asr_output|we're using a python programming language that we can create an add-on that translates the native language into english",
+      "id": "clip03",
+      "condition": "C_asr_output",
+      "input_hy": "մենք օգտագործում ենք փայսոն ծրագրավորման լեզուն որպիսի ստեղծենք ավելված որը թարգմանում է հայրեն խոսքը անգլեր են",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We're using a Python programming language that we can create an add-on that translates the native language into English.",
+      "configs": [
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "t06|B_asr_style|i worked late yesterday, and i'm tired of it today",
+      "id": "t06",
+      "condition": "B_asr_style",
+      "input_hy": "ես երեկ ուշ եմ աշխատել դրա համար այսօր հոգնած եմ",
+      "reference_en": "I worked late yesterday, so I'm tired today.",
+      "output_en": "I worked late yesterday, and I'm tired of it today.",
+      "configs": [
+        "float32/beam1"
+      ]
+    },
+    {
+      "key": "t07|A_original|please send me the file by tonight",
+      "id": "t07",
+      "condition": "A_original",
+      "input_hy": "Խնդրում եմ, ուղարկիր ինձ ֆայլը մինչև երեկո։",
+      "reference_en": "Please send me the file by the evening.",
+      "output_en": "Please send me the file by tonight.",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip01|A_original|the weather is very good today",
+      "id": "clip01",
+      "condition": "A_original",
+      "input_hy": "Այսօր եղանակը շատ լավ է։",
+      "reference_en": "The weather is very nice today.",
+      "output_en": "The weather is very good today.",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip03|C_asr_output|we use python as a programming language, which we can create an add-on that translates the native language into english",
+      "id": "clip03",
+      "condition": "C_asr_output",
+      "input_hy": "մենք օգտագործում ենք փայսոն ծրագրավորման լեզուն որպիսի ստեղծենք ավելված որը թարգմանում է հայրեն խոսքը անգլեր են",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We use Python as a programming language, which we can create an add-on that translates the native language into English.",
+      "configs": [
+        "float32/beam1"
+      ]
+    },
+    {
+      "key": "clip03|B_asr_style|we use python as a programming language to create an app that translates the word into english from armenian",
+      "id": "clip03",
+      "condition": "B_asr_style",
+      "input_hy": "մենք օգտագործում ենք python ծրագրավորման լեզուն որպեսզի ստեղծենք հավելված որը թարգմանում է հայերեն խոսքը անգլերեն",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We use Python as a programming language to create an app that translates the word into English from Armenian.",
+      "configs": [
+        "float32/beam1"
+      ]
+    },
+    {
+      "key": "t08|A_original|we need to test the api by friday",
+      "id": "t08",
+      "condition": "A_original",
+      "input_hy": "Մենք պետք է թեստավորենք API-ն մինչև ուրբաթ։",
+      "reference_en": "We need to test the API by Friday.",
+      "output_en": "We need to test the API by Friday.",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip03|A_original|we use python to create an app that translates armenian into english",
+      "id": "clip03",
+      "condition": "A_original",
+      "input_hy": "Մենք օգտագործում ենք Python ծրագրավորման լեզուն, որպեսզի ստեղծենք հավելված, որը թարգմանում է հայերեն խոսքը անգլերեն։",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We use Python to create an app that translates Armenian into English.",
+      "configs": [
+        "int8/beam1"
+      ]
+    },
+    {
+      "key": "t05|B_asr_style|the meeting will begin at three o'clock",
+      "id": "t05",
+      "condition": "B_asr_style",
+      "input_hy": "հանդիպումը կսկսվի ժամը երեքին",
+      "reference_en": "The meeting will start at three o'clock.",
+      "output_en": "The meeting will begin at three o'clock.",
+      "configs": [
+        "int8/beam1",
+        "float32/beam1"
+      ]
+    },
+    {
+      "key": "t07|B_asr_style|please send me the file by tonight",
+      "id": "t07",
+      "condition": "B_asr_style",
+      "input_hy": "խնդրում եմ ուղարկիր ինձ ֆայլը մինչեւ երեկո",
+      "reference_en": "Please send me the file by the evening.",
+      "output_en": "Please send me the file by tonight",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip01|B_asr_style|today's weather is very good",
+      "id": "clip01",
+      "condition": "B_asr_style",
+      "input_hy": "այսօր եղանակը շատ լավ է",
+      "reference_en": "The weather is very nice today.",
+      "output_en": "Today's weather is very good.",
+      "configs": [
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "t02|A_original|i'm fine, thank you",
+      "id": "t02",
+      "condition": "A_original",
+      "input_hy": "Լավ եմ, շնորհակալություն։",
+      "reference_en": "I'm fine, thank you.",
+      "output_en": "I'm fine, thank you.",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip02|A_original|tomorrow morning i have to go to the university and meet with my friends",
+      "id": "clip02",
+      "condition": "A_original",
+      "input_hy": "Վաղը առավոտյան ես պետք է գնամ համալսարան և հանդիպեմ իմ ընկերների հետ։",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning I have to go to the university and meet with my friends.",
+      "configs": [
+        "int8/beam4"
+      ]
+    },
+    {
+      "key": "t05|A_original|the meeting will begin at 3:00",
+      "id": "t05",
+      "condition": "A_original",
+      "input_hy": "Հանդիպումը կսկսվի ժամը երեքին։",
+      "reference_en": "The meeting will start at three o'clock.",
+      "output_en": "The meeting will begin at 3:00.",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip02|A_original|tomorrow morning i have to go to university and meet with my friends",
+      "id": "clip02",
+      "condition": "A_original",
+      "input_hy": "Վաղը առավոտյան ես պետք է գնամ համալսարան և հանդիպեմ իմ ընկերների հետ։",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning I have to go to university and meet with my friends.",
+      "configs": [
+        "int8/beam1",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip02|B_asr_style|tomorrow morning, i have to go to university and meet my friends",
+      "id": "clip02",
+      "condition": "B_asr_style",
+      "input_hy": "վաղը առավոտյան ես պետք է գնամ համալսարան եւ հանդիպեմ իմ ընկերների հետ",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning, I have to go to university and meet my friends.",
+      "configs": [
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip03|A_original|we use the python programming language to create an app that translates armenian into english",
+      "id": "clip03",
+      "condition": "A_original",
+      "input_hy": "Մենք օգտագործում ենք Python ծրագրավորման լեզուն, որպեսզի ստեղծենք հավելված, որը թարգմանում է հայերեն խոսքը անգլերեն։",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We use the Python programming language to create an app that translates Armenian into English.",
+      "configs": [
+        "int8/beam4",
+        "float32/beam1",
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip03|B_asr_style|we use python as a programming language to create an app that translates the word from armenian to english",
+      "id": "clip03",
+      "condition": "B_asr_style",
+      "input_hy": "մենք օգտագործում ենք python ծրագրավորման լեզուն որպեսզի ստեղծենք հավելված որը թարգմանում է հայերեն խոսքը անգլերեն",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We use Python as a programming language to create an app that translates the word from Armenian to English.",
+      "configs": [
+        "int8/beam1"
+      ]
+    },
+    {
+      "key": "clip03|B_asr_style|we use the python programming language to create an app that translates the armenian language into english",
+      "id": "clip03",
+      "condition": "B_asr_style",
+      "input_hy": "մենք օգտագործում ենք python ծրագրավորման լեզուն որպեսզի ստեղծենք հավելված որը թարգմանում է հայերեն խոսքը անգլերեն",
+      "reference_en": "We use the Python programming language to create an application that translates Armenian speech into English.",
+      "output_en": "We use the Python programming language to create an app that translates the Armenian language into English.",
+      "configs": [
+        "float32/beam4"
+      ]
+    },
+    {
+      "key": "clip01|B_asr_style|today the weather is very good",
+      "id": "clip01",
+      "condition": "B_asr_style",
+      "input_hy": "այսօր եղանակը շատ լավ է",
+      "reference_en": "The weather is very nice today.",
+      "output_en": "Today the weather is very good.",
+      "configs": [
+        "int8/beam1",
+        "int8/beam4"
+      ]
+    },
+    {
+      "key": "clip02|B_asr_style|tomorrow morning i have to go to university and meet my friends",
+      "id": "clip02",
+      "condition": "B_asr_style",
+      "input_hy": "վաղը առավոտյան ես պետք է գնամ համալսարան եւ հանդիպեմ իմ ընկերների հետ",
+      "reference_en": "Tomorrow morning I have to go to the university and meet my friends.",
+      "output_en": "Tomorrow morning I have to go to university and meet my friends.",
+      "configs": [
+        "int8/beam1"
+      ]
+    },
+    {
+      "key": "t06|B_asr_style|i worked late yesterday. i'm tired of it today",
+      "id": "t06",
+      "condition": "B_asr_style",
+      "input_hy": "ես երեկ ուշ եմ աշխատել դրա համար այսօր հոգնած եմ",
+      "reference_en": "I worked late yesterday, so I'm tired today.",
+      "output_en": "I worked late yesterday. I'm tired of it today.",
+      "configs": [
+        "float32/beam4"
+      ]
+    }
+  ],
+  "summary": {
+    "float32/beam1/A_original": {
+      "n": 11,
+      "mean": 1.91,
+      "understandable": 11,
+      "good": 10
+    },
+    "float32/beam1/B_asr_style": {
+      "n": 11,
+      "mean": 1.55,
+      "understandable": 11,
+      "good": 6
+    },
+    "float32/beam1/C_asr_output": {
+      "n": 3,
+      "mean": 1.67,
+      "understandable": 3,
+      "good": 2
+    },
+    "float32/beam4/A_original": {
+      "n": 11,
+      "mean": 1.91,
+      "understandable": 11,
+      "good": 10
+    },
+    "float32/beam4/B_asr_style": {
+      "n": 11,
+      "mean": 1.55,
+      "understandable": 10,
+      "good": 7
+    },
+    "float32/beam4/C_asr_output": {
+      "n": 3,
+      "mean": 1.67,
+      "understandable": 3,
+      "good": 2
+    },
+    "int8/beam1/A_original": {
+      "n": 11,
+      "mean": 1.91,
+      "understandable": 11,
+      "good": 10
+    },
+    "int8/beam1/B_asr_style": {
+      "n": 11,
+      "mean": 1.45,
+      "understandable": 10,
+      "good": 6
+    },
+    "int8/beam1/C_asr_output": {
+      "n": 3,
+      "mean": 1.0,
+      "understandable": 2,
+      "good": 1
+    },
+    "int8/beam4/A_original": {
+      "n": 11,
+      "mean": 1.91,
+      "understandable": 11,
+      "good": 10
+    },
+    "int8/beam4/B_asr_style": {
+      "n": 11,
+      "mean": 1.55,
+      "understandable": 10,
+      "good": 7
+    },
+    "int8/beam4/C_asr_output": {
+      "n": 3,
+      "mean": 1.0,
+      "understandable": 3,
+      "good": 0
+    }
+  }
+}
