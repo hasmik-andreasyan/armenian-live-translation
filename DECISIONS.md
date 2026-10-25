@@ -216,7 +216,54 @@ So int8 is required, and an efficient runtime matters. A later optimisation is t
   - Restrict the output vocabulary to English (faster).
   - Beam 2 as a middle ground.
   - Light punctuation / question restoration.
-- **Status:** Proposed. Waiting for your confirmation.
+- **Status:** **Accepted 2026-10-26** (provisional).
+
+## D-019 · Priority shift: working application first
+- **Context:** deadline 1 November. ASR and MT are chosen and measured.
+- **Decision:** No more model experiments for now. Order:
+  1. Audio capture check (Spike 1).
+  2. Live pipeline: capture → VAD segmentation → ASR → MT → terminal.
+  3. Speaker identification.
+  4. Real-conversation tests.
+  5. README + demo rehearsal.
+  Each step still gets a quick, measured check, but no broad comparisons.
+- **Status:** Accepted.
+
+## D-020 · Audio capture stack
+- **Library: PyAudioWPatch** (MIT). It's a PortAudio fork whose Windows wheels add **WASAPI loopback devices**: one per output device, capturing exactly what plays there. No virtual cable is needed, and playback isn't affected (D-001). The plain PortAudio in `sounddevice` has no loopback support. The **same library captures the microphone**, so both sources share one code path.
+- **Each device runs at its native rate and channel count** (loopback is typically 48 kHz stereo). Audio is converted to **mono and resampled to 16 kHz with `soxr`** (python-soxr, LGPL-2.1, a high-quality streaming resampler). This doesn't depend on Windows choosing a rate for us.
+- **Timestamps:** one monotonic session clock for both sources (PLAN.md §3).
+- **Known WASAPI behaviour to verify in Spike 1:** loopback delivers **no data while nothing is playing**, so there are gaps in the stream. Later code must use timestamps, not sample counts, to place audio in time.
+- **Status:** Accepted. Spike 1 passed (EXPERIMENTS.md).
+
+## D-021 · Energy-based VAD first (pluggable)
+- **Decision:** Speech/silence per 30 ms frame by loudness: speech if it's ≥ 15 dB above an adaptive noise floor and above −55 dBFS.
+  - A phrase starts after 3 speech frames (+0.3 s preroll).
+  - It ends after **0.6 s of silence**, or is force-cut at **7 s** (D-014).
+  - It's dropped if it has < 0.4 s of speech.
+- **Why:**
+  - The measured conditions are very clean: 35–56 dB speech-to-background on the headset mic, near digital silence between phrases on the loopback, and call apps apply their own noise suppression.
+  - No new dependency.
+  - Fully unit-tested (`tests/test_vad.py`).
+- **Trade-offs:** noise like keyboard clicks or breathing can start a segment. The ASR then returns little or nothing, and the pipeline skips results under 2 characters. A forced cut can split a sentence mid-word.
+- **Upgrade path:** the frame classifier is a plain `(frame) -> bool`, so Silero VAD can replace it without touching the rest. Smarter cutting: cut at the quietest frame in the last ~1 s. Do it only if live tests show the VAD is the weakest link.
+- **Status:** Accepted.
+
+## D-022 · Live pipeline structure
+- **Threads:** capture callbacks → chunk queue → segmenter thread (one Segmenter per source) → segment queue → **one worker** (ASR → label → MT → print), plus the main thread for Ctrl+C. Models never run in parallel (4 cores; D-010).
+- **Latency** is measured per line, from end of speech (`Segment.t_end`) to print, on the shared session clock. It's shown next to each label and summarised at the end (median, p95, max, count over 5 s). `--log` writes per-segment timings (VAD wait, queue wait, ASR, MT) to `results/session_*.jsonl`.
+- **Labels:** mic → "Me", loopback → "Call" until speaker identification is added.
+- **Simulated worst case:** both sources speaking continuously, with fake models at the measured speeds. Queue wait up to 2.1 s, total ≤ 4.5 s.
+- **Status:** Accepted. LIVE-01 done: 45 lines, max latency 4.4 s, 0 over 5 s.
+
+## D-023 · Two fixes after LIVE-01
+1. **Armenian-only CTC decoding** (`app/asr.py`, `armenian_only=True` by default). Before the argmax, every token except blank, space, Armenian letters (incl. `և`, `։`, `֊`) and digits is set to −∞. That leaves **88 of 10,288 tokens**.
+   - **Why:** the model has no language setting. Live, it drifted into Latin/Arabic/CJK on unclear audio, and NLLB then hallucinated whole sentences from that.
+   - **Cost:** none in speed.
+   - **Trade-off:** English terms always come out in Armenian letters, which was already the case (`Python` → `փայսոն`, and NLLB recovers it).
+   - **Check:** re-run EXP-01 int8 to make sure the CER doesn't get worse.
+2. **Forced cut at the quietest frame of the last 1.5 s** (`app/vad.py`) instead of exactly at 7.0 s. clip03 is now cut at 6.2 s (between words) instead of 7.0 s. The rest of the audio starts the next part, so nothing is lost (unit-tested).
+- **Status:** Implemented and unit-tested (16 tests). EXP-01 re-check + LIVE-02 next.
 
 ## D-015 · Microphone for evaluation and demo
 - **Decision:** Jabra headset, MME device 1, the Windows default input. Windows' MME layer delivers 16 kHz mono directly.

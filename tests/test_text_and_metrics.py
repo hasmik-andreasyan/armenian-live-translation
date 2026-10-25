@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from app.asr import greedy_ctc_decode  # noqa: E402
+from app.asr import allowed_token_ids, greedy_ctc_decode  # noqa: E402
 from app.metrics import cer, corpus_cer, edit_distance, wer  # noqa: E402
 from app.text_norm import normalize_for_scoring  # noqa: E402
 
@@ -46,6 +46,13 @@ class TestCtcDecode(unittest.TestCase):
         text, unk = greedy_ctc_decode(ids, self.vocab, blank_id=0, drop_ids={1, 2}, unk_id=3)
         self.assertEqual(text, "աա բ")
         self.assertEqual(unk, 1)
+
+
+class TestArmenianOnly(unittest.TestCase):
+    def test_only_blank_space_armenian_and_digits_allowed(self):
+        vocab = {"<s>": 0, "<pad>": 1, "</s>": 2, "<unk>": 3, " ": 4, "ա": 5, "Բ": 6, "և": 7, "։": 8,
+                 "r": 9, "ش": 10, "普": 11, "7": 12, "՞": 13}
+        self.assertEqual(allowed_token_ids(vocab), [0, 4, 5, 6, 7, 8, 12])
 
 
 if __name__ == "__main__":

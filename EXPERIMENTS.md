@@ -122,6 +122,46 @@ Blind rating by the native speaker: 46 distinct translations, shuffled, configur
 4. **Beam 4 vs beam 1 on B: 1.55 vs 1.45, within rater noise.** Near-identical outputs sometimes differed by 1 point (e.g. "meet with my classmates" = 2, "meet some of my classmates" = 1). Beam 4 costs 2–4× the latency and up to 4.9 s.
 5. **Decision rule (D-017):** int8/beam 1 has 10/11 understandable on B (≥ 9) at a 0.44 s median latency (≤ ~1 s), so it **passes**.
 
+## Spike 1 · Simultaneous mic + system-audio capture (`tools/capture_test.py`)
+
+2026-10-26, 30 s. Mic = [1] Jabra headset (MME, 44.1 kHz, 2 ch). Loopback = [16] Jabra earphone [Loopback] (WASAPI, 48 kHz, 2 ch). Both resampled to 16 kHz mono (soxr). Raw file: `results/capture_test_20261026_031317.json`.
+
+| Source | Captured | Completeness | Max gap | Overflow | Peak | RMS | Sound in |
+|---|---|---|---|---|---|---|---|
+| mic | 30.0 s | 100 % | 0.06 s | no | 0.21 | −37.8 dBFS | 21 % |
+| loopback | 30.1 s | 100 % | 0.06 s | no | 0.72 | −25.0 dBFS | 61 % |
+
+- **Playback unaffected.** Both WAVs are clear (user listened), with no crackle and correct speed/pitch, so the resampling is right.
+- **No call audio in the mic:** the mic stays at −64 dBFS while only the video plays. The headset works as intended (D-002).
+- **This Jabra loopback sends silence (≈ −93 dBFS) during pauses** instead of stopping, so there's no gap. Gap handling stays in the segmenter for other devices/apps.
+
+**Phrase segmenter (`app/vad.py`) on recorded audio:**
+- clip01 → 1 segment [0.9–3.3 s].
+- clip02 → 1 segment [0.4–5.6 s].
+- clip03 → **force-cut at 7 s** + rest [7.1–9.0 s].
+- Mic counting → short pieces at the pauses.
+- Video audio → 6 sentence-like segments.
+
+## LIVE-01 · First live session (`python -m app.main --log`)
+
+2026-10-26, ~3 min: user speaking (Me) + an Armenian interview video in the headset (Call). Raw log: `results/session_20261026_032445.jsonl`.
+
+| Source | Lines | Latency median | p95 | max | over 5 s | ASR median | MT median | max queue wait | forced cuts |
+|---|---|---|---|---|---|---|---|---|---|
+| Me (mic) | 14 | 2.36 s | 4.43 s | 4.43 s | 0 | 0.89 s | 0.61 s | 1.80 s | 1 |
+| Call (loopback) | 31 | 3.03 s | 4.01 s | 4.17 s | 0 | 1.87 s | 0.94 s | 2.09 s | **18** |
+| **All** | **45** | **3.00 s** | **4.01 s** | **4.43 s** | **0** | | | | 19 |
+
+**Findings:**
+1. **Latency requirement met:** 0 of 45 lines over 5 s, max 4.4 s. The queue wait (up to 2.1 s) is the largest variable, when both sides finish phrases close together.
+2. **The ASR drifted into other scripts on unclear audio:** `բաrեվ իnչ պեseս`, `شاط وراخم`, `普勒`, `ساخرخوسليچه`, `makl … exտենsioն`. The translator then **invented sentences** from these, e.g. "The following is a list of the most common causes of death in the United States." This didn't happen on the clean EXP-01 clips. → **Fix: D-023, Armenian-only decoding.**
+3. **18 of 31 Call segments were force-cut at exactly 7.0 s,** often mid-word (`…տարածաշրջանի աս` | `աշխարհի մասին`). The interview had few 0.6 s pauses. → **Fix: D-023, cut at the quietest point.**
+4. **Clear speech worked well:**
+   - "ինչ կատարվեց վերջին շրջանում" → "What has happened in recent times?"
+   - "հենց նոր հասկացա" → "I just realized"
+   - "We can't say that something is done well or something is done because" (Call)
+5. **A few noise segments** (e.g. `o and o`). Armenian-only decoding plus the < 2 character filter should remove most of them.
+
 ## ASR runs (EXP-01 onwards)
 
 **Latency** = ASR time for one clip (median of 3 warm runs). **RTF** = latency / clip length. **Peak RAM** = process peak working set. CER/WER are normalised (lowercase, punctuation removed).

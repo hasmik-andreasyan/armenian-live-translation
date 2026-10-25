@@ -28,6 +28,22 @@ class AsrResult:
     unknown_tokens: int
 
 
+ARMENIAN_CHARS = {chr(c) for c in range(0x0531, 0x0557)} | {chr(c) for c in range(0x0561, 0x0588)} | set("։֊")
+DIGITS = set("0123456789")
+
+
+def allowed_token_ids(vocab: dict[str, int], blank: str = "<s>") -> list[int]:
+    """Token ids the decoder may output: blank, space, Armenian letters and digits.
+
+    The model covers ~1600 languages and has no language setting. On unclear
+    audio it can drift into other scripts (Latin, Arabic, CJK), which the
+    translator then turns into invented sentences. Restricting the output to
+    Armenian makes each frame pick the most likely *Armenian* character.
+    """
+    allowed = ARMENIAN_CHARS | DIGITS
+    return sorted({vocab[blank], vocab[" "]} | {i for tok, i in vocab.items() if tok and set(tok) <= allowed})
+
+
 def greedy_ctc_decode(ids: list[int], id_to_token: dict[int, str], blank_id: int,
                       drop_ids: set[int], unk_id: int) -> tuple[str, int]:
     """Merge repeated ids, remove blank/special ids, join the characters."""
@@ -44,7 +60,7 @@ def greedy_ctc_decode(ids: list[int], id_to_token: dict[int, str], blank_id: int
 
 
 class OmniCtcAsr:
-    def __init__(self, model_dir: Path, threads: int = 4, precision: str = "int8") -> None:
+    def __init__(self, model_dir: Path, threads: int = 4, precision: str = "int8", armenian_only: bool = True) -> None:
         import torch
         from transformers import Wav2Vec2ForCTC
 
@@ -64,6 +80,12 @@ class OmniCtcAsr:
         self.blank_id = vocab["<s>"]
         self.unk_id = vocab["<unk>"]
         self.drop_ids = {vocab["<pad>"], vocab["</s>"]}
+        self.armenian_only = armenian_only
+        self._blocked = None
+        if armenian_only:
+            mask = torch.ones(len(vocab), dtype=torch.bool)
+            mask[allowed_token_ids(vocab)] = False
+            self._blocked = mask                    # True = token may not be output
 
     def transcribe(self, audio: np.ndarray) -> AsrResult:
         if audio.ndim != 1 or audio.dtype != np.float32:
@@ -75,6 +97,8 @@ class OmniCtcAsr:
         x = (audio - audio.mean()) / np.sqrt(audio.var() + 1e-7)
         with self._torch.inference_mode():
             logits = self.model(self._torch.from_numpy(x)[None]).logits[0]
-        ids = logits.argmax(dim=-1).tolist()
+            if self._blocked is not None:  # in-place on an inference tensor: must stay inside inference_mode
+                logits[:, self._blocked] = float("-inf")
+            ids = logits.argmax(dim=-1).tolist()
         text, unknown = greedy_ctc_decode(ids, self.id_to_token, self.blank_id, self.drop_ids, self.unk_id)
         return AsrResult(text=text, seconds=time.perf_counter() - t0, unknown_tokens=unknown)
