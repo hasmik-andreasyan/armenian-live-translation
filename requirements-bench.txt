@@ -1,0 +1,2 @@
+# EXP-00 CPU calibration only. ASR dependencies come later (requirements.txt).
+numpy>=1.26,<3

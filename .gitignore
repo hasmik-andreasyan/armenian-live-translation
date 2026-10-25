@@ -1,0 +1,23 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Model weights and caches: never commit (per challenge brief)
+models/
+*.safetensors
+*.bin
+*.pt
+*.onnx
+.cache/
+
+# Audio recordings: never commit (per challenge brief)
+eval/audio/
+*.wav
+*.m4a
+*.mp3
+*.flac
+*.ogg
+
+# Secrets
+.env
