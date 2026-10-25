@@ -1,0 +1,4 @@
+clip_id,file,speaker,reference,notes
+clip01,eval/audio/clip01.wav,speaker_a,"Այսօր եղանակը շատ լավ է։",~3 s
+clip02,eval/audio/clip02.wav,speaker_a,"Վաղը առավոտյան ես պետք է գնամ համալսարան և հանդիպեմ իմ ընկերների հետ։",~6 s
+clip03,eval/audio/clip03.wav,speaker_a,"Մենք օգտագործում ենք Python ծրագրավորման լեզուն, որպեսզի ստեղծենք հավելված, որը թարգմանում է հայերեն խոսքը անգլերեն։",~10 s with English term

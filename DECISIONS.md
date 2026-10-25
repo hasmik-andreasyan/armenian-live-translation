@@ -102,4 +102,64 @@ A possible later rescue for Whisper is whisper.cpp's `audio_ctx` option, which s
   - CER good enough and English readable after translation → keep 300M and move on to translation (M4).
   - Fast but inaccurate → EXP-02: omniASR-CTC-1B-v2 (3.7 GB, ~1–2 s estimated) or MMS-1b-all as a cross-check.
   - Both CTC models inaccurate → revisit Whisper with a shrunk encoder window (D-007).
-- **Status:** Proposed.
+- **Status:** Accepted 2026-10-26. Order: Step 0 (CPU calibration) first, then the compatibility check (D-009), then EXP-01.
+
+## D-009 · How we verify the converted model works on Windows + Python 3.12 *before* downloading weights
+- **Limitation found:** In this session, my workspace **and** the shell on your laptop are blocked from PyPI and Hugging Face by network policy. I couldn't check the package files or the model repo from my side. **The check must run in your Windows PowerShell.**
+- **Already verified, from the converter's source code** (`ahmedadelattia/omnilingual_to_hf`: I read the tokenizer, config and parity-check parts):
+  - Output is a **standard** `transformers` `Wav2Vec2ForCTC` + `Wav2Vec2CTCTokenizer`. No custom code and no `trust_remote_code`.
+  - The converter used `transformers>=5.3.0`.
+  - CTC blank = `<s>` (id 0). Words are separated by the SentencePiece marker `▁`. Audio: 16 kHz with per-utterance mean/variance normalisation (`do_normalize=True`).
+  - The parity check compares logits with the original fairseq2 model (`atol=1e-4`), plus greedy token ids and transcripts. **But** its transcript decoding is done manually: join the pieces, then replace `▁` with a space. It does *not* go through the HF tokenizer's `decode`. **Decision:** our ASR module uses the same manual greedy decode, so we decode exactly the way the parity check did.
+  - **Unknown:** whether the parity check was actually run for the uploaded `aadel4/*` checkpoints. The model card states this, and we'll read it in Step 2.
+- **Step 2 plan (cheap, no 1.3 GB download):**
+  1. `pip install --dry-run` of the ASR packages, to confirm cp312/win_amd64 wheels exist before installing anything.
+  2. Install them. Download only `config.json` + tokenizer files (a few KB), and list the repo's files and sizes.
+  3. **Build the model architecture from `config.json` with random weights** and time a forward pass on 3 / 6 / 10 s of noise. This proves `transformers` + `torch` can run this exact architecture on your laptop, and gives real (non-estimated) speed and RAM numbers, all without the weights.
+  4. Only if that passes: download the 1.3 GB weights and run EXP-01 on your recordings.
+- **Dry run (2026-10-26, Windows, Python 3.12.3):** all packages resolved without errors: torch 2.14.1, transformers 5.20.2, huggingface_hub 2.3.0, tokenizers 0.23.3, safetensors 0.8.0, soundfile 0.14.0, jiwer 4.0.0, psutil 7.2.2 (numpy 2.5.4 was already installed). **No `nvidia-*` packages, which confirms the CPU-only torch build.** transformers 5.20 ≥ 5.3, as the converter requires.
+- **Open risk:** torch 2.14 and huggingface_hub 2.x are newer than anything I can check documentation for here. Two things could have changed: `torch.ao.quantization.quantize_dynamic` (int8) and the hub download functions. CHK-01 reports either failure explicitly.
+- **Status:** Accepted. EXP-00 is done, and this check is implemented as CHK-01 (`benchmarks/check_ctc_compat.py`).
+
+## D-010 · Inference uses 4 threads
+- **Evidence:** EXP-00 (EXPERIMENTS.md). 4 threads gave a higher sustained throughput (145 vs 128 GFLOP/s) and far more **stable** performance (min 115 vs 33 GFLOP/s) than the default 8.
+- **Decision:** Every model call sets `torch.set_num_threads(4)` explicitly. We'll re-check this once two models (ASR + translation) share the CPU.
+- **Status:** Accepted.
+
+## D-011 · Whisper family deprioritised for live ASR
+- **Evidence:** EXP-00 predictions with measured throughput. Even Whisper small needs ~3–4.5 s per phrase in float32, and large-v3/turbo need 17–28 s.
+- **Decision:** Proceed with omniASR-CTC-300M-v2. CTC-1B stays a candidate only if int8 brings it near the budget. Whisper comes back only if CTC accuracy is unusable (and then with a shrunk encoder window).
+- **Status:** Accepted. Confirmed by CHK-01: real int8 latency is 1.70 s for a 6 s phrase.
+
+## D-012 · CHK-01 passed: decoding and scoring rules
+- **Correction to D-009:** the uploaded tokenizer uses a **plain space** as the word separator, and its Armenian vocabulary is single characters. Our decoder (`app/asr.py`) does what the parity check did: argmax per frame → merge repeats → drop blank (`<s>`, id 0), `<pad>` and `</s>` → join. `<unk>` is counted, not shown.
+- **Scoring normalisation** (`app/text_norm.py`, unit-tested in `tests/`): NFC, lowercase, `և` = `եւ`, standalone `եվ` = `եւ`. In-word marks `՞ ՜ ՛` are deleted (so "ինչպե՞ս" → "ինչպես"), and other punctuation becomes a space. **CER is the primary metric.** Armenian words are long and heavily inflected, so one wrong letter makes a whole word wrong, which inflates WER. Both are reported, plus raw (unnormalised) CER.
+- **Own CER/WER code** (`app/metrics.py`) instead of jiwer: about 30 lines, dependency-free and unit-tested, and it doesn't depend on jiwer 4.0's API, which I can't check here.
+- **Status:** Accepted.
+
+## D-013 · EXP-01 design *(proposed)*
+- **Model:** omniASR-CTC-300M-v2 at pinned revision `f2b3c39a62c061c27623c3f2d803294fbb954324`. Downloaded by `tools/download_model.py`, which verifies size and SHA-256 against Hugging Face's published hashes.
+- **Data:** 3 clips by one speaker (`eval/manifest.csv`): ~3 s, ~6 s, and ~10 s with the English term "Python". 16 kHz mono 16-bit WAV recorded with `tools/record_clip.py`, which reads the sentence from the manifest. **Use the headset mic you'll use in the demo.** Audio stays local (gitignored). Only its SHA-256 is recorded.
+- **Runs:** fp32 and int8, **each in a separate process** (clean RAM numbers), 4 threads, 1 warm-up + 3 timed runs per clip.
+- **Provisional decision rule:** these thresholds are judgment calls, written down *before* seeing results:
+  - corpus CER (normalised) ≤ 15 % and int8 within +2 points of fp32 → **adopt 300M int8**, move on to translation (M4)
+  - CER 15–30 % → inspect the error types (systematic letter confusions? word boundaries? the English term?), then try CTC-1B on the same clips
+  - CER > 30 % → 300M not usable. Compare CTC-1B / MMS-1b-all, and Whisper with a shrunk window as the last resort.
+- **Known limitation:** 3 clips from one speaker is a *smoke test* of accuracy, not a benchmark. If it passes, the eval set grows (more sentences, more voices, call audio) before final decisions.
+- **Status:** Done (2026-10-26). Results in EXPERIMENTS.md and D-014.
+
+## D-014 · Adopt omniASR-CTC-300M-v2 **int8** as the ASR model *(provisional, proposed for your confirmation)*
+- **Evidence (EXP-01):** corpus CER 6.3 % int8 vs 5.4 % fp32 (+1.0 point, limit +2). Latency for a 6 s phrase: 1.50 s int8 vs 2.77 s fp32. Steady-state RAM ≈ 1.0 GB int8 vs ≈ 1.7 GB fp32.
+- **Decision:** int8 in the application. Cap segment length at **~7–8 s**; the exact value comes from the segmentation experiment (PLAN.md, answered question 4).
+- **Why provisional:** 3 clips from 1 speaker. We re-check on the larger eval set (more sentences, other voices, call audio) before the final README choice.
+- **Known weaknesses to document:**
+  - English terms come out in Armenian letters (`Python` → `փայսոն`).
+  - Output has no punctuation and no capitals.
+  - Occasional missing or extra spaces between words.
+- **Status:** Proposed. Waiting for your confirmation.
+
+## D-015 · Microphone for evaluation and demo
+- **Decision:** Jabra headset, MME device 1, the Windows default input. Windows' MME layer delivers 16 kHz mono directly.
+- **Not used:** AirPods for recording. When their mic is in use, Bluetooth switches to a low-quality call mode, which is likely to hurt ASR. We can measure this later if needed. The built-in Realtek mic (device 2) is a backup.
+- **Note:** recording levels varied by ~19 dB between clips (Jabra automatic gain or mic position). ASR normalises each clip, so this doesn't affect results. It's realistic for live use.
+- **Status:** Accepted.

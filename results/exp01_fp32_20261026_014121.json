@@ -1,0 +1,109 @@
+{
+  "experiment": "EXP-01",
+  "timestamp": "2026-10-26T01:41:21",
+  "precision": "fp32",
+  "threads": 4,
+  "runs": 3,
+  "model_revision": [
+    "aadel4/omniASR-CTC-300M-v2",
+    "f2b3c39a62c061c27623c3f2d803294fbb954324"
+  ],
+  "platform": "Windows-10-10.0.19045-SP0",
+  "python": "3.12.3",
+  "versions": {
+    "torch": "2.14.1",
+    "transformers": "5.20.2",
+    "numpy": "2.5.4",
+    "soundfile": "0.14.0"
+  },
+  "manifest_sha256": "10aff09827e789cd7a55ee94a0a9b83381e5b9c2d7065b3246a15269c0443856",
+  "audio_sha256": {
+    "clip01": "ccdb0e5e78735d1d272350e643969c982308b59551ef2895800ca0121e911fb2",
+    "clip02": "ea2b7298473c3dedebd9d00088d5535cfe2f1d4ea9919d553db121651ae8778c",
+    "clip03": "4b9aeb9d9cf05a9695b56a8f1cccf841aaf049f63214cd0d07dc77eec8c08666"
+  },
+  "summary": {
+    "corpus_cer_norm": 0.0537,
+    "corpus_wer_norm": 0.2188,
+    "corpus_cer_raw": 0.1005,
+    "max_latency_s": 3.629,
+    "median_rtf": 0.461,
+    "load_s": 17.2,
+    "memory": {
+      "start": {
+        "rss_mb": 38,
+        "peak_mb": 38
+      },
+      "after_load": {
+        "rss_mb": 1669,
+        "peak_mb": 1669
+      },
+      "end": {
+        "rss_mb": 1704,
+        "peak_mb": 1884
+      }
+    }
+  },
+  "clips": [
+    {
+      "clip_id": "clip01",
+      "clip_s": 3.85,
+      "reference": "Այսօր եղանակը շատ լավ է։",
+      "hypothesis": "այսօր եղանակը շատ լավ է",
+      "deterministic": true,
+      "unknown_tokens": 0,
+      "latency_s": 1.918,
+      "all_latencies_s": [
+        1.862,
+        1.965,
+        1.918
+      ],
+      "rtf": 0.499,
+      "cer_raw": 0.0833,
+      "cer_norm": 0.0,
+      "wer_norm": 0.0,
+      "reference_norm": "այսօր եղանակը շատ լավ է",
+      "hypothesis_norm": "այսօր եղանակը շատ լավ է"
+    },
+    {
+      "clip_id": "clip02",
+      "clip_s": 6.01,
+      "reference": "Վաղը առավոտյան ես պետք է գնամ համալսարան և հանդիպեմ իմ ընկերների հետ։",
+      "hypothesis": "վաղը առավոտյան ես պետք է գնամ համալսարան եւ հանդիպեմ իմ ընկերների հետ",
+      "deterministic": true,
+      "unknown_tokens": 0,
+      "latency_s": 2.766,
+      "all_latencies_s": [
+        2.694,
+        2.766,
+        2.88
+      ],
+      "rtf": 0.461,
+      "cer_raw": 0.058,
+      "cer_norm": 0.0,
+      "wer_norm": 0.0,
+      "reference_norm": "վաղը առավոտյան ես պետք է գնամ համալսարան եւ հանդիպեմ իմ ընկերների հետ",
+      "hypothesis_norm": "վաղը առավոտյան ես պետք է գնամ համալսարան եւ հանդիպեմ իմ ընկերների հետ"
+    },
+    {
+      "clip_id": "clip03",
+      "clip_s": 9.46,
+      "reference": "Մենք օգտագործում ենք Python ծրագրավորման լեզուն, որպեսզի ստեղծենք հավելված, որը թարգմանում է հայերեն խոսքը անգլերեն։",
+      "hypothesis": "մենք օգտագործում ենք փայսոն ծրագրավորման լեզուն որպիսի ստեղծենք հավելված որըթարգմանում է հայրեն խոսքը անգլեր են",
+      "deterministic": true,
+      "unknown_tokens": 0,
+      "latency_s": 3.629,
+      "all_latencies_s": [
+        3.593,
+        3.629,
+        3.648
+      ],
+      "rtf": 0.383,
+      "cer_raw": 0.1293,
+      "cer_norm": 0.0973,
+      "wer_norm": 0.4667,
+      "reference_norm": "մենք օգտագործում ենք python ծրագրավորման լեզուն որպեսզի ստեղծենք հավելված որը թարգմանում է հայերեն խոսքը անգլերեն",
+      "hypothesis_norm": "մենք օգտագործում ենք փայսոն ծրագրավորման լեզուն որպիսի ստեղծենք հավելված որըթարգմանում է հայրեն խոսքը անգլեր են"
+    }
+  ]
+}

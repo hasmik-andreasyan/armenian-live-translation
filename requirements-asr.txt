@@ -1,0 +1,10 @@
+# ASR experiment dependencies (CHK-01 / EXP-01). Install only after the dry run.
+# Exact installed versions are recorded in each results/*.json file.
+torch>=2.2            # PyPI's Windows wheel is the CPU-only build. cp312 supported since 2.2.
+transformers>=5.3.0   # The converted checkpoints were produced with transformers 5.3.
+huggingface_hub       # Downloads individual files from the model repo.
+soundfile             # Reads WAV files (the Windows wheel bundles libsndfile).
+psutil                # Peak RAM (working set) measurement.
+jiwer                 # Installed in CHK-01. We now compute CER/WER ourselves (app/metrics.py); kept for cross-checks.
+sounddevice           # Records evaluation clips (tools/record_clip.py). The Windows wheel bundles PortAudio.
+numpy>=1.26,<3

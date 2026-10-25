@@ -1,0 +1,261 @@
+{
+  "timestamp": "2026-10-26T00:24:13",
+  "repo": "aadel4/omniASR-CTC-300M-v2",
+  "platform": "Windows-10-10.0.19045-SP0",
+  "python": "3.12.3",
+  "versions": {
+    "torch": "2.14.1",
+    "transformers": "5.20.2",
+    "huggingface_hub": "2.3.0",
+    "soundfile": "0.14.0",
+    "psutil": "7.2.2",
+    "jiwer": "4.0.0",
+    "numpy": "2.5.4",
+    "libsndfile": "1.2.2"
+  },
+  "torch_threads": 4,
+  "quantized_engines": [
+    "onednn"
+  ],
+  "revision": "f2b3c39a62c061c27623c3f2d803294fbb954324",
+  "repo_files": {
+    ".gitattributes": 1519,
+    "README.md": 2106,
+    "config.json": 1968,
+    "model.safetensors": 1303988352,
+    "preprocessor_config.json": 187,
+    "special_tokens_map.json": 93,
+    "tokenizer_config.json": 233,
+    "vocab.json": 152362
+  },
+  "weights_total_mb": 1304,
+  "model_dir": "models\\aadel4__omniASR-CTC-300M-v2",
+  "config": {
+    "architectures": [
+      "Wav2Vec2ForCTC"
+    ],
+    "hidden_size": 1024,
+    "num_hidden_layers": 24,
+    "intermediate_size": 4096,
+    "num_attention_heads": 16,
+    "vocab_size": 10288,
+    "pad_token_id": 0,
+    "do_stable_layer_norm": true,
+    "feat_extract_norm": "layer"
+  },
+  "armenian_vocab_pieces": 80,
+  "armenian_vocab_examples": [
+    "Խ",
+    "Լ",
+    "շ",
+    "է",
+    "ւ",
+    "՜",
+    "ք",
+    "ս",
+    "օ",
+    "։",
+    "ո",
+    "Ս",
+    "ի",
+    "ղ",
+    "չ",
+    "թ",
+    "գ",
+    "Զ",
+    "Ի",
+    "դ",
+    "Օ",
+    "տ",
+    "Վ",
+    "Տ",
+    "Ե",
+    "զ",
+    "կ",
+    "Ռ",
+    "ը",
+    "բ"
+  ],
+  "model_card_parity_lines": [
+    "| Parity verification  | ✅ Verified |",
+    "Numerical parity against the original fairseq2 checkpoint has been confirmed: outputs match to within `atol=1e-4` on a held-out audio sample."
+  ],
+  "build_s": 5.3,
+  "n_params_m": 326.0,
+  "fp32": [
+    {
+      "clip_s": 3,
+      "median_s": 1.078,
+      "all_s": [
+        1.249,
+        1.034,
+        1.078
+      ],
+      "rtf": 0.359,
+      "logits_shape": [
+        1,
+        149,
+        10288
+      ]
+    },
+    {
+      "clip_s": 6,
+      "median_s": 2.116,
+      "all_s": [
+        2.116,
+        2.112,
+        2.122
+      ],
+      "rtf": 0.353,
+      "logits_shape": [
+        1,
+        299,
+        10288
+      ]
+    },
+    {
+      "clip_s": 10,
+      "median_s": 3.831,
+      "all_s": [
+        3.831,
+        4.607,
+        3.808
+      ],
+      "rtf": 0.383,
+      "logits_shape": [
+        1,
+        499,
+        10288
+      ]
+    }
+  ],
+  "memory_fp32": {
+    "before_model": {
+      "rss_mb": 328,
+      "peak_mb": 328
+    },
+    "after": {
+      "rss_mb": 1706,
+      "peak_mb": 1957
+    }
+  },
+  "int8": [
+    {
+      "clip_s": 3,
+      "median_s": 0.995,
+      "all_s": [
+        0.96,
+        1.036,
+        0.995
+      ],
+      "rtf": 0.332,
+      "logits_shape": [
+        1,
+        149,
+        10288
+      ]
+    },
+    {
+      "clip_s": 6,
+      "median_s": 1.699,
+      "all_s": [
+        1.737,
+        1.699,
+        1.642
+      ],
+      "rtf": 0.283,
+      "logits_shape": [
+        1,
+        299,
+        10288
+      ]
+    },
+    {
+      "clip_s": 10,
+      "median_s": 2.863,
+      "all_s": [
+        3.084,
+        2.86,
+        2.863
+      ],
+      "rtf": 0.286,
+      "logits_shape": [
+        1,
+        499,
+        10288
+      ]
+    }
+  ],
+  "memory_after_int8": {
+    "rss_mb": 2070,
+    "peak_mb": 2331
+  },
+  "checks": [
+    {
+      "check": "torch uses requested threads",
+      "ok": true,
+      "detail": "4"
+    },
+    {
+      "check": "torch is CPU build",
+      "ok": true,
+      "detail": "cuda available: False"
+    },
+    {
+      "check": "weights in safetensors format",
+      "ok": true,
+      "detail": "model.safetensors"
+    },
+    {
+      "check": "required small files present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "architecture is standard Wav2Vec2ForCTC",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "vocab size matches config",
+      "ok": true,
+      "detail": "10288 vs 10288"
+    },
+    {
+      "check": "CTC blank <s> is id 0 and pad_token_id",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "check": "vocabulary contains Armenian pieces",
+      "ok": true,
+      "detail": "80 pieces, e.g. ['Խ', 'Լ', 'շ', 'է', 'ւ', '՜', 'ք', 'ս', 'օ', '։']"
+    },
+    {
+      "check": "parameter count ~325M",
+      "ok": true,
+      "detail": "326.0M"
+    },
+    {
+      "check": "fp32 3s output shape",
+      "ok": true,
+      "detail": "[1, 149, 10288]"
+    },
+    {
+      "check": "fp32 6s output shape",
+      "ok": true,
+      "detail": "[1, 299, 10288]"
+    },
+    {
+      "check": "fp32 10s output shape",
+      "ok": true,
+      "detail": "[1, 499, 10288]"
+    },
+    {
+      "check": "int8 dynamic quantization available",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "all_checks_passed": true
+}

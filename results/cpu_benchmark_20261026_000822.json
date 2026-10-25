@@ -1,0 +1,199 @@
+{
+  "system": {
+    "timestamp": "2026-10-26T00:07:05",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "processor": "Intel64 Family 6 Model 142 Stepping 10, GenuineIntel",
+    "logical_cores": 8,
+    "ram_gb": 8.4,
+    "python": "3.12.3",
+    "numpy": "2.5.4",
+    "blas_threads_requested": 4,
+    "power_source": "plugged in",
+    "power_scheme": "Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced)"
+  },
+  "summary": {
+    "ctc_shape_gflops_first10s_median": 169.8,
+    "ctc_shape_gflops_last20s_median": 144.8,
+    "ctc_shape_gflops_min": 114.6,
+    "sustained_ratio_last_vs_first": 0.85,
+    "whisper_shape_gflops_median": 135.8,
+    "memory_bandwidth_gbs": 10.6
+  },
+  "per_second_gflops": [
+    170.5,
+    164.1,
+    169.5,
+    169.8,
+    166.0,
+    168.4,
+    170.5,
+    172.7,
+    170.9,
+    169.7,
+    171.4,
+    169.8,
+    165.4,
+    142.6,
+    152.1,
+    147.4,
+    160.1,
+    162.4,
+    170.2,
+    164.4,
+    160.0,
+    114.6,
+    121.1,
+    119.2,
+    136.2,
+    125.4,
+    144.4,
+    138.2,
+    155.4,
+    164.9,
+    167.5,
+    144.1,
+    123.0,
+    124.8,
+    158.0,
+    160.2,
+    165.7,
+    170.5,
+    171.6,
+    166.5,
+    125.2,
+    121.8,
+    161.7,
+    166.3,
+    164.2,
+    168.0,
+    170.6,
+    168.2,
+    144.8,
+    130.8,
+    132.0,
+    141.7,
+    137.4,
+    160.9,
+    125.6,
+    140.3,
+    121.8,
+    152.6,
+    140.5
+  ],
+  "predictions": {
+    "3s_phrase": [
+      {
+        "model": "Whisper large-v3 / BuzzASR",
+        "gmacs": 1323,
+        "seconds": 20.99,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper large-v3-turbo",
+        "gmacs": 1162,
+        "seconds": 16.59,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper medium",
+        "gmacs": 659,
+        "seconds": 10.48,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper small",
+        "gmacs": 198,
+        "seconds": 3.21,
+        "scales_with_length": false
+      },
+      {
+        "model": "omniASR-CTC-1B / MMS-1b-all",
+        "gmacs": 156,
+        "seconds": 2.15,
+        "scales_with_length": true
+      },
+      {
+        "model": "omniASR-CTC-300M",
+        "gmacs": 57,
+        "seconds": 0.78,
+        "scales_with_length": true
+      }
+    ],
+    "6s_phrase": [
+      {
+        "model": "Whisper large-v3 / BuzzASR",
+        "gmacs": 1352,
+        "seconds": 24.1,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper large-v3-turbo",
+        "gmacs": 1168,
+        "seconds": 17.2,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper medium",
+        "gmacs": 674,
+        "seconds": 12.05,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper small",
+        "gmacs": 203,
+        "seconds": 3.75,
+        "scales_with_length": false
+      },
+      {
+        "model": "omniASR-CTC-1B / MMS-1b-all",
+        "gmacs": 317,
+        "seconds": 4.38,
+        "scales_with_length": true
+      },
+      {
+        "model": "omniASR-CTC-300M",
+        "gmacs": 115,
+        "seconds": 1.59,
+        "scales_with_length": true
+      }
+    ],
+    "10s_phrase": [
+      {
+        "model": "Whisper large-v3 / BuzzASR",
+        "gmacs": 1390,
+        "seconds": 28.24,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper large-v3-turbo",
+        "gmacs": 1176,
+        "seconds": 18.02,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper medium",
+        "gmacs": 693,
+        "seconds": 14.15,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper small",
+        "gmacs": 210,
+        "seconds": 4.47,
+        "scales_with_length": false
+      },
+      {
+        "model": "omniASR-CTC-1B / MMS-1b-all",
+        "gmacs": 540,
+        "seconds": 7.46,
+        "scales_with_length": true
+      },
+      {
+        "model": "omniASR-CTC-300M",
+        "gmacs": 197,
+        "seconds": 2.72,
+        "scales_with_length": true
+      }
+    ]
+  }
+}

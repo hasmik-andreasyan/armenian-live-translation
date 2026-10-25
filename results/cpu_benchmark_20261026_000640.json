@@ -1,0 +1,198 @@
+{
+  "system": {
+    "timestamp": "2026-10-26T00:05:23",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "processor": "Intel64 Family 6 Model 142 Stepping 10, GenuineIntel",
+    "logical_cores": 8,
+    "ram_gb": 8.4,
+    "python": "3.12.3",
+    "numpy": "2.5.4",
+    "blas_threads_requested": "default",
+    "power_source": "plugged in",
+    "power_scheme": "Power Scheme GUID: 381b4222-f694-41f0-9685-ff5bb260df2e  (Balanced)"
+  },
+  "summary": {
+    "ctc_shape_gflops_first10s_median": 115.6,
+    "ctc_shape_gflops_last20s_median": 128.4,
+    "ctc_shape_gflops_min": 32.6,
+    "sustained_ratio_last_vs_first": 1.11,
+    "whisper_shape_gflops_median": 174.9,
+    "memory_bandwidth_gbs": 8.3
+  },
+  "per_second_gflops": [
+    115.7,
+    137.3,
+    122.9,
+    115.6,
+    105.5,
+    113.1,
+    129.2,
+    114.8,
+    75.0,
+    100.4,
+    91.6,
+    129.8,
+    90.7,
+    105.6,
+    104.1,
+    48.6,
+    89.9,
+    104.6,
+    77.1,
+    60.8,
+    52.8,
+    74.8,
+    108.8,
+    119.5,
+    89.2,
+    81.9,
+    126.6,
+    131.5,
+    148.7,
+    121.8,
+    131.9,
+    154.7,
+    126.9,
+    150.4,
+    132.3,
+    150.0,
+    141.9,
+    130.0,
+    147.1,
+    134.0,
+    137.6,
+    151.3,
+    138.9,
+    111.5,
+    34.9,
+    67.8,
+    92.4,
+    35.8,
+    48.8,
+    59.9,
+    102.8,
+    150.6,
+    125.6,
+    133.1,
+    128.4,
+    143.1,
+    32.6,
+    141.5
+  ],
+  "predictions": {
+    "3s_phrase": [
+      {
+        "model": "Whisper large-v3 / BuzzASR",
+        "gmacs": 1323,
+        "seconds": 24.09,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper large-v3-turbo",
+        "gmacs": 1162,
+        "seconds": 18.79,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper medium",
+        "gmacs": 659,
+        "seconds": 12.03,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper small",
+        "gmacs": 198,
+        "seconds": 3.69,
+        "scales_with_length": false
+      },
+      {
+        "model": "omniASR-CTC-1B / MMS-1b-all",
+        "gmacs": 156,
+        "seconds": 2.42,
+        "scales_with_length": true
+      },
+      {
+        "model": "omniASR-CTC-300M",
+        "gmacs": 57,
+        "seconds": 0.88,
+        "scales_with_length": true
+      }
+    ],
+    "6s_phrase": [
+      {
+        "model": "Whisper large-v3 / BuzzASR",
+        "gmacs": 1352,
+        "seconds": 28.02,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper large-v3-turbo",
+        "gmacs": 1168,
+        "seconds": 19.56,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper medium",
+        "gmacs": 674,
+        "seconds": 14.02,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper small",
+        "gmacs": 203,
+        "seconds": 4.38,
+        "scales_with_length": false
+      },
+      {
+        "model": "omniASR-CTC-1B / MMS-1b-all",
+        "gmacs": 317,
+        "seconds": 4.93,
+        "scales_with_length": true
+      },
+      {
+        "model": "omniASR-CTC-300M",
+        "gmacs": 115,
+        "seconds": 1.8,
+        "scales_with_length": true
+      }
+    ],
+    "10s_phrase": [
+      {
+        "model": "Whisper large-v3 / BuzzASR",
+        "gmacs": 1390,
+        "seconds": 33.26,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper large-v3-turbo",
+        "gmacs": 1176,
+        "seconds": 20.6,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper medium",
+        "gmacs": 693,
+        "seconds": 16.68,
+        "scales_with_length": false
+      },
+      {
+        "model": "Whisper small",
+        "gmacs": 210,
+        "seconds": 5.29,
+        "scales_with_length": false
+      },
+      {
+        "model": "omniASR-CTC-1B / MMS-1b-all",
+        "gmacs": 540,
+        "seconds": 8.41,
+        "scales_with_length": true
+      },
+      {
+        "model": "omniASR-CTC-300M",
+        "gmacs": 197,
+        "seconds": 3.07,
+        "scales_with_length": true
+      }
+    ]
+  }
+}
