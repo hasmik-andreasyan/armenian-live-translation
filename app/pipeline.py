@@ -64,9 +64,13 @@ def segment_loop(chunk_q: queue.Queue, seg_q: queue.Queue, segmenters: dict[str,
 
 def process_loop(seg_q: queue.Queue, asr, mt, label_for: Callable[[Segment], str], clock: Callable[[], float],
                  segments_done: threading.Event, out: TextIO, log_file: Path | None, beam_size: int = 1,
-                 show_latency: bool = True, results: list | None = None) -> None:
-    """Processes segments until the segmenter has finished and the queue is empty."""
+                 show_latency: bool = True, results: list | None = None,
+                 abort: threading.Event | None = None) -> None:
+    """Processes segments until the segmenter has finished and the queue is empty
+    (or immediately when `abort` is set: a second Ctrl+C)."""
     while not (segments_done.is_set() and seg_q.empty()):
+        if abort is not None and abort.is_set():
+            break
         try:
             seg: Segment = seg_q.get(timeout=0.1)
         except queue.Empty:

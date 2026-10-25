@@ -162,6 +162,29 @@ Blind rating by the native speaker: 46 distinct translations, shuffled, configur
    - "We can't say that something is done well or something is done because" (Call)
 5. **A few noise segments** (e.g. `o and o`). Armenian-only decoding plus the < 2 character filter should remove most of them.
 
+## LIVE-02 · After D-023 (Armenian-only decoding + quiet-point cuts)
+
+**Regression check first:** EXP-01 int8 re-run with Armenian-only decoding (`results/exp01_int8_20261026_033429.json`). **Identical transcripts on all 3 clips**, CER 6.3 % (unchanged), latency unchanged. The restriction doesn't hurt clean speech.
+
+2026-10-26, ~1.5 min, same setup as LIVE-01. Raw log: `results/session_20261026_033622.jsonl`. It ended with an accidental double Ctrl+C, so the summary line is missing but the log is complete; fixed in D-024.
+
+| Source | Lines | Latency median | p95 | max | over 5 s | ASR median | MT median | max queue wait | forced cuts |
+|---|---|---|---|---|---|---|---|---|---|
+| Me (mic) | 7 | 2.39 s | 6.96 s | **6.96 s** | **1** | 1.06 s | 0.47 s | **3.83 s** | 0 |
+| Call (loopback) | 15 | 3.85 s | 4.92 s | 4.92 s | 0 | 1.81 s | 1.12 s | 1.39 s | 13 |
+| **All** | **22** | **3.75 s** | 4.92 s | 6.96 s | **1** | | | | 13 |
+
+**Findings:**
+1. **Non-Armenian characters: 0 lines** (LIVE-01: ≥ 5). No more hallucinated sentences like the "causes of death" one.
+2. **Me lines are clearly better:**
+   - "The weather is good today."
+   - "I was glad to meet you."
+   - "We don't know what the picture looks like."
+   - "Thank you for the *wedding* interview": ASR heard `հարսազրույցի` for `հարցազրույցի`.
+3. **Forced cuts now fall between words** (at 5.7–6.8 s), e.g. `…պարզեցված իրավիճակի կամ` | `պատկերի հիման վրա`.
+4. **One line over 5 s (6.96 s):** the user spoke at t = 1.6 s, *while* the video was talking. The Me segment waited 3.83 s behind a 6.7 s Call segment (ASR 1.8 + MT 1.1). **This is risk K2 (overlapping speech) in its worst form.** A 6 s segment takes ~2.9 s of processing, so two people talking continuously at the same time saturate the single worker. In normal turn-taking, overlap is brief. **Documented limitation.** If time allows: speed up MT (English-only output vocabulary), which shortens every queue wait.
+5. Call-side quality on fast, informal interview speech is mixed: often understandable, sometimes garbled. ASR errors are the main cause (as found in EXP-02).
+
 ## ASR runs (EXP-01 onwards)
 
 **Latency** = ASR time for one clip (median of 3 warm runs). **RTF** = latency / clip length. **Peak RAM** = process peak working set. CER/WER are normalised (lowercase, punctuation removed).

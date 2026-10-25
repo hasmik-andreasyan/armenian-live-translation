@@ -263,7 +263,12 @@ So int8 is required, and an efficient runtime matters. A later optimisation is t
    - **Trade-off:** English terms always come out in Armenian letters, which was already the case (`Python` → `փայսոն`, and NLLB recovers it).
    - **Check:** re-run EXP-01 int8 to make sure the CER doesn't get worse.
 2. **Forced cut at the quietest frame of the last 1.5 s** (`app/vad.py`) instead of exactly at 7.0 s. clip03 is now cut at 6.2 s (between words) instead of 7.0 s. The rest of the audio starts the next part, so nothing is lost (unit-tested).
-- **Status:** Implemented and unit-tested (16 tests). EXP-01 re-check + LIVE-02 next.
+- **Status:** **Verified.** EXP-01 int8 transcripts are identical (no regression). LIVE-02: 0 lines with non-Armenian characters, and cuts fall between words.
+
+## D-024 · Clean shutdown
+- **Ctrl+C:** stop capture, emit the phrase in progress, finish the queued phrases, print the latency summary.
+- **A second Ctrl+C** skips the remaining phrases (only the ASR/MT call already running finishes) and still prints the summary. No traceback, which matters in the demo. Every line is appended to the `--log` file as soon as it's printed, so nothing is lost either way.
+- **Status:** Implemented. Simulated with fake devices/models.
 
 ## D-015 · Microphone for evaluation and demo
 - **Decision:** Jabra headset, MME device 1, the Windows default input. Windows' MME layer delivers 16 kHz mono directly.

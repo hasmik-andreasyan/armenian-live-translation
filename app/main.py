@@ -69,6 +69,7 @@ def main() -> None:
     seg_q: queue.Queue = queue.Queue()
     stop = threading.Event()
     segments_done = threading.Event()
+    abort = threading.Event()
     t0 = time.monotonic()
     clock = lambda: time.monotonic() - t0  # noqa: E731
 
@@ -92,7 +93,7 @@ def main() -> None:
     threads = run_threads([
         (segment_loop, (chunk_q, seg_q, segmenters, clock, stop, segments_done)),
         (process_loop, (seg_q, asr, mt, lambda seg: labels[seg.source], clock, segments_done, sys.stdout,
-                        log_file, BEAM_SIZE, not args.hide_latency, results)),
+                        log_file, BEAM_SIZE, not args.hide_latency, results, abort)),
     ])
     for s in sources:
         s.start()
@@ -102,13 +103,20 @@ def main() -> None:
     try:
         wait_forever()
     except KeyboardInterrupt:
-        print("\nStopping...")
+        print(f"\nStopping: finishing {seg_q.qsize()} queued phrase(s) and any phrase in progress. "
+              "Press Ctrl+C again to skip them.")
     finally:
         for s in sources:
             s.stop()
         stop.set()
-        for th in threads:          # segmenter first (flushes), then the worker finishes the queue
-            th.join(timeout=60)
+        try:
+            for th in threads:      # segmenter first (flushes), then the worker finishes the queue
+                th.join(timeout=60)
+        except KeyboardInterrupt:
+            abort.set()
+            print("Skipping the remaining phrases.")
+            for th in threads:
+                th.join(timeout=10)  # the current ASR/MT call finishes, then the worker exits
         pa.terminate()
 
     if results:
