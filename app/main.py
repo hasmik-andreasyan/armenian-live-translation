@@ -27,6 +27,10 @@ MT_TOKENIZER_DIR = ROOT / "models" / "facebook__nllb-200-distilled-600M"
 THREADS = 4          # D-010
 BEAM_SIZE = 1        # D-018
 MAX_SEGMENT_S = 7.0  # D-014
+SPEAKER_MODEL = ROOT / "models" / "speaker" / "wespeaker_en_voxceleb_resnet34_LM.onnx"
+SPEAKER_PRIOR = ROOT / "models" / "speaker" / "prior_mean.npy"
+SPEAKER_THRESHOLD = 0.10     # D-027 (CAL-02)
+SPEAKER_PRIOR_WEIGHT = 30    # D-027 (CAL-02)
 
 
 def parse_args() -> argparse.Namespace:
@@ -38,6 +42,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--no-loopback", action="store_true", help="capture the microphone only")
     p.add_argument("--log", action="store_true", help="write per-segment timings to results/session_*.jsonl")
     p.add_argument("--hide-latency", action="store_true")
+    p.add_argument("--speaker-threshold", type=float, default=SPEAKER_THRESHOLD,
+                   help="centred cosine needed to match a known speaker (higher = more speakers)")
     return p.parse_args()
 
 
@@ -54,15 +60,23 @@ def main() -> None:
         pa.terminate()
         return
 
-    print("Loading models (ASR int8, MT int8)... this takes about a minute.")
+    print("Loading models (ASR int8, MT int8, speaker embeddings)... this takes about a minute.")
+    import numpy as np
     from app.asr import OmniCtcAsr
+    from app.speakers import CallSpeakerLabeler, SpeakerEmbedder, SpeakerTracker
     from app.translate import NllbTranslator
     t = time.perf_counter()
     asr = OmniCtcAsr(ASR_DIR, threads=THREADS, precision="int8")
     mt = NllbTranslator(MT_DIR, MT_TOKENIZER_DIR, compute_type="int8", threads=THREADS)
-    import numpy as np
+    if not SPEAKER_PRIOR.exists():
+        raise SystemExit(f"{SPEAKER_PRIOR} missing: run tools/speaker_calibrate.py first.")
+    embedder = SpeakerEmbedder(SPEAKER_MODEL, threads=THREADS)
+    tracker = SpeakerTracker(threshold=args.speaker_threshold, prior_mean=np.load(SPEAKER_PRIOR),
+                             prior_weight=SPEAKER_PRIOR_WEIGHT)
+    label_for = CallSpeakerLabeler(embedder, tracker)
     asr.transcribe(np.zeros(16000, dtype=np.float32))       # warm-up
     mt.translate("բարեւ", beam_size=BEAM_SIZE)
+    embedder.embed(np.random.default_rng(0).standard_normal(32000).astype(np.float32) * 0.01)
     print(f"Models ready in {time.perf_counter() - t:.0f} s.")
 
     chunk_q: queue.Queue = queue.Queue()
@@ -86,13 +100,13 @@ def main() -> None:
         raise SystemExit("Nothing to capture (both --no-mic and --no-loopback).")
 
     segmenters = {s.name: Segmenter(s.name, max_segment_s=MAX_SEGMENT_S) for s in sources}
-    labels = {"mic": "Me", "loopback": "Call"}
+    labels = {"mic": "Me", "loopback": "Speaker N"}   # for the "Listening:" lines
     log_file = ROOT / "results" / f"session_{datetime.now():%Y%m%d_%H%M%S}.jsonl" if args.log else None
     results: list = []
 
     threads = run_threads([
         (segment_loop, (chunk_q, seg_q, segmenters, clock, stop, segments_done)),
-        (process_loop, (seg_q, asr, mt, lambda seg: labels[seg.source], clock, segments_done, sys.stdout,
+        (process_loop, (seg_q, asr, mt, label_for, clock, segments_done, sys.stdout,
                         log_file, BEAM_SIZE, not args.hide_latency, results, abort)),
     ])
     for s in sources:
@@ -124,6 +138,8 @@ def main() -> None:
         p95 = lat[min(len(lat) - 1, int(0.95 * len(lat)))]
         print(f"\n{len(lat)} segments | latency median {statistics.median(lat):.1f} s, p95 {p95:.1f} s, "
               f"max {lat[-1]:.1f} s | over 5 s: {sum(x > 5 for x in lat)}")
+    if tracker.counts:
+        print("Call-side speakers: " + ", ".join(f"Speaker {i + 1}: {n} phrase(s)" for i, n in enumerate(tracker.counts)))
     if log_file:
         print(f"Log: {log_file}")
 

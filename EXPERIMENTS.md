@@ -200,6 +200,29 @@ Blind rating by the native speaker: 46 distinct translations, shuffled, configur
 4. **Online centring with only the session's running mean over-splits badly** (up to 17 "speakers"): the mean is unstable while there are only a few phrases. **With a stable prior mean** (blend weight 30), the online labels come close to the offline split. That simulation used this recording's own mean, so it's optimistic.
 5. **There's no ground truth beyond "a change at ~124–131 s"**, and 7 s phrases can contain two speakers. → **CAL-02: user labels every phrase; prior estimated only from other recordings; settings scored against the labels.**
 
+## CAL-02 · Speaker-tracker settings scored against human labels (`tools/speaker_calibrate.py`)
+
+2026-10-26. Same 150 s interview recording as CAL-01 (25 phrases). **Labels by the user** (`tools/label_phrases.py` → `eval/speakers/labels.json`): 10 × speaker 1, 4 × speaker 2 (phrases 18–21, 100.2–124.7 s), **11 × mixed** (both people in one phrase; excluded from scoring). The change heard at ~124–131 s is **speaker 2 → speaker 1**, with phrase 22 mixed.
+**Prior mean only from other recordings** (first capture + 3 clips = 10 phrases), so the evaluation is honest. Embedding: **337 ms median per phrase** (CAL-01: 138 ms). Raw file: `results/cal02_speakers_20261026_161610.json`.
+
+| Setting | Speakers found | Purity | Coverage | F | Labels (phrases 1–25) |
+|---|---|---|---|---|---|
+| **centred, prior w = 30, threshold 0.10** | **2** | **1.00** | **1.00** | **1.00** | `1111111111111111122221111` |
+| centred, w = 30, 0.20 | 3 | 1.00 | 0.93 | 0.96 | `1111111112111311122221111` |
+| centred, w = 10, 0.10 | 4 | 1.00 | 0.93 | 0.96 | `1111111213211411122221111` |
+| centred, w = 10, 0.00 | 2 | 0.93 | 0.93 | 0.93 | `1111111212211211122221111` |
+| centred, w = 30, 0.00 | 1 | 0.71 | 1.00 | 0.83 | all merged |
+| raw, 0.60–0.70 | 1 | 0.71 | 1.00 | 0.83 | all merged (the CAL-01 problem) |
+| raw, 0.85 (best raw) | 8 | 1.00 | 0.79 | 0.88 | over-split |
+| raw, 0.90 | 8 | 1.00 | 0.43 | 0.60 | over-split |
+
+**Findings:**
+1. **Centring fixes the CAL-01 failure.** No raw threshold finds 2 speakers. Centred, w = 30, th 0.10 is perfect on all 14 labelled phrases: speaker 2's block at 100–124.7 s is found, and the session returns to speaker 1 afterwards.
+2. **The working range is narrow:** th 0.00 merges, 0.10 is perfect, 0.20 adds a spurious third speaker. The evidence is thin (14 scorable phrases, only 4 of speaker 2, prior from 10 phrases). → **The threshold is a CLI option**, re-checked in the real call.
+3. **44 % of phrases are mixed.** In a quick back-and-forth, a 7 s phrase often spans a turn, and its embedding is a blend of two voices. This limits accuracy more than the threshold does. (Possible improvement: shorter windows for speaker embedding only.)
+4. **Embedding cost is 0.14–0.34 s per call-side phrase,** added to that line's latency.
+5. The app's prior (`models/speaker/prior_mean.npy`) = mean over all 35 calibration phrases (target included).
+
 ## ASR runs (EXP-01 onwards)
 
 **Latency** = ASR time for one clip (median of 3 warm runs). **RTF** = latency / clip length. **Peak RAM** = process peak working set. CER/WER are normalised (lowercase, punctuation removed).

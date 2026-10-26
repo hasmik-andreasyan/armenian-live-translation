@@ -63,6 +63,31 @@ class SpeakerEmbedder:
         return unit(e), time.perf_counter() - t0
 
 
+class CallSpeakerLabeler:
+    """Label for a segment: mic → "Me"; loopback → embedding + tracker → "Speaker N".
+
+    Details (similarity, new/uncertain, embedding time) go into segment.meta["speaker"]
+    so the pipeline can log them. A segment too short to embed gets "Speaker ?".
+    """
+
+    def __init__(self, embedder: "SpeakerEmbedder", tracker: "SpeakerTracker") -> None:
+        self.embedder = embedder
+        self.tracker = tracker
+
+    def __call__(self, segment) -> str:
+        if segment.source == "mic":
+            return "Me"
+        try:
+            emb, seconds = self.embedder.embed(segment.audio)
+        except ValueError:
+            segment.meta["speaker"] = {"error": "too short"}
+            return "Speaker ?"
+        m = self.tracker.assign(emb, segment.speech_s)
+        segment.meta["speaker"] = {"similarity": round(m.similarity, 3), "new": m.new, "uncertain": m.uncertain,
+                                   "embed_s": round(seconds, 3)}
+        return m.label
+
+
 class SpeakerTracker:
     def __init__(self, threshold: float, min_new_speech_s: float = 1.0, max_speakers: int = 8,
                  prior_mean: np.ndarray | None = None, prior_weight: float = 30.0, prefix: str = "Speaker") -> None:

@@ -1,0 +1,339 @@
+{
+  "timestamp": "2026-10-26T16:16:10",
+  "wav": "C:\\Users\\Hasmik\\Desktop\\Mathrix-Claude-Project\\eval\\speakers\\loopback.wav",
+  "prior_wavs": [
+    "eval/capture/loopback.wav",
+    "eval/audio/clip01.wav",
+    "eval/audio/clip02.wav",
+    "eval/audio/clip03.wav"
+  ],
+  "n_prior": 10,
+  "phrases": [
+    [
+      0.0,
+      1.74,
+      1.41
+    ],
+    [
+      2.4,
+      8.82,
+      4.68
+    ],
+    [
+      8.82,
+      11.79,
+      2.79
+    ],
+    [
+      12.42,
+      19.11,
+      5.58
+    ],
+    [
+      19.11,
+      25.44,
+      5.19
+    ],
+    [
+      25.44,
+      32.31,
+      6.15
+    ],
+    [
+      32.31,
+      39.21,
+      5.7
+    ],
+    [
+      39.21,
+      45.3,
+      5.46
+    ],
+    [
+      45.3,
+      51.45,
+      5.79
+    ],
+    [
+      52.05,
+      58.41,
+      5.01
+    ],
+    [
+      58.41,
+      65.07,
+      5.67
+    ],
+    [
+      65.07,
+      70.65,
+      3.9
+    ],
+    [
+      70.65,
+      77.25,
+      5.49
+    ],
+    [
+      77.25,
+      80.19,
+      2.43
+    ],
+    [
+      80.79,
+      87.72,
+      6.51
+    ],
+    [
+      87.72,
+      93.24,
+      4.32
+    ],
+    [
+      93.24,
+      100.23,
+      6.51
+    ],
+    [
+      100.23,
+      106.65,
+      5.67
+    ],
+    [
+      106.65,
+      112.17,
+      5.01
+    ],
+    [
+      112.17,
+      117.96,
+      5.01
+    ],
+    [
+      117.96,
+      124.71,
+      6.03
+    ],
+    [
+      124.71,
+      131.4,
+      5.91
+    ],
+    [
+      132.3,
+      136.2,
+      3.72
+    ],
+    [
+      137.82,
+      144.03,
+      5.28
+    ],
+    [
+      144.03,
+      148.86,
+      4.47
+    ]
+  ],
+  "truth": [
+    "1",
+    null,
+    "1",
+    null,
+    null,
+    "1",
+    "1",
+    null,
+    null,
+    null,
+    null,
+    "1",
+    "1",
+    "1",
+    null,
+    null,
+    null,
+    "2",
+    "2",
+    "2",
+    "2",
+    null,
+    "1",
+    "1",
+    "1"
+  ],
+  "embed_ms_median": 337,
+  "results": [
+    {
+      "setting": "centred w=30",
+      "threshold": 0.1,
+      "labels": "1111111111111111122221111",
+      "speakers_found": 2,
+      "purity": 1.0,
+      "coverage": 1.0,
+      "F": 1.0
+    },
+    {
+      "setting": "centred w=30",
+      "threshold": 0.2,
+      "labels": "1111111112111311122221111",
+      "speakers_found": 3,
+      "purity": 1.0,
+      "coverage": 0.929,
+      "F": 0.963
+    },
+    {
+      "setting": "centred w=10",
+      "threshold": 0.1,
+      "labels": "1111111213211411122221111",
+      "speakers_found": 4,
+      "purity": 1.0,
+      "coverage": 0.929,
+      "F": 0.963
+    },
+    {
+      "setting": "centred w=10",
+      "threshold": -0.1,
+      "labels": "1111111112211211122221111",
+      "speakers_found": 2,
+      "purity": 0.929,
+      "coverage": 0.929,
+      "F": 0.929
+    },
+    {
+      "setting": "centred w=10",
+      "threshold": 0.0,
+      "labels": "1111111212211211122221111",
+      "speakers_found": 2,
+      "purity": 0.929,
+      "coverage": 0.929,
+      "F": 0.929
+    },
+    {
+      "setting": "centred w=10",
+      "threshold": 0.2,
+      "labels": "1222222324322522233332222",
+      "speakers_found": 5,
+      "purity": 1.0,
+      "coverage": 0.857,
+      "F": 0.923
+    },
+    {
+      "setting": "centred w=30",
+      "threshold": 0.3,
+      "labels": "1222222324322522233332222",
+      "speakers_found": 5,
+      "purity": 1.0,
+      "coverage": 0.857,
+      "F": 0.923
+    },
+    {
+      "setting": "raw",
+      "threshold": 0.85,
+      "labels": "1234333536533783355553383",
+      "speakers_found": 8,
+      "purity": 1.0,
+      "coverage": 0.786,
+      "F": 0.88
+    },
+    {
+      "setting": "raw",
+      "threshold": 0.6,
+      "labels": "1111111111111111111111111",
+      "speakers_found": 1,
+      "purity": 0.714,
+      "coverage": 1.0,
+      "F": 0.833
+    },
+    {
+      "setting": "raw",
+      "threshold": 0.65,
+      "labels": "1111111111111111111111111",
+      "speakers_found": 1,
+      "purity": 0.714,
+      "coverage": 1.0,
+      "F": 0.833
+    },
+    {
+      "setting": "raw",
+      "threshold": 0.7,
+      "labels": "1111111111111111111111111",
+      "speakers_found": 1,
+      "purity": 0.714,
+      "coverage": 1.0,
+      "F": 0.833
+    },
+    {
+      "setting": "centred w=10",
+      "threshold": -0.2,
+      "labels": "1111111111111111111111111",
+      "speakers_found": 1,
+      "purity": 0.714,
+      "coverage": 1.0,
+      "F": 0.833
+    },
+    {
+      "setting": "centred w=30",
+      "threshold": -0.2,
+      "labels": "1111111111111111111111111",
+      "speakers_found": 1,
+      "purity": 0.714,
+      "coverage": 1.0,
+      "F": 0.833
+    },
+    {
+      "setting": "centred w=30",
+      "threshold": -0.1,
+      "labels": "1111111111111111111111111",
+      "speakers_found": 1,
+      "purity": 0.714,
+      "coverage": 1.0,
+      "F": 0.833
+    },
+    {
+      "setting": "centred w=30",
+      "threshold": 0.0,
+      "labels": "1111111111111111111111111",
+      "speakers_found": 1,
+      "purity": 0.714,
+      "coverage": 1.0,
+      "F": 0.833
+    },
+    {
+      "setting": "raw",
+      "threshold": 0.8,
+      "labels": "1222222222222222223332442",
+      "speakers_found": 4,
+      "purity": 0.929,
+      "coverage": 0.714,
+      "F": 0.807
+    },
+    {
+      "setting": "centred w=10",
+      "threshold": 0.3,
+      "labels": "1222222324352678233337772",
+      "speakers_found": 8,
+      "purity": 1.0,
+      "coverage": 0.643,
+      "F": 0.783
+    },
+    {
+      "setting": "raw",
+      "threshold": 0.75,
+      "labels": "1222222222222222222222332",
+      "speakers_found": 3,
+      "purity": 0.714,
+      "coverage": 0.786,
+      "F": 0.748
+    },
+    {
+      "setting": "raw",
+      "threshold": 0.9,
+      "labels": "1234567875852577288882237",
+      "speakers_found": 8,
+      "purity": 1.0,
+      "coverage": 0.429,
+      "F": 0.6
+    }
+  ]
+}

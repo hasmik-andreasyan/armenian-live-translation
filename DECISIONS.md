@@ -290,7 +290,19 @@ So int8 is required, and an efficient runtime matters. A later optimisation is t
 - **Decision:** `SpeakerTracker` compares phrases in a **centred** space. The mean starts from a **prior** (`models/speaker/prior_mean.npy`, estimated offline from calibration recordings) and is updated with every phrase of the session: `m = (w·prior + Σ session) / (w + n)`. The prior keeps early decisions stable; the session part adapts to the actual call channel. Centroids = mean of the centred, normalised member embeddings. Raw mode (`prior_mean=None`) is kept for comparison.
 - **Threshold and prior weight:** chosen in **CAL-02** against the user's per-phrase labels, with the prior from *other* recordings only (honest evaluation). Not guessed.
 - **Known limits:** the prior comes from our own recordings (one video channel plus the headset mic), not from a large background set. The demo call (Zoom/Meet codec) differs, and the running update must adapt. Two people in one 7 s phrase give a mixed embedding.
-- **Status:** Implemented (unit test reproduces "raw merges, centred separates"). Waiting for CAL-02.
+- **Status:** Implemented (unit test reproduces "raw merges, centred separates"). **Confirmed by CAL-02** (D-027).
+
+## D-027 · Speaker-tracker settings and integration
+- **Settings (CAL-02):** centred, **prior weight 30, threshold 0.10**, min 1 s of speech for a new speaker, max 8 speakers. This was perfect on the 14 labelled phrases (2 speakers, purity = coverage = 1.0), with the prior estimated only from other recordings.
+- **Caution:** the good range is narrow (0.00 merges, 0.20 adds a speaker) and the evidence is small. So the threshold is a **CLI option, `--speaker-threshold`**, to re-check during the real-call test (the call app's codec differs from the YouTube video).
+- **Integration:** `CallSpeakerLabeler` in `app/speakers.py`.
+  - The mic is always "Me".
+  - A loopback segment → embedding (sherpa-onnx, 4 threads) → `SpeakerTracker.assign` → "Speaker N".
+  - Too short to embed → "Speaker ?".
+  - It runs in the single worker after ASR, so noise segments that give empty ASR text are never embedded.
+  - The per-line similarity / new / uncertain / embed time goes to the `--log` file. At the end, the session prints the phrase count per speaker.
+- **Latency cost:** +0.14–0.34 s per call-side line. It makes the overlap case (K2) a bit worse.
+- **Status:** Implemented, simulated end-to-end. **LIVE-03 next.**
 
 ## D-015 · Microphone for evaluation and demo
 - **Decision:** Jabra headset, MME device 1, the Windows default input. Windows' MME layer delivers 16 kHz mono directly.

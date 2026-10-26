@@ -86,7 +86,7 @@ def process_loop(seg_q: queue.Queue, asr, mt, label_for: Callable[[Segment], str
                    "queue_wait_s": round(t_begin - seg.meta["t_emitted"], 3),
                    "asr_s": round(hy.seconds, 3), "mt_s": round(en.seconds, 3),
                    "segment_s": round(len(seg.audio) / 16000, 2), "forced_cut": seg.forced_cut,
-                   "queue_left": seg_q.qsize()}
+                   "queue_left": seg_q.qsize(), "speaker": seg.meta.get("speaker")}
         result = Result(label, seg.t_start, hy.text, en.text, t_done - seg.t_end, timings)
         out.write(format_result(result, show_latency))
         out.flush()
