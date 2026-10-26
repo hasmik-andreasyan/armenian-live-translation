@@ -185,6 +185,21 @@ Blind rating by the native speaker: 46 distinct translations, shuffled, configur
 4. **One line over 5 s (6.96 s):** the user spoke at t = 1.6 s, *while* the video was talking. The Me segment waited 3.83 s behind a 6.7 s Call segment (ASR 1.8 + MT 1.1). **This is risk K2 (overlapping speech) in its worst form.** A 6 s segment takes ~2.9 s of processing, so two people talking continuously at the same time saturate the single worker. In normal turn-taking, overlap is brief. **Documented limitation.** If time allows: speed up MT (English-only output vocabulary), which shortens every queue wait.
 5. Call-side quality on fast, informal interview speech is mixed: often understandable, sometimes garbled. ASR errors are the main cause (as found in EXP-02).
 
+## CAL-01 · Speaker embeddings on a real 2-speaker interview (`tools/speaker_calibrate.py`, first version)
+
+2026-10-26. 150 s loopback capture of an Armenian interview video (`results/capture_test_20261026_040111.json`) → 25 phrases. WeSpeaker ResNet34-LM via sherpa-onnx, **138 ms median per phrase**. Raw file: `results/cal01_speakers_20261026_040122.json`.
+
+**Result: every phrase was assigned to Speaker 1 at every threshold (0.30–0.70)**, although the user hears a definite speaker change at ~124–131 s (phrase 22: similarity 0.62 to the previous phrase).
+
+**Investigation (on the saved similarity matrix):**
+1. **The grouping code worked as designed.** Each phrase's similarity to the running Speaker 1 centroid was ≥ 0.74, above the highest threshold tried. Phrase 22: 0.62 to the previous phrase but **0.82 to the centroid**. An average of many phrases is a "cleaner" print, and it's similar to everything from the same channel.
+2. **Raw embeddings are dominated by one shared direction.** All 300 pairs fall in cosine 0.46–0.94 (median 0.77). The top eigenvalue of the similarity matrix is 19.1 of 25: the shared codec/room/recording chain makes different people look alike.
+3. **Subtracting the mean embedding (centring) reveals the speakers.** Centred cosines spread over −0.65…+0.54, and a 2-group structure appears (eigenvalues 7.4, 2.6).
+   - Phrase 22 vs phrases 18–21: **−0.32 to −0.40**. Phrase 22 vs 23: +0.59.
+   - The offline 2-way split puts phrases 18–21 in one group and 22–25 in the other, i.e. **the switch is at 124.7 s, as heard.**
+4. **Online centring with only the session's running mean over-splits badly** (up to 17 "speakers"): the mean is unstable while there are only a few phrases. **With a stable prior mean** (blend weight 30), the online labels come close to the offline split. That simulation used this recording's own mean, so it's optimistic.
+5. **There's no ground truth beyond "a change at ~124–131 s"**, and 7 s phrases can contain two speakers. → **CAL-02: user labels every phrase; prior estimated only from other recordings; settings scored against the labels.**
+
 ## ASR runs (EXP-01 onwards)
 
 **Latency** = ASR time for one clip (median of 3 warm runs). **RTF** = latency / clip length. **Peak RAM** = process peak working set. CER/WER are normalised (lowercase, punctuation removed).

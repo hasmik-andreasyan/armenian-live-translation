@@ -19,5 +19,9 @@ eval/audio/
 *.flac
 *.ogg
 
+# Voice embeddings (derived from recordings of people): never commit
+*.npz
+*.npy
+
 # Secrets
 .env

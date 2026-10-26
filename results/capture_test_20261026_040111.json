@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-10-26T04:01:11",
+  "seconds_requested": 150.0,
+  "elapsed_s": 150.02,
+  "sources": {
+    "mic": {
+      "device": "Headset Microphone (Jabra EVOLV",
+      "index": 1,
+      "native_rate": 44100,
+      "channels": 2,
+      "callbacks": 3000,
+      "completeness": 1.0,
+      "max_gap_s": 0.063,
+      "overflow": false,
+      "first_chunk_t": 0.09,
+      "file": "eval\\speakers\\mic.wav",
+      "seconds": 149.98,
+      "peak": 0.009,
+      "rms_dbfs": -63.9,
+      "active_share": 0.0
+    },
+    "loopback": {
+      "device": "Headset Earphone (Jabra EVOLVE 20 MS) [Loopback]",
+      "index": 16,
+      "native_rate": 48000,
+      "channels": 2,
+      "callbacks": 2978,
+      "completeness": 0.993,
+      "max_gap_s": 0.062,
+      "overflow": false,
+      "first_chunk_t": 1.262,
+      "file": "eval\\speakers\\loopback.wav",
+      "seconds": 148.88,
+      "peak": 0.69,
+      "rms_dbfs": -24.2,
+      "active_share": 0.85
+    }
+  }
+}

@@ -1,0 +1,2 @@
+# Speaker identification. Dry run 2026-10-26: sherpa_onnx-2.0.0 + sherpa-onnx-core-2.0.0 (Windows, Python 3.12).
+sherpa-onnx   # Speaker-embedding extractor with built-in feature computation. Apache-2.0.

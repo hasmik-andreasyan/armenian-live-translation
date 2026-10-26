@@ -37,6 +37,15 @@ class Segment:
     meta: dict = field(default_factory=dict)
 
 
+def segment_audio(audio: np.ndarray, source: str = "file", max_segment_s: float = 7.0) -> list[Segment]:
+    """Split a whole recording exactly as the live app would (deterministic)."""
+    seg = Segmenter(source, max_segment_s=max_segment_s)
+    out: list[Segment] = []
+    for i in range(0, len(audio), 800):          # 50 ms chunks, like the capture callbacks
+        out += seg.push(i / SAMPLE_RATE, audio[i:i + 800])
+    return out + seg.flush()
+
+
 class EnergyVad:
     """Speech if the frame is `margin_db` above an adaptive noise floor and above `min_db`."""
 

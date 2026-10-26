@@ -52,6 +52,7 @@ def main() -> None:
     p.add_argument("--seconds", type=float, default=30)
     p.add_argument("--out-dir", type=Path, default=ROOT / "eval" / "capture")
     args = p.parse_args()
+    args.out_dir = args.out_dir.resolve()   # relative paths like eval\speakers work too
 
     pa = open_pyaudio()
     try:
@@ -100,16 +101,18 @@ def main() -> None:
     args.out_dir.mkdir(parents=True, exist_ok=True)
     report = {"timestamp": datetime.now().isoformat(timespec="seconds"), "seconds_requested": args.seconds,
               "elapsed_s": round(elapsed, 2), "sources": {}}
+    signals = {name: np.concatenate(audio[name]) if audio[name] else np.zeros(0, dtype=np.float32) for name in sources}
+    for name, x in signals.items():          # save every recording FIRST, before any reporting
+        sf.write(args.out_dir / f"{name}.wav", x, TARGET_RATE, subtype="PCM_16")
     for name, s in sources.items():
-        x = np.concatenate(audio[name]) if audio[name] else np.zeros(0, dtype=np.float32)
+        x = signals[name]
         path = args.out_dir / f"{name}.wav"
-        sf.write(path, x, TARGET_RATE, subtype="PCM_16")
         expected = s.rate * elapsed
         report["sources"][name] = {
             "device": s.device_name, "index": s.index, "native_rate": s.rate, "channels": s.channels,
             "callbacks": s.callbacks, "completeness": round(s.native_frames / expected, 3),
             "max_gap_s": round(s.max_gap_s, 3), "overflow": bool(s.status_flags & PA_INPUT_OVERFLOW),
-            "first_chunk_t": round(first_t.get(name, -1), 3), "file": str(path.relative_to(ROOT)), **levels(x),
+            "first_chunk_t": round(first_t.get(name, -1), 3), "file": str(path.relative_to(ROOT) if path.is_relative_to(ROOT) else path), **levels(x),
         }
 
     print("\nResults:")

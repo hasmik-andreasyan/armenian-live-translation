@@ -1,6 +1,20 @@
 # PLAN.md: Live Armenian Transcription → English Translation
 
-Status: **draft for review**. Nothing is installed or implemented yet.
+Status (2026-10-26, end of day 1): **live app working; speaker identification in progress.** For the current state and next steps, see **HANDOVER.md**.
+
+| Milestone | Status |
+|---|---|
+| M0 plan, docs | ✅ |
+| M1 audio capture (Spike 1) | ✅ mic + loopback, 100 % complete, no overflow |
+| M2 eval set | 🟡 3 clips + 11 MT sentences (one speaker); more voices + call audio still to do |
+| M3 ASR | ✅ omniASR-CTC-300M-v2 int8 (D-014, D-023) |
+| M4 MT | ✅ NLLB-600M CT2 int8, beam 1 (D-018) |
+| M5 speaker ID | 🟡 module + calibration tools ready; centring fix (D-026); CAL-02 + integration next |
+| M6 walking skeleton | ✅ `python -m app.main`, LIVE-01/02 |
+| M7 latency + robustness on a real call | ⬜ |
+| M8 README, chats export, rehearsal | ⬜ |
+
+*(The plan below is the original from day 1. Section 4's model candidates were superseded by the measurements in EXPERIMENTS.md.)*
 Target machine: Windows laptop, Intel Core i5-8250U (4 cores / 8 threads, 15 W, no GPU), 8 GB RAM.
 
 ---

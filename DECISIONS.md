@@ -270,6 +270,28 @@ So int8 is required, and an efficient runtime matters. A later optimisation is t
 - **A second Ctrl+C** skips the remaining phrases (only the ASR/MT call already running finishes) and still prints the summary. No traceback, which matters in the demo. Every line is appended to the `--log` file as soon as it's printed, so nothing is lost either way.
 - **Status:** Implemented. Simulated with fake devices/models.
 
+## D-025 · Speaker identification approach
+- **Embeddings:**
+  - **Library:** **sherpa-onnx 2.0.0** (Apache-2.0). It computes its own features, so there's no torchaudio and no version clash with torch 2.14.
+  - **API verified** against the repository source at version 2.0.0: `SpeakerEmbeddingExtractorConfig` → `SpeakerEmbeddingExtractor` → `create_stream / accept_waveform / input_finished / is_ready / compute`, the same pattern as its "dynamic speaker identification" example.
+  - **Model:** `wespeaker_en_voxceleb_resnet34_LM.onnx` from sherpa-onnx's official model release. CC-BY-4.0 (WeSpeaker models follow the VoxCeleb dataset licence). GitHub doesn't publish a checksum, so `tools/download_speaker_model.py` records SHA-256 + size on first download and verifies them afterwards.
+  - **Caveat:** VoxCeleb is mostly English celebrity speech. Voice traits are largely language-independent, but this must be checked on Armenian (CAL-01).
+- **Clustering (`app/speakers.py`, unit-tested):** online centroids. Each speaker is the running mean of their normalised embeddings, and a new phrase joins the most similar speaker if cosine similarity ≥ threshold. Otherwise:
+  - it becomes a new speaker if it has ≥ 1 s of speech;
+  - else it goes to the closest speaker, marked uncertain.
+
+  Max 8 speakers. Labels are fixed for the session.
+- **Only the loopback side is clustered.** The mic is always "Me" (brief).
+- **Threshold:** chosen from data in CAL-01 (a real multi-speaker recording, timeline checked by the user). It isn't guessed.
+- **Status:** Accepted, pending CAL-01. CAL-01 showed that raw cosine can't separate speakers on one channel → D-026.
+
+## D-026 · Centre speaker embeddings with a prior mean
+- **Evidence (CAL-01):** through one call channel, raw embeddings of different people have cosine 0.46–0.94. One shared direction dominates (top eigenvalue 19.1 of 25), so no raw threshold separates the speakers. After subtracting the mean, a clear 2-speaker structure appears, and the change at 124.7 s is visible.
+- **Decision:** `SpeakerTracker` compares phrases in a **centred** space. The mean starts from a **prior** (`models/speaker/prior_mean.npy`, estimated offline from calibration recordings) and is updated with every phrase of the session: `m = (w·prior + Σ session) / (w + n)`. The prior keeps early decisions stable; the session part adapts to the actual call channel. Centroids = mean of the centred, normalised member embeddings. Raw mode (`prior_mean=None`) is kept for comparison.
+- **Threshold and prior weight:** chosen in **CAL-02** against the user's per-phrase labels, with the prior from *other* recordings only (honest evaluation). Not guessed.
+- **Known limits:** the prior comes from our own recordings (one video channel plus the headset mic), not from a large background set. The demo call (Zoom/Meet codec) differs, and the running update must adapt. Two people in one 7 s phrase give a mixed embedding.
+- **Status:** Implemented (unit test reproduces "raw merges, centred separates"). Waiting for CAL-02.
+
 ## D-015 · Microphone for evaluation and demo
 - **Decision:** Jabra headset, MME device 1, the Windows default input. Windows' MME layer delivers 16 kHz mono directly.
 - **Not used:** AirPods for recording. When their mic is in use, Bluetooth switches to a low-quality call mode, which is likely to hurt ASR. We can measure this later if needed. The built-in Realtek mic (device 2) is a backup.
