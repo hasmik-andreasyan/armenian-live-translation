@@ -29,8 +29,8 @@ BEAM_SIZE = 1        # D-018
 MAX_SEGMENT_S = 7.0  # D-014
 SPEAKER_MODEL = ROOT / "models" / "speaker" / "wespeaker_en_voxceleb_resnet34_LM.onnx"
 SPEAKER_PRIOR = ROOT / "models" / "speaker" / "prior_mean.npy"
-SPEAKER_THRESHOLD = 0.10     # D-027 (CAL-02)
-SPEAKER_PRIOR_WEIGHT = 30    # D-027 (CAL-02)
+SPEAKER_THRESHOLD = 0.40     # D-032 (SPK-EVAL on 2 labelled recordings; was 0.10 in D-027)
+SPEAKER_PRIOR_WEIGHT = 30    # D-027 / D-032
 ASR_MIN_CONFIDENCE = 0.80    # D-030: below this, show as unclear and don't translate
 
 

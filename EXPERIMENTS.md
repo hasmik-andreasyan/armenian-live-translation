@@ -266,6 +266,28 @@ Script: 0–10 s silence · 10–44 s the user alone (sentences and single words
 
 **Call side (labels: `eval/speakers/labels_session2.json`):** `m m 1 m m m 2 2 2 2 2 m m m`. **8 of 14 phrases are mixed.** Every call phrase was cut at 7 s (continuous speech). Live: all Speaker 1; the guest block 93.8–126 s had similarity 0.56–0.72 to a centroid built from mixed phrases → **D-031**.
 
+## SPK-EVAL · Phrase-level vs window-level speaker embeddings (`tools/speaker_eval.py`, 2026-10-26 23:13)
+
+Two labelled recordings: interview (25 phrases, 14 scorable) and session 2 (14 phrases, 6 scorable). The prior for each recording = the *other* recording + the first capture + the EXP-01 clips (never itself). Methods: one embedding per phrase, or 1.5 / 2 / 3 s windows with a majority vote. Prior weight 10/30 × threshold 0.0–0.4. Raw file: `results/spk_eval_20261026_231325.json`.
+
+Truth: interview `1.1..11....111...2222.111` · session 2 `..1...22222...` (`.` = mixed / unknown).
+
+| Method | w | thr | mean F | Interview: found, F, labels | Session 2: found, F, labels |
+|---|---|---|---|---|---|
+| **phrase (current live)** | 30 | 0.10 | 0.87 | 1, 0.83, `1111111111111111111111111` | 1, 0.91, `11111111111111` |
+| **phrase** | **30** | **0.40** | **0.98** | 3, 0.96, `1111111112111311122221111` | **2, 1.00**, `11122222222211` |
+| phrase | 10 | 0.30 | 0.98 | 4, 0.96 | 3, 1.00 |
+| phrase | 30 | 0.30 | 0.95 | 2, 1.00 | 1, 0.91 |
+| 2 s windows | 10 | 0.00 | 0.96 | 3, 0.92 | 2, 1.00 |
+| 3 s windows | 10 | 0.10 | 0.96 | 3, 0.92 | 2, 1.00 |
+| 1.5 s windows | 10 | 0.40 | 0.92 | 6, 0.83 | 5, 1.00 |
+
+**Findings:**
+1. **Window-level embeddings don't beat phrase-level** (best 0.96 vs 0.98), and they'd add 0.2–0.4 s per call line. The D-031 hypothesis is rejected.
+2. **The live failure is the threshold, given the prior.** With a prior from more varied audio, th 0.10 merges everyone on both recordings. th 0.40 separates them: session 2 perfect, interview with one spurious extra speaker.
+3. **The best threshold moves with the prior** (CAL-02's 0.10 → 0.40 here). So the deployed prior is rebuilt from all calibration audio, and the setting must be confirmed on **new** audio.
+4. Mixed phrases (19 of 39) remain a structural limit: they get one label, whatever the method.
+
 ## ASR runs (EXP-01 onwards)
 
 **Latency** = ASR time for one clip (median of 3 warm runs). **RTF** = latency / clip length. **Peak RAM** = process peak working set. CER/WER are normalised (lowercase, punctuation removed).

@@ -335,7 +335,20 @@ So int8 is required, and an efficient runtime matters. A later optimisation is t
   - Raising the threshold would mostly split the mixed phrases into spurious speakers.
 - **Hypothesis to test:** embed **shorter windows** (1.5 / 2 / 3 s) within each phrase, track at window level, and label the phrase by the majority of its windows. Windows are much more likely to be single-speaker, so the centroids stay pure. Cost: ~0.2–0.4 s more per call-side line.
 - **Test:** `tools/speaker_eval.py`. Phrase-level vs window-level on **both** labelled recordings, with the prior always from the *other* recordings. Decide from F, not impressions.
-- **Status:** Evaluation script ready; waiting for results.
+- **Status:** **Tested, hypothesis rejected** (SPK-EVAL, see D-032): window-level embeddings are at best equal to phrase-level, and they'd cost more latency.
+
+## D-032 · Speaker ID: phrase-level, threshold 0.40, prior rebuilt from all calibration audio
+- **Evidence (SPK-EVAL, `results/spk_eval_20261026_231325.json`):** 2 labelled recordings; the prior for each recording comes from the *other* recordings + capture + clips.
+  - **The current live setting (phrase, w = 30, th 0.10) merges everyone on BOTH recordings** (1 speaker found; F 0.83 / 0.91). With a prior from more varied audio, 0.10 is far too low. The good threshold depends on the prior, which is why CAL-02's single-recording result (0.10 perfect) didn't transfer.
+  - **Best: phrase-level, w = 30, th 0.40, mean F 0.98.** Interview: 3 speakers found, F 0.96, one spurious extra on one phrase. Session 2: **2 found, F 1.00** (interviewer → guest → interviewer).
+  - Phrase w = 10 th 0.30 also scores 0.98, but finds 4 and 3 speakers.
+  - Window-level best: 2 s / 3 s windows at 0.96, 1.5 s at 0.92.
+- **Decision:**
+  - Keep **one embedding per phrase**.
+  - **Threshold 0.40**, prior weight 30. Among the tested settings, this one has the best mean F and the speaker counts closest to the truth. Over-splitting on an occasional phrase is a smaller error than merging everyone.
+  - **Rebuild the prior** from all calibration audio (`tools/build_speaker_prior.py`: both labelled recordings + first capture + clips; documented in `models/speaker/PRIOR.txt`).
+- **Limits:** the evidence is two recordings and 20 scorable phrases; the setting was chosen on them, so it **must be confirmed on new audio** (a new video or the real call). Mixed phrases (19 of 39) still get a single label. `--speaker-threshold` remains for tuning.
+- **Status:** Implemented (default threshold 0.40); prior rebuild + an independent check next.
 
 ## D-015 · Microphone for evaluation and demo
 - **Decision:** Jabra headset, MME device 1, the Windows default input. Windows' MME layer delivers 16 kHz mono directly.
