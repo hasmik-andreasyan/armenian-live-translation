@@ -296,6 +296,26 @@ Truth: interview `1.1..11....111...2222.111` · session 2 `..1...22222...` (`.` 
 - **Speaker ID over-split: 7 speakers for 2 people.** The guest's 16 phrases went to S5 ×8, S1 ×2, S4 ×2, S3, S6, S7. The interviewer's 2 → S1. **Purity ≈ 0.83, coverage ≈ 0.56, F ≈ 0.67.** The guest's phrases score only **0.41–0.64** to "his" S5 centroid, so several fell under 0.40 and each opened a new speaker. **S3, S6, S7 are singletons.**
 - **Conclusion: one fixed threshold doesn't transfer between recordings.** 0.10 merged everyone on session 2; 0.40 over-splits session 3. → D-033 (confirmation rule) + a 3-recording evaluation.
 
+## SPK-EVAL2 · Confirmation rule × threshold × prior weight on 3 labelled recordings (2026-10-26 23:42)
+
+Raw file: `results/spk_eval_20261026_234241.json`. Phrase-level embeddings; priors from the other recordings (+ capture + clips). Truth: interview `1.1..11....111...2222.111` · session 2 `..1...22222...` · session 3 `..2..22222.2222211.2.22.`.
+
+**Balanced accuracy** (best 1:1 mapping, mean over real speakers; merge-all = 0.5). The F score was rejected as the metric because it rewards merging (session 3: merge-all scores F 0.93).
+
+| Confirm | w | thr | mean | worst | interview | session 2 | session 3 | speakers found (true 2/2/2) |
+|---|---|---|---|---|---|---|---|---|
+| **on** | **10** | **0.3** | **0.90** | **0.79** | 0.90 | 1.00 | 0.79 | 3 / 2 / 3 |
+| on | 30 | 0.5 | 0.90 | 0.75 | 0.95 | 1.00 | 0.75 | 3 / 2 / 2 |
+| on | 10 | 0.6 | 0.90 | 0.72 | 0.72 | 1.00 | 0.96 | 3 / 2 / 2 |
+| off | 10 | 0.2 | 0.87 | 0.71 | 0.90 | 1.00 | 0.71 | 5 / 3 / 6 |
+| off (previous live) | 30 | 0.4 | 0.86 | 0.68 | 0.90 | 1.00 | 0.68 | 5 / 2 / 8 |
+| off (D-027) | 30 | 0.1 | | 0.50 | 1.00 | 0.50 | 0.50 | 2 / 1 / 2 |
+
+**Findings:**
+1. **The confirmation rule removes most over-splitting** (2–3 speakers instead of 5–8) and gives the best worst-case accuracy of all settings.
+2. **No setting is perfect on all three.** The remaining errors sit mostly in mixed phrases and right after speaker changes (confirmation delay).
+3. All three recordings were used for the choice, so this is not an independent estimate. The real call is.
+
 ## ASR runs (EXP-01 onwards)
 
 **Latency** = ASR time for one clip (median of 3 warm runs). **RTF** = latency / clip length. **Peak RAM** = process peak working set. CER/WER are normalised (lowercase, punctuation removed).

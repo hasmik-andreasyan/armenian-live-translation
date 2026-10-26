@@ -59,16 +59,33 @@ def embed_file(embedder: SpeakerEmbedder, path: Path) -> tuple[list, np.ndarray,
     return kept, np.stack(embs) if embs else np.zeros((0, embedder.dim)), ms
 
 
+def balanced_accuracy(pairs: list[tuple[str, str]]) -> float:
+    """Map each real speaker to a DIFFERENT predicted label (best one-to-one mapping) and
+    average, over real speakers, the share of their phrases carrying that label.
+    Merging everyone into one speaker scores 1/#speakers; perfect separation scores 1.0.
+    (F with purity/coverage rewards merging when one speaker dominates: D-034.)"""
+    from itertools import permutations
+    true_ids = sorted({t for _, t in pairs})
+    pred_ids = sorted({p for p, _ in pairs})
+    totals = Counter(t for _, t in pairs)
+    joint = Counter(pairs)
+    best = 0.0
+    for perm in permutations(pred_ids + [None] * len(true_ids), len(true_ids)):
+        best = max(best, sum(joint[(p, t)] / totals[t] for t, p in zip(true_ids, perm)) / len(true_ids))
+    return best
+
+
 def score(pred: list[str], truth: list[str | None]) -> dict:
     pairs = [(p, t) for p, t in zip(pred, truth) if t is not None]
     n = len(pairs)
-    by_pred, by_true = Counter(), Counter()
+    by_pred = Counter()
     for p, t in pairs:
         by_pred[(p, t)] += 1
     purity = sum(max(c for (p2, _), c in by_pred.items() if p2 == p) for p in {p for p, _ in pairs}) / n
     coverage = sum(max(c for (_, t2), c in by_pred.items() if t2 == t) for t in {t for _, t in pairs}) / n
     f = 2 * purity * coverage / (purity + coverage)
-    return {"speakers_found": len(set(pred)), "purity": round(purity, 3), "coverage": round(coverage, 3), "F": round(f, 3)}
+    return {"speakers_found": len(set(pred)), "purity": round(purity, 3), "coverage": round(coverage, 3),
+            "F": round(f, 3), "balanced": round(balanced_accuracy(pairs), 3)}
 
 
 def main() -> None:

@@ -1,6 +1,8 @@
 # HANDOVER.md: where we are and what comes next
 
-Last updated: **Mon 2026-10-26, 17:15** (day 2, afternoon). **Deadline: Sun 2026-11-01.**
+Last updated: **Mon 2026-10-26, 23:50** (day 2, evening). **Deadline: Sun 2026-11-01.**
+
+> **UPDATE 23:50: speaker ID decided (D-034).** Window embeddings were rejected (D-032). Fixed thresholds didn't transfer (0.10 merged, 0.40 over-split on a new video, LIVE-04a). The app now uses a **confirm-new-speaker rule, prior weight 10, threshold 0.30**, chosen by **balanced accuracy** on 3 labelled recordings: mean 0.90, worst 0.79, 2–3 speakers found for 2 real people. **Next: the real call test (LIVE-04)**, the only independent test left. Then the README. Sections 2–3 below are partly superseded by this note.
 Read this first in a new session, then DECISIONS.md (why) and EXPERIMENTS.md (numbers).
 
 ---
@@ -13,7 +15,22 @@ The live app works end to end: `python -m app.main [--log | --record]`.
 - **Microphone:** full sentences and 2-word phrases are recognised well (confidence 0.89–0.98). Isolated single words (< 1 s) are not; this is a model limitation, now flagged as unclear instead of mistranslated.
 - **Open problem: speaker identification.** Every call phrase becomes Speaker 1. The diagnosis is that **many 7 s phrases contain both speakers** (8/14 and 11/25 in the labelled recordings), so the first speaker's centroid is a blend that matches everyone. A window-level fix is designed and the **evaluation script is written, but not run yet**.
 
-## 2. Next session: exact steps
+## 2a. Next session (from 23:50): exact steps
+
+```powershell
+cd $HOME\Desktop\Mathrix-Claude-Project
+git add .
+git commit -m "D-034: confirm-new-speaker rule, w=10, th=0.30; balanced-accuracy metric"
+.venv\Scripts\python -m unittest discover tests      # 21 tests
+```
+
+**Real call test (LIVE-04):** a Zoom/Meet/Telegram call through the Jabra, with **≥ 2 Armenian speakers on the call side**, plus you on the mic.
+1. Run `.venv\Scripts\python -m app.main --record` for 5–10 min of normal conversation, with turn-taking.
+2. Afterwards: `tools\label_phrases.py --wav results\session_..._loopback.wav --out eval\speakers\labels_call.json`.
+3. Claude scores: latency (% < 5 s), speaker balanced accuracy, unclear-line rate, English understandable (spot check).
+4. Fix only the weakest link. Then the README (Thu) and the rehearsal + chat export (Fri).
+
+## 2. Older next steps (17:15, superseded)
 
 ```powershell
 cd $HOME\Desktop\Mathrix-Claude-Project

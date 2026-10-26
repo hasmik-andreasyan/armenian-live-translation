@@ -29,8 +29,9 @@ BEAM_SIZE = 1        # D-018
 MAX_SEGMENT_S = 7.0  # D-014
 SPEAKER_MODEL = ROOT / "models" / "speaker" / "wespeaker_en_voxceleb_resnet34_LM.onnx"
 SPEAKER_PRIOR = ROOT / "models" / "speaker" / "prior_mean.npy"
-SPEAKER_THRESHOLD = 0.40     # D-032 (SPK-EVAL on 2 labelled recordings; was 0.10 in D-027)
-SPEAKER_PRIOR_WEIGHT = 30    # D-027 / D-032
+SPEAKER_THRESHOLD = 0.30     # D-034 (3 labelled recordings, balanced accuracy; was 0.10 → 0.40)
+SPEAKER_PRIOR_WEIGHT = 10    # D-034
+SPEAKER_CONFIRM_NEW = True   # D-033/034: a new speaker needs a second similar phrase
 ASR_MIN_CONFIDENCE = 0.80    # D-030: below this, show as unclear and don't translate
 
 
@@ -77,7 +78,7 @@ def main() -> None:
         raise SystemExit(f"{SPEAKER_PRIOR} missing: run tools/speaker_calibrate.py first.")
     embedder = SpeakerEmbedder(SPEAKER_MODEL, threads=THREADS)
     tracker = SpeakerTracker(threshold=args.speaker_threshold, prior_mean=np.load(SPEAKER_PRIOR),
-                             prior_weight=SPEAKER_PRIOR_WEIGHT)
+                             prior_weight=SPEAKER_PRIOR_WEIGHT, confirm_new=SPEAKER_CONFIRM_NEW)
     label_for = CallSpeakerLabeler(embedder, tracker)
     asr.transcribe(np.zeros(16000, dtype=np.float32))       # warm-up
     mt.translate("բարեւ", beam_size=BEAM_SIZE)

@@ -1,0 +1,717 @@
+{
+  "recordings": [
+    [
+      "interview (CAL-02)",
+      "eval/speakers/loopback.wav",
+      "eval/speakers/labels.json"
+    ],
+    [
+      "session 2 (LIVE-03b)",
+      "results/session_20261026_164715_loopback.wav",
+      "eval/speakers/labels_session2.json"
+    ],
+    [
+      "session 3 (LIVE-04a)",
+      "results/session_20261026_232140_loopback.wav",
+      "eval/speakers/labels_session3.json"
+    ]
+  ],
+  "results": [
+    {
+      "window_s": null,
+      "confirm": false,
+      "prior_weight": 30,
+      "threshold": 0.1,
+      "interview (CAL-02)": {
+        "speakers_found": 2,
+        "purity": 1.0,
+        "coverage": 1.0,
+        "F": 1.0,
+        "labels": "1111111112111111122221111"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 1,
+        "purity": 0.833,
+        "coverage": 1.0,
+        "F": 0.909,
+        "labels": "11111111111111"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 2,
+        "purity": 0.875,
+        "coverage": 0.875,
+        "F": 0.875,
+        "labels": "111111111111111111112221"
+      },
+      "mean_F": 0.928,
+      "worst_F": 0.875
+    },
+    {
+      "window_s": null,
+      "confirm": true,
+      "prior_weight": 30,
+      "threshold": 0.3,
+      "interview (CAL-02)": {
+        "speakers_found": 3,
+        "purity": 1.0,
+        "coverage": 0.929,
+        "F": 0.963,
+        "labels": "1122222221322222233332222"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 1,
+        "purity": 0.833,
+        "coverage": 1.0,
+        "F": 0.909,
+        "labels": "11111111111111"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 3,
+        "purity": 0.938,
+        "coverage": 0.875,
+        "F": 0.905,
+        "labels": "111111111111111112111132"
+      },
+      "mean_F": 0.926,
+      "worst_F": 0.905
+    },
+    {
+      "window_s": null,
+      "confirm": true,
+      "prior_weight": 30,
+      "threshold": 0.1,
+      "interview (CAL-02)": {
+        "speakers_found": 2,
+        "purity": 0.929,
+        "coverage": 0.929,
+        "F": 0.929,
+        "labels": "1111111111111111112221111"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 1,
+        "purity": 0.833,
+        "coverage": 1.0,
+        "F": 0.909,
+        "labels": "11111111111111"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 1,
+        "purity": 0.875,
+        "coverage": 1.0,
+        "F": 0.933,
+        "labels": "111111111111111111111111"
+      },
+      "mean_F": 0.924,
+      "worst_F": 0.909
+    },
+    {
+      "window_s": null,
+      "confirm": true,
+      "prior_weight": 10,
+      "threshold": 0.6,
+      "interview (CAL-02)": {
+        "speakers_found": 3,
+        "purity": 0.929,
+        "coverage": 0.714,
+        "F": 0.807,
+        "labels": "1111111111111111112222333"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 2,
+        "purity": 1.0,
+        "coverage": 1.0,
+        "F": 1.0,
+        "labels": "11111122222211"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 2,
+        "purity": 0.938,
+        "coverage": 0.938,
+        "F": 0.938,
+        "labels": "111111111111111122121112"
+      },
+      "mean_F": 0.915,
+      "worst_F": 0.807
+    },
+    {
+      "window_s": null,
+      "confirm": true,
+      "prior_weight": 30,
+      "threshold": 0.2,
+      "interview (CAL-02)": {
+        "speakers_found": 2,
+        "purity": 0.929,
+        "coverage": 0.929,
+        "F": 0.929,
+        "labels": "1111111111111111112221111"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 1,
+        "purity": 0.833,
+        "coverage": 1.0,
+        "F": 0.909,
+        "labels": "11111111111111"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 2,
+        "purity": 0.875,
+        "coverage": 0.938,
+        "F": 0.905,
+        "labels": "111111111111111111111121"
+      },
+      "mean_F": 0.914,
+      "worst_F": 0.905
+    },
+    {
+      "window_s": null,
+      "confirm": true,
+      "prior_weight": 10,
+      "threshold": 0.5,
+      "interview (CAL-02)": {
+        "speakers_found": 3,
+        "purity": 0.929,
+        "coverage": 0.714,
+        "F": 0.807,
+        "labels": "1111111111211233322223333"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 2,
+        "purity": 1.0,
+        "coverage": 1.0,
+        "F": 1.0,
+        "labels": "11112222222211"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 1,
+        "purity": 0.875,
+        "coverage": 1.0,
+        "F": 0.933,
+        "labels": "111111111111111111111111"
+      },
+      "mean_F": 0.913,
+      "worst_F": 0.807
+    },
+    {
+      "window_s": null,
+      "confirm": true,
+      "prior_weight": 10,
+      "threshold": 0.1,
+      "interview (CAL-02)": {
+        "speakers_found": 2,
+        "purity": 0.929,
+        "coverage": 0.929,
+        "F": 0.929,
+        "labels": "1111111111211211122221111"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 1,
+        "purity": 0.833,
+        "coverage": 1.0,
+        "F": 0.909,
+        "labels": "11111111111111"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 3,
+        "purity": 0.875,
+        "coverage": 0.875,
+        "F": 0.875,
+        "labels": "111111111111111111111231"
+      },
+      "mean_F": 0.904,
+      "worst_F": 0.875
+    },
+    {
+      "window_s": null,
+      "confirm": true,
+      "prior_weight": 30,
+      "threshold": 0.6,
+      "interview (CAL-02)": {
+        "speakers_found": 4,
+        "purity": 0.929,
+        "coverage": 0.643,
+        "F": 0.76,
+        "labels": "1111222221222222213332442"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 2,
+        "purity": 1.0,
+        "coverage": 1.0,
+        "F": 1.0,
+        "labels": "11112222222211"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 1,
+        "purity": 0.875,
+        "coverage": 1.0,
+        "F": 0.933,
+        "labels": "111111111111111111111111"
+      },
+      "mean_F": 0.898,
+      "worst_F": 0.76
+    },
+    {
+      "window_s": null,
+      "confirm": true,
+      "prior_weight": 30,
+      "threshold": 0.5,
+      "interview (CAL-02)": {
+        "speakers_found": 3,
+        "purity": 1.0,
+        "coverage": 0.929,
+        "F": 0.963,
+        "labels": "1122222221322222233332222"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 2,
+        "purity": 1.0,
+        "coverage": 1.0,
+        "F": 1.0,
+        "labels": "11111222222211"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 2,
+        "purity": 0.875,
+        "coverage": 0.562,
+        "F": 0.685,
+        "labels": "111111111222221111222221"
+      },
+      "mean_F": 0.883,
+      "worst_F": 0.685
+    },
+    {
+      "window_s": null,
+      "confirm": true,
+      "prior_weight": 10,
+      "threshold": 0.3,
+      "interview (CAL-02)": {
+        "speakers_found": 3,
+        "purity": 0.929,
+        "coverage": 0.857,
+        "F": 0.891,
+        "labels": "1122222221322322233332222"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 2,
+        "purity": 1.0,
+        "coverage": 1.0,
+        "F": 1.0,
+        "labels": "11111222222211"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 3,
+        "purity": 0.875,
+        "coverage": 0.625,
+        "F": 0.729,
+        "labels": "111111122212221111222231"
+      },
+      "mean_F": 0.873,
+      "worst_F": 0.729
+    },
+    {
+      "window_s": null,
+      "confirm": false,
+      "prior_weight": 30,
+      "threshold": 0.2,
+      "interview (CAL-02)": {
+        "speakers_found": 3,
+        "purity": 1.0,
+        "coverage": 0.929,
+        "F": 0.963,
+        "labels": "1111111112111311122221111"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 1,
+        "purity": 0.833,
+        "coverage": 1.0,
+        "F": 0.909,
+        "labels": "11111111111111"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 3,
+        "purity": 0.875,
+        "coverage": 0.625,
+        "F": 0.729,
+        "labels": "111112111112211111222231"
+      },
+      "mean_F": 0.867,
+      "worst_F": 0.729
+    },
+    {
+      "window_s": null,
+      "confirm": true,
+      "prior_weight": 30,
+      "threshold": 0.4,
+      "interview (CAL-02)": {
+        "speakers_found": 3,
+        "purity": 1.0,
+        "coverage": 0.929,
+        "F": 0.963,
+        "labels": "1122222221322222233332222"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 1,
+        "purity": 0.833,
+        "coverage": 1.0,
+        "F": 0.909,
+        "labels": "11111111111111"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 2,
+        "purity": 0.875,
+        "coverage": 0.625,
+        "F": 0.729,
+        "labels": "111111122211221111222221"
+      },
+      "mean_F": 0.867,
+      "worst_F": 0.729
+    },
+    {
+      "window_s": null,
+      "confirm": false,
+      "prior_weight": 10,
+      "threshold": 0.2,
+      "interview (CAL-02)": {
+        "speakers_found": 5,
+        "purity": 1.0,
+        "coverage": 0.857,
+        "F": 0.923,
+        "labels": "1222222324322522233332222"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 3,
+        "purity": 1.0,
+        "coverage": 1.0,
+        "F": 1.0,
+        "labels": "11122222222311"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 6,
+        "purity": 0.875,
+        "coverage": 0.5,
+        "F": 0.636,
+        "labels": "111213444413351111464441"
+      },
+      "mean_F": 0.853,
+      "worst_F": 0.636
+    },
+    {
+      "window_s": null,
+      "confirm": false,
+      "prior_weight": 10,
+      "threshold": 0.3,
+      "interview (CAL-02)": {
+        "speakers_found": 6,
+        "purity": 1.0,
+        "coverage": 0.857,
+        "F": 0.923,
+        "labels": "1222222324322526233332222"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 3,
+        "purity": 1.0,
+        "coverage": 1.0,
+        "F": 1.0,
+        "labels": "11122222222311"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 8,
+        "purity": 0.875,
+        "coverage": 0.5,
+        "F": 0.636,
+        "labels": "111234555513467111585551"
+      },
+      "mean_F": 0.853,
+      "worst_F": 0.636
+    },
+    {
+      "window_s": null,
+      "confirm": false,
+      "prior_weight": 30,
+      "threshold": 0.3,
+      "interview (CAL-02)": {
+        "speakers_found": 5,
+        "purity": 1.0,
+        "coverage": 0.857,
+        "F": 0.923,
+        "labels": "1222222324322522233332222"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 1,
+        "purity": 0.833,
+        "coverage": 1.0,
+        "F": 0.909,
+        "labels": "11111111111111"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 5,
+        "purity": 0.875,
+        "coverage": 0.562,
+        "F": 0.685,
+        "labels": "111112111113241111125551"
+      },
+      "mean_F": 0.839,
+      "worst_F": 0.685
+    },
+    {
+      "window_s": null,
+      "confirm": false,
+      "prior_weight": 10,
+      "threshold": 0.1,
+      "interview (CAL-02)": {
+        "speakers_found": 4,
+        "purity": 1.0,
+        "coverage": 0.929,
+        "F": 0.963,
+        "labels": "1111111213211411122221111"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 2,
+        "purity": 0.833,
+        "coverage": 1.0,
+        "F": 0.909,
+        "labels": "11111111111211"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 3,
+        "purity": 0.875,
+        "coverage": 0.5,
+        "F": 0.636,
+        "labels": "111112131112231111223231"
+      },
+      "mean_F": 0.836,
+      "worst_F": 0.636
+    },
+    {
+      "window_s": null,
+      "confirm": false,
+      "prior_weight": 30,
+      "threshold": 0.4,
+      "interview (CAL-02)": {
+        "speakers_found": 5,
+        "purity": 1.0,
+        "coverage": 0.857,
+        "F": 0.923,
+        "labels": "1222222324322522233332222"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 2,
+        "purity": 1.0,
+        "coverage": 1.0,
+        "F": 1.0,
+        "labels": "11122222222211"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 8,
+        "purity": 0.875,
+        "coverage": 0.438,
+        "F": 0.583,
+        "labels": "111213444415361111478481"
+      },
+      "mean_F": 0.835,
+      "worst_F": 0.583
+    },
+    {
+      "window_s": null,
+      "confirm": false,
+      "prior_weight": 30,
+      "threshold": 0.5,
+      "interview (CAL-02)": {
+        "speakers_found": 6,
+        "purity": 1.0,
+        "coverage": 0.857,
+        "F": 0.923,
+        "labels": "1222222324322522633332222"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 3,
+        "purity": 1.0,
+        "coverage": 1.0,
+        "F": 1.0,
+        "labels": "11122222222311"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 8,
+        "purity": 0.875,
+        "coverage": 0.438,
+        "F": 0.583,
+        "labels": "121345678884838111887771"
+      },
+      "mean_F": 0.835,
+      "worst_F": 0.583
+    },
+    {
+      "window_s": null,
+      "confirm": true,
+      "prior_weight": 10,
+      "threshold": 0.4,
+      "interview (CAL-02)": {
+        "speakers_found": 4,
+        "purity": 0.929,
+        "coverage": 0.714,
+        "F": 0.807,
+        "labels": "1122222221322322233332442"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 2,
+        "purity": 1.0,
+        "coverage": 1.0,
+        "F": 1.0,
+        "labels": "11112222222211"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 3,
+        "purity": 0.875,
+        "coverage": 0.562,
+        "F": 0.685,
+        "labels": "111111111221222111222331"
+      },
+      "mean_F": 0.831,
+      "worst_F": 0.685
+    },
+    {
+      "window_s": null,
+      "confirm": true,
+      "prior_weight": 10,
+      "threshold": 0.2,
+      "interview (CAL-02)": {
+        "speakers_found": 3,
+        "purity": 0.929,
+        "coverage": 0.857,
+        "F": 0.891,
+        "labels": "1122222221322322233332222"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 1,
+        "purity": 0.833,
+        "coverage": 1.0,
+        "F": 0.909,
+        "labels": "11111111111111"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 3,
+        "purity": 0.875,
+        "coverage": 0.562,
+        "F": 0.685,
+        "labels": "111111122211221111222231"
+      },
+      "mean_F": 0.828,
+      "worst_F": 0.685
+    },
+    {
+      "window_s": null,
+      "confirm": false,
+      "prior_weight": 10,
+      "threshold": 0.4,
+      "interview (CAL-02)": {
+        "speakers_found": 8,
+        "purity": 1.0,
+        "coverage": 0.643,
+        "F": 0.783,
+        "labels": "1222222324352678233337772"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 3,
+        "purity": 1.0,
+        "coverage": 1.0,
+        "F": 1.0,
+        "labels": "11122222222311"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 8,
+        "purity": 0.875,
+        "coverage": 0.312,
+        "F": 0.461,
+        "labels": "121345678884538111667771"
+      },
+      "mean_F": 0.748,
+      "worst_F": 0.461
+    },
+    {
+      "window_s": null,
+      "confirm": false,
+      "prior_weight": 30,
+      "threshold": 0.6,
+      "interview (CAL-02)": {
+        "speakers_found": 8,
+        "purity": 1.0,
+        "coverage": 0.571,
+        "F": 0.727,
+        "labels": "1234333536784833255558283"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 4,
+        "purity": 1.0,
+        "coverage": 0.833,
+        "F": 0.909,
+        "labels": "11122223222411"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 8,
+        "purity": 0.875,
+        "coverage": 0.312,
+        "F": 0.461,
+        "labels": "121345678814534111667871"
+      },
+      "mean_F": 0.699,
+      "worst_F": 0.461
+    },
+    {
+      "window_s": null,
+      "confirm": false,
+      "prior_weight": 10,
+      "threshold": 0.5,
+      "interview (CAL-02)": {
+        "speakers_found": 8,
+        "purity": 1.0,
+        "coverage": 0.429,
+        "F": 0.6,
+        "labels": "1234567878824377288882247"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 4,
+        "purity": 1.0,
+        "coverage": 0.833,
+        "F": 0.909,
+        "labels": "11122223222411"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 8,
+        "purity": 0.875,
+        "coverage": 0.312,
+        "F": 0.461,
+        "labels": "121345678814534111667871"
+      },
+      "mean_F": 0.657,
+      "worst_F": 0.461
+    },
+    {
+      "window_s": null,
+      "confirm": false,
+      "prior_weight": 10,
+      "threshold": 0.6,
+      "interview (CAL-02)": {
+        "speakers_found": 8,
+        "purity": 1.0,
+        "coverage": 0.429,
+        "F": 0.6,
+        "labels": "1234567878824377288882247"
+      },
+      "session 2 (LIVE-03b)": {
+        "speakers_found": 8,
+        "purity": 1.0,
+        "coverage": 0.5,
+        "F": 0.667,
+        "labels": "11123445467811"
+      },
+      "session 3 (LIVE-04a)": {
+        "speakers_found": 8,
+        "purity": 1.0,
+        "coverage": 0.312,
+        "F": 0.476,
+        "labels": "123456781775643322778882"
+      },
+      "mean_F": 0.581,
+      "worst_F": 0.476
+    }
+  ]
+}

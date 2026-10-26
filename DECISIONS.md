@@ -354,7 +354,22 @@ So int8 is required, and an efficient runtime matters. A later optimisation is t
 - **Evidence:** a fixed threshold doesn't transfer (0.10 merges on session 2, 0.40 over-splits session 3). In LIVE-04a, 3 of the 7 "speakers" were singletons: one-off phrases (often mixed or unusual) that matched no centroid.
 - **Rule (`SpeakerTracker(confirm_new=True)`):** an unmatched phrase gets the closest existing label (marked uncertain) and becomes a **candidate**. A new speaker is created only when a later unmatched phrase (within 5 phrases) matches a candidate (≥ threshold). One-off outliers never become speakers. A real new person is confirmed on their second phrase; the cost is that their first phrase shows the old label.
 - **Test:** `tools/speaker_eval.py` on **all three** labelled recordings, with priors from the other recordings. Thresholds 0.1–0.6 × prior weight 10/30 × confirmation off/on. Choose by mean **and worst** F. If no setting is acceptable on all three, speaker ID is documented as unreliable on fast cross-talk, and the real-call test (turn-taking) decides.
-- **Status:** Implemented + unit-tested (21 tests). Evaluation pending.
+- **Status:** Implemented + unit-tested (21 tests). **Evaluated → D-034.**
+
+## D-034 · Speaker ID setting: confirmation ON, prior weight 10, threshold 0.30; measured by balanced accuracy
+- **Metric change:** purity/coverage F **rewards merging** when one person dominates. In session 3 (16 of 18 labelled phrases from the guest), "everyone = Speaker 1" scores F 0.93. The brief asks whether speakers are **kept apart**, so settings are now ranked by **balanced accuracy**: the best one-to-one mapping of real speakers to labels, averaged over real speakers. Merge-all = 0.5, perfect = 1.0. It's implemented in `tools/speaker_calibrate.py`, and `tools/speaker_eval.py` ranks by the worst recording.
+- **Evidence (SPK-EVAL2, 3 labelled recordings, priors from the other recordings):**
+  - **confirmation on, w 10, th 0.30:** balanced accuracy **mean 0.90, worst 0.79**; speakers found 3 / 2 / 3 (true 2 / 2 / 2).
+  - confirmation on, w 30, th 0.50: mean 0.90, worst 0.75; found 3 / 2 / 2.
+  - Previous live setting (no confirmation, w 30, th 0.40): mean 0.86, worst 0.68; found **5 / 2 / 8**.
+  - No-confirmation settings over-split (5–8 speakers) or merge (1 speaker).
+- **Decision:** `confirm_new=True`, `prior_weight=10`, `threshold=0.30` (`app/main.py`; `--speaker-threshold` stays).
+- **Honest limits:**
+  - **Decent, not perfect:** 0.79–1.00 balanced accuracy; ≤ 1 spurious extra speaker per recording.
+  - Mixed phrases (fast cross-talk) still get one label.
+  - A new person's **first** phrase shows the previous label (confirmation delay).
+  - **All 3 labelled recordings were used to choose this, so the real call is the only independent test left.**
+- **Status:** Implemented. Real-call test next.
 
 ## D-015 · Microphone for evaluation and demo
 - **Decision:** Jabra headset, MME device 1, the Windows default input. Windows' MME layer delivers 16 kHz mono directly.

@@ -133,21 +133,22 @@ def main() -> None:
                         pred = run(phrases, w, th, prior, pw, confirm)
                         sc = score(pred, truth)
                         row[name] = {**sc, "labels": "".join(pred)}
-                        fs.append(sc["F"])
-                    row["mean_F"] = round(float(np.mean(fs)), 3)
-                    row["worst_F"] = round(float(np.min(fs)), 3)
+                        fs.append(sc["balanced"])
+                    # D-034: rank by balanced accuracy (worst recording first), not F
+                    row["mean_bal"] = round(float(np.mean(fs)), 3)
+                    row["worst_bal"] = round(float(np.min(fs)), 3)
                     results.append(row)
-    results.sort(key=lambda r: (-r["mean_F"], -r["worst_F"]))
+    results.sort(key=lambda r: (-r["worst_bal"], -r["mean_bal"]))
 
     names = list(data)
     print("\ntruth:\n" + "\n".join(f"  {n:22s} {''.join(t or '.' for t in data[n][1])}" for n in names))
-    print(f"\n{'confirm':>7s} {'w':>3s} {'thr':>4s} {'meanF':>5s} {'worstF':>6s}   per recording: F / speakers found / labels")
-    current = [r for r in results if r["window_s"] is None and not r["confirm"] and r["prior_weight"] == 30
-               and r["threshold"] == 0.4]
+    print(f"\n{'confirm':>7s} {'w':>3s} {'thr':>4s} {'mean':>5s} {'worst':>6s}   per recording: balanced accuracy / speakers found / labels")
+    current = [r for r in results if r["window_s"] is None and r["confirm"] and r["prior_weight"] == 10
+               and r["threshold"] == 0.3]
     for r in results[:12] + current:
-        cells = "   ".join(f"{r[n]['F']:.2f}/{r[n]['speakers_found']} {r[n]['labels']}" for n in names)
-        print(f"{str(r['confirm']):>7s} {r['prior_weight']:3d} {r['threshold']:4.1f} {r['mean_F']:5.2f} {r['worst_F']:6.2f}   {cells}")
-    print("(last row = current live setting: phrase-level, no confirmation, w=30, th=0.40)")
+        cells = "   ".join(f"{r[n]['balanced']:.2f}/{r[n]['speakers_found']} {r[n]['labels']}" for n in names)
+        print(f"{str(r['confirm']):>7s} {r['prior_weight']:3d} {r['threshold']:4.1f} {r['mean_bal']:5.2f} {r['worst_bal']:6.2f}   {cells}")
+    print("(last row = current live setting D-034: confirmation on, w=10, th=0.30)")
     out = ROOT / "results" / f"spk_eval_{datetime.now():%Y%m%d_%H%M%S}.json"
     out.write_text(json.dumps({"recordings": RECORDINGS, "results": results}, indent=2), encoding="utf-8")
     print(f"\nSaved: {out}")
