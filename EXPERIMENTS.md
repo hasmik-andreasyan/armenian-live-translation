@@ -288,6 +288,14 @@ Truth: interview `1.1..11....111...2222.111` · session 2 `..1...22222...` (`.` 
 3. **The best threshold moves with the prior** (CAL-02's 0.10 → 0.40 here). So the deployed prior is rebuilt from all calibration audio, and the setting must be confirmed on **new** audio.
 4. Mixed phrases (19 of 39) remain a structural limit: they get one label, whatever the method.
 
+## LIVE-04a · Independent check of D-032 (threshold 0.40) on a NEW 2-person video (2026-10-26 23:21)
+
+`--record`, ~2.3 min, user silent. Prior rebuilt from 49 phrases (`models/speaker/PRIOR.txt`). Raw: `results/session_20261026_232140.jsonl` + WAVs. Labels: `eval/speakers/labels_session3.json` (24 phrases: 16 × guest `2`, 2 × interviewer `1`, 6 × mixed).
+
+- **Latency OK:** 23 lines + 1 skipped, max 5.2 s (one line), no overflow. Call-side ASR confidence 0.81–0.97.
+- **Speaker ID over-split: 7 speakers for 2 people.** The guest's 16 phrases went to S5 ×8, S1 ×2, S4 ×2, S3, S6, S7. The interviewer's 2 → S1. **Purity ≈ 0.83, coverage ≈ 0.56, F ≈ 0.67.** The guest's phrases score only **0.41–0.64** to "his" S5 centroid, so several fell under 0.40 and each opened a new speaker. **S3, S6, S7 are singletons.**
+- **Conclusion: one fixed threshold doesn't transfer between recordings.** 0.10 merged everyone on session 2; 0.40 over-splits session 3. → D-033 (confirmation rule) + a 3-recording evaluation.
+
 ## ASR runs (EXP-01 onwards)
 
 **Latency** = ASR time for one clip (median of 3 warm runs). **RTF** = latency / clip length. **Peak RAM** = process peak working set. CER/WER are normalised (lowercase, punctuation removed).

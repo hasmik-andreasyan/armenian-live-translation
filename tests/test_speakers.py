@@ -51,6 +51,21 @@ class TestSpeakerTracker(unittest.TestCase):
         m = t.assign(voice(), 0.6)            # unlike anyone, but too short to trust
         self.assertEqual((m.label, m.uncertain, len(t.counts)), ("Speaker 1", True, 1))
 
+    def test_confirm_new_ignores_one_off_outlier_but_accepts_repeated_voice(self):
+        a, b = voice(), voice()
+        t = SpeakerTracker(threshold=0.5, confirm_new=True)
+        first = [t.assign(sample(a), 3.0) for _ in range(3)]
+        outlier = t.assign(voice(), 3.0)                 # unlike anyone, only once
+        self.assertEqual((outlier.label, outlier.uncertain, len(t.counts)), ("Speaker 1", True, 1))
+        b1 = t.assign(sample(b), 3.0)                    # new voice, first phrase: candidate only
+        b2 = t.assign(sample(b), 3.0)                    # second similar phrase: confirmed
+        b3 = t.assign(sample(b), 3.0)
+        self.assertEqual([m.label for m in first], ["Speaker 1"] * 3)
+        self.assertEqual((b1.label, b1.uncertain), ("Speaker 1", True))
+        self.assertEqual((b2.label, b2.new), ("Speaker 2", True))
+        self.assertEqual(b3.label, "Speaker 2")
+        self.assertEqual(len(t.counts), 2)
+
     def test_max_speakers_cap(self):
         t = SpeakerTracker(threshold=0.9, max_speakers=3)
         for _ in range(6):

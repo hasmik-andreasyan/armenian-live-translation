@@ -39,11 +39,14 @@ from speaker_calibrate import score  # noqa: E402  (same purity/coverage/F as CA
 
 MODEL = ROOT / "models" / "speaker" / "wespeaker_en_voxceleb_resnet34_LM.onnx"
 RECORDINGS = [("interview (CAL-02)", "eval/speakers/loopback.wav", "eval/speakers/labels.json"),
-              ("session 2 (LIVE-03b)", "results/session_20261026_164715_loopback.wav", "eval/speakers/labels_session2.json")]
+              ("session 2 (LIVE-03b)", "results/session_20261026_164715_loopback.wav", "eval/speakers/labels_session2.json"),
+              ("session 3 (LIVE-04a)", "results/session_20261026_232140_loopback.wav", "eval/speakers/labels_session3.json")]
 EXTRA_PRIOR = ["eval/capture/loopback.wav", "eval/audio/clip01.wav", "eval/audio/clip02.wav", "eval/audio/clip03.wav"]
-WINDOWS = [None, 1.5, 2.0, 3.0]                  # None = one embedding per phrase (current method)
-THRESHOLDS = [0.0, 0.1, 0.2, 0.3, 0.4]
+# Window-level embeddings were tested on 2026-10-26 23:13 and rejected (D-032); set e.g. [None, 2.0] to re-test.
+WINDOWS = [None]                                 # None = one embedding per phrase
+THRESHOLDS = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6]
 PRIOR_WEIGHTS = [10, 30]
+CONFIRM = [False, True]                          # D-033: confirm a new speaker with a second similar phrase
 
 
 def windows_of(audio: np.ndarray, w: float) -> list[np.ndarray]:
@@ -79,8 +82,8 @@ def load(embedder, wav: Path) -> list[dict]:
     return phrases
 
 
-def run(phrases: list[dict], w, th: float, prior: np.ndarray, pw: float) -> list[str]:
-    tracker = SpeakerTracker(threshold=th, prior_mean=prior, prior_weight=pw)
+def run(phrases: list[dict], w, th: float, prior: np.ndarray, pw: float, confirm: bool = False) -> list[str]:
+    tracker = SpeakerTracker(threshold=th, prior_mean=prior, prior_weight=pw, confirm_new=confirm)
     labels = []
     for p in phrases:
         if w is None:
@@ -119,28 +122,32 @@ def main() -> None:
 
     results = []
     for w in WINDOWS:
-        for pw in PRIOR_WEIGHTS:
-            for th in THRESHOLDS:
-                row = {"window_s": w, "prior_weight": pw, "threshold": th}
-                fs = []
-                for name, (phrases, truth) in data.items():
-                    others = [p["phrase"] for n2, (ph2, _) in data.items() if n2 != name for p in ph2]
-                    prior = np.mean(np.stack(others + extra), axis=0)
-                    pred = run(phrases, w, th, prior, pw)
-                    sc = score(pred, truth)
-                    row[name] = {**sc, "labels": "".join(pred)}
-                    fs.append(sc["F"])
-                row["mean_F"] = round(float(np.mean(fs)), 3)
-                results.append(row)
-    results.sort(key=lambda r: -r["mean_F"])
+        for confirm in CONFIRM:
+            for pw in PRIOR_WEIGHTS:
+                for th in THRESHOLDS:
+                    row = {"window_s": w, "confirm": confirm, "prior_weight": pw, "threshold": th}
+                    fs = []
+                    for name, (phrases, truth) in data.items():
+                        others = [p["phrase"] for n2, (ph2, _) in data.items() if n2 != name for p in ph2]
+                        prior = np.mean(np.stack(others + extra), axis=0)
+                        pred = run(phrases, w, th, prior, pw, confirm)
+                        sc = score(pred, truth)
+                        row[name] = {**sc, "labels": "".join(pred)}
+                        fs.append(sc["F"])
+                    row["mean_F"] = round(float(np.mean(fs)), 3)
+                    row["worst_F"] = round(float(np.min(fs)), 3)
+                    results.append(row)
+    results.sort(key=lambda r: (-r["mean_F"], -r["worst_F"]))
 
     names = list(data)
-    print("\ntruth:  " + "   ".join(f"{n}: {''.join(t or '.' for t in data[n][1])}" for n in names))
-    print(f"\n{'window':>6s} {'w':>3s} {'thr':>4s}  {'meanF':>5s}   " + "   ".join(f"{n[:22]:22s}" for n in names))
-    for r in results[:15] + [r for r in results if r["window_s"] is None and r["prior_weight"] == 30 and r["threshold"] == 0.1]:
-        cells = "   ".join(f"F {r[n]['F']:.2f} found {r[n]['speakers_found']} {r[n]['labels']}" for n in names)
-        print(f"{str(r['window_s'] or 'phrase'):>6s} {r['prior_weight']:3d} {r['threshold']:4.1f}  {r['mean_F']:5.2f}   {cells}")
-    print("(last row = current live setting: phrase-level, w=30, th=0.10)")
+    print("\ntruth:\n" + "\n".join(f"  {n:22s} {''.join(t or '.' for t in data[n][1])}" for n in names))
+    print(f"\n{'confirm':>7s} {'w':>3s} {'thr':>4s} {'meanF':>5s} {'worstF':>6s}   per recording: F / speakers found / labels")
+    current = [r for r in results if r["window_s"] is None and not r["confirm"] and r["prior_weight"] == 30
+               and r["threshold"] == 0.4]
+    for r in results[:12] + current:
+        cells = "   ".join(f"{r[n]['F']:.2f}/{r[n]['speakers_found']} {r[n]['labels']}" for n in names)
+        print(f"{str(r['confirm']):>7s} {r['prior_weight']:3d} {r['threshold']:4.1f} {r['mean_F']:5.2f} {r['worst_F']:6.2f}   {cells}")
+    print("(last row = current live setting: phrase-level, no confirmation, w=30, th=0.40)")
     out = ROOT / "results" / f"spk_eval_{datetime.now():%Y%m%d_%H%M%S}.json"
     out.write_text(json.dumps({"recordings": RECORDINGS, "results": results}, indent=2), encoding="utf-8")
     print(f"\nSaved: {out}")

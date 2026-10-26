@@ -348,7 +348,13 @@ So int8 is required, and an efficient runtime matters. A later optimisation is t
   - **Threshold 0.40**, prior weight 30. Among the tested settings, this one has the best mean F and the speaker counts closest to the truth. Over-splitting on an occasional phrase is a smaller error than merging everyone.
   - **Rebuild the prior** from all calibration audio (`tools/build_speaker_prior.py`: both labelled recordings + first capture + clips; documented in `models/speaker/PRIOR.txt`).
 - **Limits:** the evidence is two recordings and 20 scorable phrases; the setting was chosen on them, so it **must be confirmed on new audio** (a new video or the real call). Mixed phrases (19 of 39) still get a single label. `--speaker-threshold` remains for tuning.
-- **Status:** Implemented (default threshold 0.40); prior rebuild + an independent check next.
+- **Status:** Implemented (default threshold 0.40), prior rebuilt (49 phrases). **The independent check (LIVE-04a) failed the other way: 7 speakers for 2 people.** → D-033.
+
+## D-033 · Confirm a new speaker with a second similar phrase *(proposed, being evaluated)*
+- **Evidence:** a fixed threshold doesn't transfer (0.10 merges on session 2, 0.40 over-splits session 3). In LIVE-04a, 3 of the 7 "speakers" were singletons: one-off phrases (often mixed or unusual) that matched no centroid.
+- **Rule (`SpeakerTracker(confirm_new=True)`):** an unmatched phrase gets the closest existing label (marked uncertain) and becomes a **candidate**. A new speaker is created only when a later unmatched phrase (within 5 phrases) matches a candidate (≥ threshold). One-off outliers never become speakers. A real new person is confirmed on their second phrase; the cost is that their first phrase shows the old label.
+- **Test:** `tools/speaker_eval.py` on **all three** labelled recordings, with priors from the other recordings. Thresholds 0.1–0.6 × prior weight 10/30 × confirmation off/on. Choose by mean **and worst** F. If no setting is acceptable on all three, speaker ID is documented as unreliable on fast cross-talk, and the real-call test (turn-taking) decides.
+- **Status:** Implemented + unit-tested (21 tests). Evaluation pending.
 
 ## D-015 · Microphone for evaluation and demo
 - **Decision:** Jabra headset, MME device 1, the Windows default input. Windows' MME layer delivers 16 kHz mono directly.

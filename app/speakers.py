@@ -90,15 +90,22 @@ class CallSpeakerLabeler:
 
 class SpeakerTracker:
     def __init__(self, threshold: float, min_new_speech_s: float = 1.0, max_speakers: int = 8,
-                 prior_mean: np.ndarray | None = None, prior_weight: float = 30.0, prefix: str = "Speaker") -> None:
+                 prior_mean: np.ndarray | None = None, prior_weight: float = 30.0, prefix: str = "Speaker",
+                 confirm_new: bool = False, pending_ttl: int = 5) -> None:
+        """confirm_new (D-033): an unmatched phrase only becomes a *candidate*. A new speaker is
+        created when a later unmatched phrase (within `pending_ttl` phrases) matches a candidate.
+        One-off outliers then never become speakers."""
         self.threshold = threshold
         self.min_new_speech_s = min_new_speech_s
         self.max_speakers = max_speakers
         self.prior_mean = None if prior_mean is None else np.asarray(prior_mean, dtype=np.float64)
         self.prior_weight = prior_weight
         self.prefix = prefix
+        self.confirm_new = confirm_new
+        self.pending_ttl = pending_ttl
         self._all: list[np.ndarray] = []          # every embedding seen (for the session mean)
         self._members: list[list[np.ndarray]] = []  # confident embeddings per speaker
+        self._pending: list[tuple[int, np.ndarray]] = []  # (phrase index, embedding) awaiting confirmation
 
     @property
     def counts(self) -> list[int]:
@@ -126,7 +133,17 @@ class SpeakerTracker:
         if sims[best] >= self.threshold:
             self._members[best].append(emb)
             return SpeakerMatch(self._label(best), float(sims[best]), new=False, uncertain=False)
-        if speech_s >= self.min_new_speech_s and len(self._members) < self.max_speakers:
+        can_create = speech_s >= self.min_new_speech_s and len(self._members) < self.max_speakers
+        if can_create and not self.confirm_new:
             self._members.append([emb])
             return SpeakerMatch(self._label(len(self._members) - 1), 1.0, new=True, uncertain=False)
+        if can_create:
+            now = len(self._all)
+            self._pending = [(i, e) for i, e in self._pending if now - i <= self.pending_ttl]
+            for j, (_, cand) in enumerate(self._pending):
+                if float(unit(cand - m) @ x) >= self.threshold:      # a second, similar unmatched phrase
+                    self._pending.pop(j)
+                    self._members.append([cand, emb])
+                    return SpeakerMatch(self._label(len(self._members) - 1), 1.0, new=True, uncertain=False)
+            self._pending.append((now, emb))
         return SpeakerMatch(self._label(best), float(sims[best]), new=False, uncertain=True)
