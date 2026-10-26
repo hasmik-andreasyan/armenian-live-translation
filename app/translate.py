@@ -38,7 +38,11 @@ class NllbTranslator:
             raise ValueError("empty input text")
         t0 = time.perf_counter()
         source = self.tokenizer.convert_ids_to_tokens(self.tokenizer.encode(text))
-        result = self.translator.translate_batch([source], target_prefix=[[TGT_LANG]], beam_size=beam_size)
+        # Guards against repetition loops (LIVE-03: one phrase looped "I'll tell you what, ..." for 14 s):
+        # output length is tied to input length, and no 4-token sequence may repeat.
+        result = self.translator.translate_batch([source], target_prefix=[[TGT_LANG]], beam_size=beam_size,
+                                                 max_decoding_length=2 * len(source) + 10,
+                                                 no_repeat_ngram_size=4)
         tokens = result[0].hypotheses[0]
         if tokens and tokens[0] == TGT_LANG:
             tokens = tokens[1:]

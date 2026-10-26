@@ -12,6 +12,7 @@ the moment the English line is printed, using the shared session clock.
 
 import json
 import queue
+import sys
 import threading
 import time
 from dataclasses import dataclass
@@ -45,13 +46,16 @@ def format_result(r: Result, show_latency: bool = True) -> str:
 
 
 def segment_loop(chunk_q: queue.Queue, seg_q: queue.Queue, segmenters: dict[str, Segmenter],
-                 clock: Callable[[], float], stop: threading.Event, done: threading.Event) -> None:
+                 clock: Callable[[], float], stop: threading.Event, done: threading.Event,
+                 recorder=None) -> None:
     """Runs until `stop`, then drains the chunk queue, flushes open phrases and sets `done`."""
     while not (stop.is_set() and chunk_q.empty()):
         try:
             chunk: AudioChunk = chunk_q.get(timeout=0.1)
         except queue.Empty:
             continue
+        if recorder is not None:
+            recorder.write(chunk.source, chunk.t_start, chunk.samples)
         for seg in segmenters[chunk.source].push(chunk.t_start, chunk.samples):
             seg.meta["t_emitted"] = clock()
             seg_q.put(seg)
@@ -77,35 +81,58 @@ def process_loop(seg_q: queue.Queue, asr, mt, label_for: Callable[[Segment], str
             continue
         t_begin = clock()
         hy = asr.transcribe(seg.audio)
-        if len(hy.text.strip()) < 2:             # noise or a breath: nothing to show
+        base = {"source": seg.source, "t_start": round(seg.t_start, 3), "t_end": round(seg.t_end, 3),
+                "segment_s": round(len(seg.audio) / 16000, 2), "speech_s": seg.speech_s, "forced_cut": seg.forced_cut,
+                "vad_floor_db": seg.meta.get("vad_floor_db"), "peak": seg.meta.get("peak"),
+                "vad_wait_s": round(seg.meta["t_emitted"] - seg.t_end, 3),
+                "queue_wait_s": round(t_begin - seg.meta["t_emitted"], 3),
+                "asr_s": round(hy.seconds, 3), "asr_confidence": hy.confidence, "hy": hy.text}
+        if len(hy.text.strip()) < 2:             # noise or a breath: nothing to show, but log it
+            _log(log_file, {"status": "skipped", "reason": "asr text < 2 chars", **base})
             continue
         label = label_for(seg)
         en = mt.translate(hy.text, beam_size=beam_size)
         t_done = clock()
-        timings = {"vad_wait_s": round(seg.meta["t_emitted"] - seg.t_end, 3),
-                   "queue_wait_s": round(t_begin - seg.meta["t_emitted"], 3),
-                   "asr_s": round(hy.seconds, 3), "mt_s": round(en.seconds, 3),
-                   "segment_s": round(len(seg.audio) / 16000, 2), "forced_cut": seg.forced_cut,
-                   "queue_left": seg_q.qsize(), "speaker": seg.meta.get("speaker")}
+        timings = {k: base[k] for k in ("vad_wait_s", "queue_wait_s", "asr_s", "segment_s", "forced_cut")}
+        timings.update({"mt_s": round(en.seconds, 3), "mt_tokens": en.output_tokens,
+                        "queue_left": seg_q.qsize(), "speaker": seg.meta.get("speaker")})
         result = Result(label, seg.t_start, hy.text, en.text, t_done - seg.t_end, timings)
         out.write(format_result(result, show_latency))
         out.flush()
         if results is not None:
             results.append(result)
-        if log_file is not None:
-            with open(log_file, "a", encoding="utf-8") as f:
-                f.write(json.dumps({"source": seg.source, "label": label, "t_start": round(seg.t_start, 3),
-                                    "t_end": round(seg.t_end, 3), "latency_s": round(result.latency_s, 3),
-                                    **timings, "hy": hy.text, "en": en.text}, ensure_ascii=False) + "\n")
+        _log(log_file, {"status": "shown", "label": label, "latency_s": round(result.latency_s, 3), **base,
+                        "mt_s": round(en.seconds, 3), "mt_tokens": en.output_tokens, "queue_left": seg_q.qsize(),
+                        "speaker": seg.meta.get("speaker"), "en": en.text})
 
 
-def run_threads(targets: list[tuple[Callable, tuple]]) -> list[threading.Thread]:
-    threads = [threading.Thread(target=fn, args=a, daemon=True) for fn, a in targets]
+def _log(log_file: Path | None, record: dict) -> None:
+    if log_file is not None:
+        with open(log_file, "a", encoding="utf-8") as f:
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+
+def run_threads(targets: list[tuple[Callable, tuple]], failed: threading.Event) -> list[threading.Thread]:
+    """Start worker threads. If one raises, its traceback is printed in a banner and
+    `failed` is set, so the main thread stops the app instead of silently "listening"."""
+
+    def guarded(fn: Callable, args: tuple) -> None:
+        try:
+            fn(*args)
+        except BaseException:  # noqa: BLE001  (reported loudly, then the app stops)
+            import traceback
+            sys.stderr.write("\n" + "!" * 70 + f"\nFATAL: worker thread '{fn.__name__}' crashed:\n")
+            traceback.print_exc()
+            sys.stderr.write("!" * 70 + "\n")
+            failed.set()
+
+    threads = [threading.Thread(target=guarded, args=(fn, a), daemon=True, name=fn.__name__) for fn, a in targets]
     for t in threads:
         t.start()
     return threads
 
 
-def wait_forever() -> None:
-    while True:
+def wait_forever(failed: threading.Event) -> None:
+    """Block until Ctrl+C (KeyboardInterrupt) or until a worker thread has failed."""
+    while not failed.is_set():
         time.sleep(0.2)

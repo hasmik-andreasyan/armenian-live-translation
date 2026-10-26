@@ -41,6 +41,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--no-mic", action="store_true", help="capture system audio only")
     p.add_argument("--no-loopback", action="store_true", help="capture the microphone only")
     p.add_argument("--log", action="store_true", help="write per-segment timings to results/session_*.jsonl")
+    p.add_argument("--record", action="store_true",
+                   help="diagnostics: also save each source's audio as results/session_*_<source>.wav (implies --log)")
     p.add_argument("--hide-latency", action="store_true")
     p.add_argument("--speaker-threshold", type=float, default=SPEAKER_THRESHOLD,
                    help="centred cosine needed to match a known speaker (higher = more speakers)")
@@ -84,6 +86,7 @@ def main() -> None:
     stop = threading.Event()
     segments_done = threading.Event()
     abort = threading.Event()
+    failed = threading.Event()
     t0 = time.monotonic()
     clock = lambda: time.monotonic() - t0  # noqa: E731
 
@@ -101,21 +104,30 @@ def main() -> None:
 
     segmenters = {s.name: Segmenter(s.name, max_segment_s=MAX_SEGMENT_S) for s in sources}
     labels = {"mic": "Me", "loopback": "Speaker N"}   # for the "Listening:" lines
-    log_file = ROOT / "results" / f"session_{datetime.now():%Y%m%d_%H%M%S}.jsonl" if args.log else None
+    session_base = ROOT / "results" / f"session_{datetime.now():%Y%m%d_%H%M%S}"
+    log_file = session_base.with_suffix(".jsonl") if (args.log or args.record) else None
+    recorder = None
+    if args.record:
+        from app.recorder import SessionRecorder
+        recorder = SessionRecorder(session_base, [s.name for s in sources])
     results: list = []
 
     threads = run_threads([
-        (segment_loop, (chunk_q, seg_q, segmenters, clock, stop, segments_done)),
+        (segment_loop, (chunk_q, seg_q, segmenters, clock, stop, segments_done, recorder)),
         (process_loop, (seg_q, asr, mt, label_for, clock, segments_done, sys.stdout,
                         log_file, BEAM_SIZE, not args.hide_latency, results, abort)),
-    ])
+    ], failed)
     for s in sources:
         s.start()
         print(f"Listening: {labels[s.name]:4s} <- [{s.index}] {s.device_name}")
     print("Speak Armenian. Ctrl+C to stop.\n")
 
     try:
-        wait_forever()
+        wait_forever(failed)
+        if failed.is_set():
+            print("\nThe app is stopping because of the error above.")
+            abort.set()
+            segments_done.set()      # the crashed thread may have been the segmenter
     except KeyboardInterrupt:
         print(f"\nStopping: finishing {seg_q.qsize()} queued phrase(s) and any phrase in progress. "
               "Press Ctrl+C again to skip them.")
@@ -138,10 +150,24 @@ def main() -> None:
         p95 = lat[min(len(lat) - 1, int(0.95 * len(lat)))]
         print(f"\n{len(lat)} segments | latency median {statistics.median(lat):.1f} s, p95 {p95:.1f} s, "
               f"max {lat[-1]:.1f} s | over 5 s: {sum(x > 5 for x in lat)}")
+    for s in sources:     # lost audio would explain garbled recognition
+        overflow = bool(s.status_flags & 2)
+        print(f"Capture {s.name:8s}: {s.callbacks} callbacks, longest gap {s.max_gap_s:.2f} s, "
+              f"overflow (audio lost): {'YES' if overflow else 'no'}")
+        if log_file is not None:
+            from app.pipeline import _log
+            _log(log_file, {"status": "capture_stats", "source": s.name, "callbacks": s.callbacks,
+                            "max_gap_s": round(s.max_gap_s, 3), "overflow": overflow, "rate": s.rate,
+                            "channels": s.channels, "device": s.device_name})
+    if recorder is not None:
+        recorder.close()
+        print("Recorded: " + ", ".join(str(p) for p in recorder.paths.values()))
     if tracker.counts:
         print("Call-side speakers: " + ", ".join(f"Speaker {i + 1}: {n} phrase(s)" for i, n in enumerate(tracker.counts)))
     if log_file:
-        print(f"Log: {log_file}")
+        print(f"Log: {log_file}" + ("" if log_file.exists() else "  (no lines were written)"))
+    if failed.is_set():
+        sys.exit(1)
 
 
 if __name__ == "__main__":

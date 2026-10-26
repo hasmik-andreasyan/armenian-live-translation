@@ -304,6 +304,22 @@ So int8 is required, and an efficient runtime matters. A later optimisation is t
 - **Latency cost:** +0.14–0.34 s per call-side line. It makes the overlap case (K2) a bit worse.
 - **Status:** Implemented, simulated end-to-end. **LIVE-03 next.**
 
+## D-028 · A crashed worker thread stops the app loudly
+- **Context:** the first LIVE-03 attempt (2026-10-26 16:24) processed **zero** phrases: no log file, an empty queue at Ctrl+C, no speaker counts. Yet the app kept "listening". A thread exception prints a traceback once and then scrolls away. That's a silent failure, the opposite of the "fail loudly" rule.
+- **Decision:** every worker thread runs inside a guard. On an exception, it prints the traceback in a `FATAL` banner, and the main thread stops the app: it finishes or skips the remaining work, prints the summary, adds "(no lines were written)" when the log is empty, and exits with **code 1**. No retries, no fallbacks.
+- **Status:** Implemented and simulated (forced embedder exception → banner, clean stop in ~12 s, exit code 1). The root cause of the 16:24 failure is still unknown; the rerun will show the traceback.
+
+## D-029 · After LIVE-03: one bug fix + diagnostics, no model/threshold changes
+1. **MT repetition guard** (`app/translate.py`): `max_decoding_length = 2 × input tokens + 10` and `no_repeat_ngram_size = 4`.
+   - **Why:** one phrase looped for 14.4 s and pushed 5 lines over 5 s.
+   - **Trade-off:** a translation that legitimately repeats a 4-token sequence gets reworded; it's rare in one sentence.
+2. **Diagnostics, so problems are investigated with data, not guessed:**
+   - `--record` saves each source's 16 kHz audio, time-aligned with the log (`results/session_*_<source>.wav`, gitignored).
+   - The log has **every** phrase: `status` = shown / skipped (with a reason), the ASR **confidence** (mean probability of the emitted characters), the VAD noise floor, the segment peak, and the MT token count.
+   - The summary + log include **capture statistics per source** (callbacks, longest gap, overflow = lost audio).
+- **Not changed yet** (they need the recorded audio and ground truth first): speaker prior/threshold, VAD parameters, ASR.
+- **Status:** Implemented, simulated end-to-end. A short recorded rerun is next.
+
 ## D-015 · Microphone for evaluation and demo
 - **Decision:** Jabra headset, MME device 1, the Windows default input. Windows' MME layer delivers 16 kHz mono directly.
 - **Not used:** AirPods for recording. When their mic is in use, Bluetooth switches to a low-quality call mode, which is likely to hurt ASR. We can measure this later if needed. The built-in Realtek mic (device 2) is a backup.

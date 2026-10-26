@@ -223,6 +223,21 @@ Blind rating by the native speaker: 46 distinct translations, shuffled, configur
 4. **Embedding cost is 0.14–0.34 s per call-side phrase,** added to that line's latency.
 5. The app's prior (`models/speaker/prior_mean.npy`) = mean over all 35 calibration phrases (target included).
 
+## LIVE-03 · First live session with speaker ID (2026-10-26 16:36)
+
+A **different** 2-person video from the CAL-02 interview, the user speaking over it, then speaking alone. Raw log: `results/session_20261026_163637.jsonl`. (The earlier attempt at 16:24 processed zero phrases and left no log; the cause is unknown → D-028.)
+
+**Summary:** 28 lines (6 Me, 22 call side) · latency median 4.5 s, p95 15.7 s, **max 17.5 s, 7 over 5 s** · `Speaker 1: 22`.
+
+**Findings from the log (before any change):**
+1. **Speaker ID: all 22 call phrases → Speaker 1.** Centred similarity to the Speaker 1 centroid was 0.36–0.79, every time ≥ 0.10. Hypothesis: **the prior (from the CAL-02 interview + headset clips) doesn't fit this video's channel**, so centring doesn't remove this channel's shared component (w = 30 still weighs the prior at ~58 % after 22 phrases). Also, 21 of 22 call phrases were cut at the 7 s limit (5.7–7.0 s), so turns are likely mixed inside phrases. **No ground truth for this video yet.**
+2. **Mic during the video: only one Me line** (67.9–69.7 s, garbled `դո միպն րաշմ ս`). The log **can't show why**: phrases with < 2 ASR characters were dropped without logging, and there were no levels and no overflow statistics.
+3. **Mic alone afterwards («Ողջույն, բարև»): garbage** (`իլսս`, `վղ`, `ղ յ`, `բրւ`, `պր`, phrases of 1.1–3.0 s). In LIVE-02 the same mic gave good results ("The weather is good today."), so the audio reaching the model (level / gain / lost samples) is the main suspect, not the model. MT invents text from the garbage ("The following is a list of" ×3).
+4. **MT repetition loop:** at 87–93 s, MT took **14.4 s** ("I'll tell you what, I'll tell you what, …" up to the 256-token default limit). The queue backed up, causing **5 of the 7 lines over 5 s** (8.9–17.5 s). Without it, latency was 2.9–5.5 s.
+5. **Three models in one process:** speaker embedding 0.13–0.29 s. ASR ~2.2 s per 6–7 s phrase vs 1.8 s in LIVE-02 (the libraries' thread pools may compete briefly). Not the main problem; to be watched.
+
+**Changes after LIVE-03 (D-029):** MT loop guard + diagnostics (`--record`, every phrase logged with reason/confidence/levels, capture overflow statistics). No model or threshold changes.
+
 ## ASR runs (EXP-01 onwards)
 
 **Latency** = ASR time for one clip (median of 3 warm runs). **RTF** = latency / clip length. **Peak RAM** = process peak working set. CER/WER are normalised (lowercase, punctuation removed).

@@ -26,6 +26,7 @@ class AsrResult:
     text: str
     seconds: float
     unknown_tokens: int
+    confidence: float = 1.0   # mean probability of the emitted (non-blank) characters; low = unclear audio
 
 
 ARMENIAN_CHARS = {chr(c) for c in range(0x0531, 0x0557)} | {chr(c) for c in range(0x0561, 0x0588)} | set("։֊")
@@ -99,6 +100,11 @@ class OmniCtcAsr:
             logits = self.model(self._torch.from_numpy(x)[None]).logits[0]
             if self._blocked is not None:  # in-place on an inference tensor: must stay inside inference_mode
                 logits[:, self._blocked] = float("-inf")
-            ids = logits.argmax(dim=-1).tolist()
+            probs = logits.softmax(dim=-1)
+            best_p, best_id = probs.max(dim=-1)
+            ids = best_id.tolist()
+            emitted = best_id != self.blank_id
+            confidence = float(best_p[emitted].mean()) if bool(emitted.any()) else 0.0
         text, unknown = greedy_ctc_decode(ids, self.id_to_token, self.blank_id, self.drop_ids, self.unk_id)
-        return AsrResult(text=text, seconds=time.perf_counter() - t0, unknown_tokens=unknown)
+        return AsrResult(text=text, seconds=time.perf_counter() - t0, unknown_tokens=unknown,
+                         confidence=round(confidence, 3))

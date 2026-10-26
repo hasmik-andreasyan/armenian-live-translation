@@ -156,5 +156,9 @@ class Segmenter:
         last = len(frames) - 1 if forced else min(voiced_idx[-1] + self.tail_frames, len(frames) - 1)
         kept = frames[: last + 1]
         t_end = frames[voiced_idx[-1]][0] + FRAME_S if not forced else kept[-1][0] + FRAME_S
-        return [Segment(self.source, kept[0][0], t_end, np.concatenate([f[1] for f in kept]),
-                        forced_cut=forced, speech_s=round(len(voiced_idx) * FRAME_S, 2))]
+        seg = Segment(self.source, kept[0][0], t_end, np.concatenate([f[1] for f in kept]),
+                      forced_cut=forced, speech_s=round(len(voiced_idx) * FRAME_S, 2))
+        if hasattr(self.is_speech, "floor"):     # diagnostics: the energy VAD's noise floor at this point
+            seg.meta["vad_floor_db"] = round(float(self.is_speech.floor), 1)
+        seg.meta["peak"] = round(float(np.abs(seg.audio).max()), 3)
+        return [seg]
