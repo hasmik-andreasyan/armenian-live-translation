@@ -238,6 +238,34 @@ A **different** 2-person video from the CAL-02 interview, the user speaking over
 
 **Changes after LIVE-03 (D-029):** MT loop guard + diagnostics (`--record`, every phrase logged with reason/confidence/levels, capture overflow statistics). No model or threshold changes.
 
+## LIVE-03b · Scripted, recorded session (`--record`, 2026-10-26 16:47)
+
+Script: 0–10 s silence · 10–44 s the user alone (sentences and single words) · ~55–145 s video (the user silent as planned) · the user speaking over the video at ~120–137 s. Raw: `results/session_20261026_164715.jsonl` + `_mic.wav` + `_loopback.wav`.
+
+**Summary:** 22 lines + 2 skipped · latency median 3.6 s, **max 4.8 s, 0 over 5 s** (the MT loop guard worked) · capture: **no overflow on either source**, longest gaps 0.06 / 0.08 s · speakers: `Speaker 1: 14`.
+
+**Microphone (recorded audio + offline replay, `results/replay_mic_20261026_170223.json`):**
+- **Capture is clean:** background −67 dBFS, speech peaks −9…−12 dBFS (~55 dB SNR). Silence at 44–118 s = the user was silent (as planned), not a capture problem.
+- **The VAD found every utterance, with correct boundaries** (checked at 100 ms resolution).
+- **ASR vs what the user said:**
+
+| t | said | ASR (live replay) | confidence | ok |
+|---|---|---|---|---|
+| 12.6 | «Բարև» | (empty) | 0.00 | ✗ |
+| 19.4 | «Այսօր եղանակը շատ լավ է» | correct | 0.97 | ✓ |
+| 25.5 | «Ողջույն» | `վղ` | 0.59 | ✗ |
+| 30.7 | «Ինչպե՞ս ես» | `ինչպես ես` | 0.98 | ✓ |
+| 34.7 | «Բարև» | `ր` | 0.72 | ✗ |
+| 40.3 | «Բարև, հուսամ լավ օր կունենանք» | correct (one missing space) | 0.95 | ✓ |
+| 119.6 | «Այսօր եղանակը շատ լավ է» (over the video) | correct | 0.98 | ✓ |
+| 125.6 | «Ողջույն, բարև» (over the video) | `ողջույն բարեւ` | 0.89 | ✓ |
+| 136.2 | «Շատ բարի» (over the video) | `շտ բր` | 0.57 | ✗ |
+
+- **Sentences and 2-word phrases are recognised; isolated words of 0.6–1.0 s are not.** Confidence separates the two cleanly (≥ 0.89 vs ≤ 0.72). Padding with 0.5 s of silence rescued none and hurt one → **D-030**.
+- **Recognising the mic while call audio plays works** (119.6 / 125.6 s).
+
+**Call side (labels: `eval/speakers/labels_session2.json`):** `m m 1 m m m 2 2 2 2 2 m m m`. **8 of 14 phrases are mixed.** Every call phrase was cut at 7 s (continuous speech). Live: all Speaker 1; the guest block 93.8–126 s had similarity 0.56–0.72 to a centroid built from mixed phrases → **D-031**.
+
 ## ASR runs (EXP-01 onwards)
 
 **Latency** = ASR time for one clip (median of 3 warm runs). **RTF** = latency / clip length. **Peak RAM** = process peak working set. CER/WER are normalised (lowercase, punctuation removed).

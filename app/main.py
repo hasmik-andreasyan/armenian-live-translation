@@ -31,6 +31,7 @@ SPEAKER_MODEL = ROOT / "models" / "speaker" / "wespeaker_en_voxceleb_resnet34_LM
 SPEAKER_PRIOR = ROOT / "models" / "speaker" / "prior_mean.npy"
 SPEAKER_THRESHOLD = 0.10     # D-027 (CAL-02)
 SPEAKER_PRIOR_WEIGHT = 30    # D-027 (CAL-02)
+ASR_MIN_CONFIDENCE = 0.80    # D-030: below this, show as unclear and don't translate
 
 
 def parse_args() -> argparse.Namespace:
@@ -44,6 +45,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--record", action="store_true",
                    help="diagnostics: also save each source's audio as results/session_*_<source>.wav (implies --log)")
     p.add_argument("--hide-latency", action="store_true")
+    p.add_argument("--min-confidence", type=float, default=ASR_MIN_CONFIDENCE,
+                   help="ASR confidence below which a line is marked unclear and not translated (0 = off)")
     p.add_argument("--speaker-threshold", type=float, default=SPEAKER_THRESHOLD,
                    help="centred cosine needed to match a known speaker (higher = more speakers)")
     return p.parse_args()
@@ -115,7 +118,7 @@ def main() -> None:
     threads = run_threads([
         (segment_loop, (chunk_q, seg_q, segmenters, clock, stop, segments_done, recorder)),
         (process_loop, (seg_q, asr, mt, label_for, clock, segments_done, sys.stdout,
-                        log_file, BEAM_SIZE, not args.hide_latency, results, abort)),
+                        log_file, BEAM_SIZE, not args.hide_latency, results, abort, args.min_confidence)),
     ], failed)
     for s in sources:
         s.start()

@@ -318,7 +318,24 @@ So int8 is required, and an efficient runtime matters. A later optimisation is t
    - The log has **every** phrase: `status` = shown / skipped (with a reason), the ASR **confidence** (mean probability of the emitted characters), the VAD noise floor, the segment peak, and the MT token count.
    - The summary + log include **capture statistics per source** (callbacks, longest gap, overflow = lost audio).
 - **Not changed yet** (they need the recorded audio and ground truth first): speaker prior/threshold, VAD parameters, ASR.
-- **Status:** Implemented, simulated end-to-end. A short recorded rerun is next.
+- **Status:** Implemented, simulated end-to-end. Recorded rerun done (LIVE-03b, `results/session_20261026_164715*`).
+
+## D-030 · Unclear speech is shown, not translated (ASR confidence < 0.80)
+- **Evidence:**
+  - LIVE-03b mic audio, replayed offline with `tools/replay_mic.py` and checked against what the user actually said: every correct phrase had confidence **≥ 0.89** (sentences, «Ողջույն, բարև», «Ինչպե՞ս ես»), and every wrong one **≤ 0.72** (isolated «Բարև», «Ողջույն», «Շատ բարի»: 0.6–1.0 s of speech). The EXP-01 clips score 0.946–0.962.
+  - Padding short phrases with 0.5 s of silence rescued **none** of them and made «Ողջույն, բարև» worse → rejected.
+- **Decision:** confidence < **0.80** → the line is shown with `(unclear)` after the Armenian, and `EN: [unclear speech, not translated]`. MT is skipped, so it can't invent fluent English like "The following is a list of" from garbled input, and the time is saved. CLI: `--min-confidence` (0 = off). Logged as `status: "unclear"`.
+- **Limits:** confidence catches garbage, not small errors (clip03: CER 9.7 % at confidence 0.95). **Isolated words under ~1 s are a real ASR limitation** (README).
+- **Status:** Implemented, simulated (MT not called for unclear lines).
+
+## D-031 · Speaker ID: mixed phrases are the real problem *(investigation, no change yet)*
+- **Evidence:** LIVE-03b call side, labelled by the user (`eval/speakers/labels_session2.json`): **8 of 14 phrases are mixed** (both people), 1 interviewer, 5 guest (93.8–126 s). CAL-02: 11 of 25 mixed.
+  - Live, all 14 were Speaker 1. The guest phrases had similarity **0.56–0.72** to the Speaker 1 centroid.
+  - That centroid was created and grown from **mixed** phrases, so it represents "interviewer + guest" and matches both.
+  - Raising the threshold would mostly split the mixed phrases into spurious speakers.
+- **Hypothesis to test:** embed **shorter windows** (1.5 / 2 / 3 s) within each phrase, track at window level, and label the phrase by the majority of its windows. Windows are much more likely to be single-speaker, so the centroids stay pure. Cost: ~0.2–0.4 s more per call-side line.
+- **Test:** `tools/speaker_eval.py`. Phrase-level vs window-level on **both** labelled recordings, with the prior always from the *other* recordings. Decide from F, not impressions.
+- **Status:** Evaluation script ready; waiting for results.
 
 ## D-015 · Microphone for evaluation and demo
 - **Decision:** Jabra headset, MME device 1, the Windows default input. Windows' MME layer delivers 16 kHz mono directly.

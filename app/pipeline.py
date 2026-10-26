@@ -20,7 +20,10 @@ from pathlib import Path
 from typing import Callable, TextIO
 
 from app.audio import AudioChunk
+from app.translate import MtResult
 from app.vad import Segment, Segmenter
+
+UNCLEAR_EN = "[unclear speech, not translated]"
 
 
 @dataclass
@@ -69,7 +72,7 @@ def segment_loop(chunk_q: queue.Queue, seg_q: queue.Queue, segmenters: dict[str,
 def process_loop(seg_q: queue.Queue, asr, mt, label_for: Callable[[Segment], str], clock: Callable[[], float],
                  segments_done: threading.Event, out: TextIO, log_file: Path | None, beam_size: int = 1,
                  show_latency: bool = True, results: list | None = None,
-                 abort: threading.Event | None = None) -> None:
+                 abort: threading.Event | None = None, min_confidence: float = 0.0) -> None:
     """Processes segments until the segmenter has finished and the queue is empty
     (or immediately when `abort` is set: a second Ctrl+C)."""
     while not (segments_done.is_set() and seg_q.empty()):
@@ -91,17 +94,24 @@ def process_loop(seg_q: queue.Queue, asr, mt, label_for: Callable[[Segment], str
             _log(log_file, {"status": "skipped", "reason": "asr text < 2 chars", **base})
             continue
         label = label_for(seg)
-        en = mt.translate(hy.text, beam_size=beam_size)
+        unclear = hy.confidence < min_confidence
+        if unclear:
+            # D-030: don't let MT invent fluent English from garbled recognition.
+            en = MtResult(text=UNCLEAR_EN, seconds=0.0, output_tokens=0)
+        else:
+            en = mt.translate(hy.text, beam_size=beam_size)
         t_done = clock()
         timings = {k: base[k] for k in ("vad_wait_s", "queue_wait_s", "asr_s", "segment_s", "forced_cut")}
         timings.update({"mt_s": round(en.seconds, 3), "mt_tokens": en.output_tokens,
                         "queue_left": seg_q.qsize(), "speaker": seg.meta.get("speaker")})
-        result = Result(label, seg.t_start, hy.text, en.text, t_done - seg.t_end, timings)
+        hy_display = f"{hy.text}   (unclear)" if unclear else hy.text
+        result = Result(label, seg.t_start, hy_display, en.text, t_done - seg.t_end, timings)
         out.write(format_result(result, show_latency))
         out.flush()
         if results is not None:
             results.append(result)
-        _log(log_file, {"status": "shown", "label": label, "latency_s": round(result.latency_s, 3), **base,
+        _log(log_file, {"status": "unclear" if unclear else "shown", "label": label,
+                        "latency_s": round(result.latency_s, 3), **base,
                         "mt_s": round(en.seconds, 3), "mt_tokens": en.output_tokens, "queue_left": seg_q.qsize(),
                         "speaker": seg.meta.get("speaker"), "en": en.text})
 

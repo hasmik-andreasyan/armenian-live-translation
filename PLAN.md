@@ -1,6 +1,6 @@
 # PLAN.md: Live Armenian Transcription → English Translation
 
-Status (2026-10-26, end of day 1): **live app working; speaker identification in progress.** For the current state and next steps, see **HANDOVER.md**.
+Status (2026-10-26, 17:15): **live app working (0 of 22 lines over 5 s in LIVE-03b); confidence filter added; speaker identification is the open problem (mixed phrases, D-031).** For the current state and next steps, see **HANDOVER.md**.
 
 | Milestone | Status |
 |---|---|
@@ -9,7 +9,7 @@ Status (2026-10-26, end of day 1): **live app working; speaker identification in
 | M2 eval set | 🟡 3 clips + 11 MT sentences (one speaker); more voices + call audio still to do |
 | M3 ASR | ✅ omniASR-CTC-300M-v2 int8 (D-014, D-023) |
 | M4 MT | ✅ NLLB-600M CT2 int8, beam 1 (D-018) |
-| M5 speaker ID | 🟡 module + calibration tools ready; centring fix (D-026); CAL-02 + integration next |
+| M5 speaker ID | 🟡 integrated (centred tracker, D-026/027); fails on fast cross-talk because of mixed phrases (D-031); window-level evaluation ready to run |
 | M6 walking skeleton | ✅ `python -m app.main`, LIVE-01/02 |
 | M7 latency + robustness on a real call | ⬜ |
 | M8 README, chats export, rehearsal | ⬜ |
