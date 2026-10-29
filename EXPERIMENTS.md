@@ -316,6 +316,21 @@ Raw file: `results/spk_eval_20261026_234241.json`. Phrase-level embeddings; prio
 2. **No setting is perfect on all three.** The remaining errors sit mostly in mixed phrases and right after speaker changes (confirmation delay).
 3. All three recordings were used for the choice, so this is not an independent estimate. The real call is.
 
+## CLONE-01 · Fresh-clone install + live run (2026-10-29 18:42)
+- **Setup:** `git clone` of the local repo (commit `b5fd9f7`) into a new folder, then the README exactly: venv, `pip install -r requirements.txt`, 21 unit tests (OK). The models were **copied** from the working folder instead of re-downloaded, without the float32 MT model (as `prepare_nllb.py` now builds it, D-037). `git status` afterwards: clean except the new session logs.
+- **Run:** `python -m app.main --log`, 1 min of a 1-person Armenian video + a few of the user's sentences. Plugged in, Best performance. Raw file: `results/session_20261029_184216.jsonl`.
+- **Result:** 19 lines; **latency median 4.0 s, p95 5.5 s, max 5.5 s; 3 / 19 over 5 s**; no lost audio on either side.
+  - Mic (5 lines): all shown as `Me`, latency median 2.0 s, max 2.5 s.
+  - Call side (14 lines): one person, **one label (Speaker 1) for all 13 phrases** counted by the tracker; latency median 4.3 s.
+  - Same speed as the original folder (ASR on phrases ≥ 6 s: median 2.35 s; MT median 1.1 s). The clone behaves exactly like the working folder.
+- **The 3 lines over 5 s** (over by 0.19, 0.52 and 0.36 s) were all call-side phrases, 3.8–5.9 s long:
+  - waiting for the phrase end 0.6–1.4 s (the video speaker trailing off before a pause);
+  - ASR 1.7–3.0 s; MT 1.0–1.6 s;
+  - one waited 1.2 s behind a mic phrase (both sides spoke).
+  - **Lowering the 7 s maximum phrase length would not have helped** (all three were under 6 s). No single setting targets this; the fixes are the bigger items in README §6 (faster MT output layer, two workers).
+- **Environment matters:** a run started right after copying 4 GB of models and installing the venv was ~40 % slower in both models (9 / 17 over 5 s). A later run of the same clone in the same conditions gave the result above. So: don't demo right after an install; do one warm-up run.
+- **Decision:** code frozen; result documented as a known limitation (README §5).
+
 ## ASR runs (EXP-01 onwards)
 
 **Latency** = ASR time for one clip (median of 3 warm runs). **RTF** = latency / clip length. **Peak RAM** = process peak working set. CER/WER are normalised (lowercase, punctuation removed).

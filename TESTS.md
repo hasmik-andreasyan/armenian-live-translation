@@ -19,7 +19,7 @@ Status: ✅ met · 🟡 met with documented limits · ⬜ pending.
 
 | # | Constraint | How it's tested | Evidence | Status |
 |---|---|---|---|---|
-| C1 | **≤ 5 s** from the end of a phrase to the English line | Latency measured per line on the session clock; summary prints median / p95 / max / count over 5 s | LIVE-01: 0/45 over 5 s (max 4.4). LIVE-03b: 0/22 (max 4.8). LIVE-04a: 1/23 (5.2 s). LIVE-02: 1 line at 7.0 s when **both sides spoke at once** (documented limitation) | 🟡 |
+| C1 | **≤ 5 s** from the end of a phrase to the English line | Latency measured per line on the session clock; summary prints median / p95 / max / count over 5 s | LIVE-01: 0/45 over 5 s (max 4.4). LIVE-03b: 0/22 (max 4.8). LIVE-04a: 1/23 (5.2 s). **CLONE-01: median 4.0 s, 3/19 over 5 s (max 5.5 s)**, all long call-side phrases; mic lines ≤ 2.5 s. LIVE-02: 1 line at 7.0 s when **both sides spoke at once**. Median always under 5 s; about 1 in 6 long, uninterrupted call-side phrases arrives at 5.0–5.5 s (documented limitation) | 🟡 |
 | C2 | Transcription, translation, speaker ID **run locally** | All models load from local folders (`local_files_only=True`, CTranslate2/sherpa local paths) | No network needed after the one-time download | ✅ |
 | C3 | Python, runs on **this laptop** | All measurements on the i5-8250U / 8 GB / Windows 10 | RAM for all models ≈ 2 GB; 4 threads | ✅ |
 | C4 | Models chosen deliberately, explained | README §3, DECISIONS.md | Every choice backed by a measurement on this laptop | ✅ |
@@ -39,5 +39,5 @@ Status: ✅ met · 🟡 met with documented limits · ⬜ pending.
 | Check | Why | Status |
 |---|---|---|
 | **LIVE-04: real call** (Zoom/Meet/Telegram) with ≥ 2 Armenian speakers on the call side + the user | The only independent test of speaker ID (all labelled recordings were used for tuning), and the closest to the interview | ⬜ |
-| **Fresh-clone install** following the README on this laptop (new folder) | Proves the setup instructions and the committed prior work | ⬜ |
+| **Fresh-clone install** following the README on this laptop (new folder) | Proves the setup instructions and the committed prior work | ✅ CLONE-01 (models copied, not re-downloaded) |
 | **Rehearsal** under demo conditions (plugged in, Best performance, headset, call app running) | Latency and RAM with the call app open | ⬜ |

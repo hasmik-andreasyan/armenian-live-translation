@@ -95,7 +95,7 @@ Models live in `models/`, which is never committed.
 | `--min-confidence X` | below this ASR confidence a line is shown as *unclear* and not translated (default 0.80; 0 = off) |
 | `--hide-latency` | don't print the latency next to each label |
 
-**For best results:** laptop **plugged in**, Windows power mode **Best performance**, browser tabs closed (CPU and RAM are tight on this machine).
+**For best results:** laptop **plugged in**, Windows power mode **Best performance**, browser tabs closed (CPU and RAM are tight on this machine). **Don't run it right after installing or copying the models:** Windows scans the new files for a few minutes, and a run during that time was ~40 % slower (CLONE-01). Do one short warm-up run before a demo.
 
 ---
 
@@ -217,6 +217,7 @@ Every choice below was **measured on this laptop**. The numbers come from `EXPER
 | LIVE-03b | scripted, recorded (22 lines) | **0 over 5 s**, max 4.8 s; no lost audio; mic sentences correct (confidence 0.87–0.98) |
 | LIVE-04a | new 2-person video, 23 lines | max 5.2 s (1 line); speaker over-split → fixed by D-033/034 |
 | SPK-EVAL2 | speaker settings on 3 labelled recordings | balanced accuracy mean 0.90, worst 0.79 |
+| CLONE-01 | fresh clone following this README, 1-person video + mic (19 lines) | install + 21 tests OK; latency **median 4.0 s**, max 5.5 s, **3 over 5 s** (long call-side phrases); 1 speaker → 1 label; no lost audio |
 | **LIVE-04** | **real call, ≥ 2 Armenian speakers** | **see EXPERIMENTS.md** |
 
 ---
@@ -228,11 +229,12 @@ Every choice below was **measured on this laptop**. The numbers come from `EXPER
 3. **ASR errors can change the meaning** while the English stays fluent (one dropped letter turned "friends" into "classmates"). Fast, informal speech is clearly worse than read speech.
 4. **English words come out in Armenian letters** (`Python` → `փայսոն`). NLLB usually recovers them.
 5. **Speaker identification degrades with fast cross-talk.** Phrases containing two voices get one label. A new person's *first* phrase shows the previous label (the confirmation delay). Occasionally one extra speaker appears.
-6. **Overlapping speech on both sides** makes phrases queue behind each other: one worker, 4 cores. In LIVE-02 one line reached 7 s while the user spoke over a video.
-7. **Long monologues are cut at ~7 s,** at the quietest point; a cut can still fall mid-sentence.
-8. **Windows only** (WASAPI loopback); **headset required** (no echo cancellation).
-9. **The ASR model is a community conversion** (`aadel4/omniASR-CTC-300M-v2` on Hugging Face), not a Meta release. It is pinned and hash-verified, but if that repository disappears, a fresh install needs another conversion of Meta's checkpoint.
-10. **Licenses:** NLLB-200 is CC-BY-NC-4.0 ("research model", non-commercial). The speaker model is CC-BY-4.0. omniASR is Apache-2.0.
+6. **The 5 s limit is met on median, not on every line.** Median latency is 4.0–4.3 s, but about 1 in 6 long, uninterrupted phrases from the call side arrives at **5.0–5.5 s** (CLONE-01: 3 of 19 lines). The time is spread over waiting for the speaker to pause, ASR and MT, so no single setting fixes it (§6, items 4–5 would). Your own lines are typically ~2 s.
+7. **Overlapping speech on both sides** makes phrases queue behind each other: one worker, 4 cores. In LIVE-02 one line reached 7 s while the user spoke over a video.
+8. **Long monologues are cut at ~7 s,** at the quietest point; a cut can still fall mid-sentence.
+9. **Windows only** (WASAPI loopback); **headset required** (no echo cancellation).
+10. **The ASR model is a community conversion** (`aadel4/omniASR-CTC-300M-v2` on Hugging Face), not a Meta release. It is pinned and hash-verified, but if that repository disappears, a fresh install needs another conversion of Meta's checkpoint.
+11. **Licenses:** NLLB-200 is CC-BY-NC-4.0 ("research model", non-commercial). The speaker model is CC-BY-4.0. omniASR is Apache-2.0.
 
 ## 6. What I would improve with more time
 
