@@ -1,0 +1,2 @@
+# Keep exported chats byte-for-byte: some tool outputs contain Windows CR characters.
+*.md -text
