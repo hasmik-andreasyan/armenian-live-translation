@@ -3,17 +3,18 @@
 1. Shows the files and sizes at the PINNED revision and asks before downloading.
 2. Downloads them to models/facebook__nllb-200-distilled-600M/ and verifies the
    weights' SHA-256 against the hash Hugging Face publishes.
-3. Converts ONCE into two CTranslate2 folders, so each precision can be loaded
-   on its own in EXP-02:
-       models/nllb-600m-ct2-int8/     (~0.6 GB, what the app will use)
-       models/nllb-600m-ct2-float32/  (~2.5 GB, accuracy reference)
+3. Converts to CTranslate2:
+       models/nllb-600m-ct2-int8/     (~0.6 GB, what the app uses)
+       models/nllb-600m-ct2-float32/  (~2.5 GB, only with --with-float32: the
+                                       accuracy reference for EXP-02, D-037)
    Each gets a SOURCE.txt recording repo, revision, quantization and ct2 version.
 
 Conversion loads the full model into RAM (expect a peak of several GB):
 close browsers and other heavy apps first.
 
 Usage:
-    .venv\\Scripts\\python tools\\prepare_nllb.py
+    .venv\\Scripts\\python tools\\prepare_nllb.py                  # the app: int8 only
+    .venv\\Scripts\\python tools\\prepare_nllb.py --with-float32   # + EXP-02 reference
 """
 
 import argparse
@@ -45,6 +46,8 @@ def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--models-dir", type=Path, default=Path("models"))
     p.add_argument("--yes", action="store_true", help="don't ask for confirmation")
+    p.add_argument("--with-float32", action="store_true",
+                   help="also build the float32 model (EXP-02 reference only; the app uses int8)")
     args = p.parse_args()
 
     from huggingface_hub import HfApi, hf_hub_download
@@ -57,7 +60,9 @@ def main() -> None:
     for s in files:
         print(f"  {s.rfilename:28s} {(s.size or 0) / 1e6:9.1f} MB")
     print(f"  {'TOTAL':28s} {sum(s.size or 0 for s in files) / 1e6:9.1f} MB")
-    print("Then: convert to CTranslate2 int8 (~0.6 GB) and float32 (~2.5 GB).")
+    quantizations = ("int8", "float32") if args.with_float32 else ("int8",)
+    print("Then: convert to CTranslate2 " + " and ".join(quantizations)
+          + (" (~0.6 GB + ~2.5 GB)." if args.with_float32 else " (~0.6 GB)."))
     if not args.yes and input("Download and convert? [y/N] ").strip().lower() != "y":
         raise SystemExit("Cancelled.")
 
@@ -92,7 +97,7 @@ def main() -> None:
     else:
         print("\nConverter: this ctranslate2 version has no low_cpu_mem_usage option, so peak RAM will be higher")
 
-    for quantization in ("int8", "float32"):
+    for quantization in quantizations:
         out = args.models_dir / f"nllb-600m-ct2-{quantization}"
         print(f"\nConverting to {out} (quantization={quantization}) ...")
         t0 = time.perf_counter()
@@ -102,7 +107,7 @@ def main() -> None:
             f"{REPO}\n{REVISION}\nquantization={quantization}\nctranslate2={ct2_version}\n", encoding="utf-8")
         print(f"  done in {time.perf_counter() - t0:.0f} s, folder {folder_mb(out):.0f} MB, process peak RAM so far {peak_mb()} MB")
 
-    print("\nAll done. Next: EXP-02 (benchmarks/exp02_mt_eval.py).")
+    print("\nAll done.")
 
 
 if __name__ == "__main__":

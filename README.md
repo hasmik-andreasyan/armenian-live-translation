@@ -28,7 +28,7 @@ Target machine (the one used for all measurements): **Windows 10 64-bit, Intel C
 ### 1.1 Prerequisites
 - **Windows 10/11, 64-bit.** System-audio capture uses WASAPI loopback, which is Windows-only.
 - **Python 3.12, 64-bit** (python.org installer). Use the `py` launcher: on many systems the bare `python` command opens the Microsoft Store.
-- **Git**, ~**8 GB free disk** (model downloads + conversions), internet for the one-time model download.
+- **Git**, ~**6 GB free disk** (models ~4.5 GB + Python packages), internet for the one-time model download.
 - **A headset.** Echo cancellation is out of scope. With loudspeakers, the mic would pick up the call and label it `Me`.
 
 ### 1.2 Install
@@ -47,12 +47,13 @@ All commands call `.venv\Scripts\python` directly, so there's no need to activat
 
 ```powershell
 .venv\Scripts\python tools\download_model.py           # ASR: omniASR-CTC-300M-v2, 1.3 GB, SHA-256 verified
-.venv\Scripts\python tools\prepare_nllb.py             # MT: NLLB-200-distilled-600M (2.5 GB) → CTranslate2 int8 + float32
+.venv\Scripts\python tools\prepare_nllb.py             # MT: NLLB-200-distilled-600M (2.5 GB) → CTranslate2 int8
 .venv\Scripts\python tools\download_speaker_model.py   # speaker embeddings: WeSpeaker ResNet34-LM, 26 MB
 ```
 
 - Every model is downloaded at a **pinned revision** and verified against the published SHA-256 where one exists (`models/*/REVISION.txt`, `SOURCE.txt`).
-- `prepare_nllb.py` converts the official weights locally. **Close the browser first:** conversion needs ~3.7 GB RAM at peak.
+- `prepare_nllb.py` converts the official weights locally. **Close the browser first:** conversion needs ~3.7 GB RAM at peak. It builds only the int8 model the app uses; `--with-float32` also builds the float32 reference used in EXP-02 (D-037).
+- `download_model.py` and `prepare_nllb.py` show the files and ask before downloading (`--yes` skips the question).
 - The speaker **prior** (`assets/speaker_prior_mean.npy`) is part of the repository (§3.4).
 
 Models live in `models/`, which is never committed.
@@ -230,7 +231,8 @@ Every choice below was **measured on this laptop**. The numbers come from `EXPER
 6. **Overlapping speech on both sides** makes phrases queue behind each other: one worker, 4 cores. In LIVE-02 one line reached 7 s while the user spoke over a video.
 7. **Long monologues are cut at ~7 s,** at the quietest point; a cut can still fall mid-sentence.
 8. **Windows only** (WASAPI loopback); **headset required** (no echo cancellation).
-9. **Licenses:** NLLB-200 is CC-BY-NC-4.0 ("research model", non-commercial). The speaker model is CC-BY-4.0. omniASR is Apache-2.0.
+9. **The ASR model is a community conversion** (`aadel4/omniASR-CTC-300M-v2` on Hugging Face), not a Meta release. It is pinned and hash-verified, but if that repository disappears, a fresh install needs another conversion of Meta's checkpoint.
+10. **Licenses:** NLLB-200 is CC-BY-NC-4.0 ("research model", non-commercial). The speaker model is CC-BY-4.0. omniASR is Apache-2.0.
 
 ## 6. What I would improve with more time
 
@@ -253,9 +255,11 @@ Every choice below was **measured on this laptop**. The numbers come from `EXPER
 | `results/` | raw JSON/JSONL of every measurement |
 | `assets/` | speaker prior mean (+ provenance) |
 | `PLAN.md` | the original plan and milestone status |
-| `DECISIONS.md` | every decision with evidence (D-001 … D-036) |
+| `DECISIONS.md` | every decision with evidence (D-001 … D-037) |
 | `EXPERIMENTS.md` | every measurement, with findings |
-| `HANDOVER.md` | working notes between sessions |
+| `HANDOVER.md` | working notes between sessions (historical; this README is current) |
 | `chats/` | the complete, unedited AI chat transcripts (one Markdown file per session) |
 
 **Not committed (per the brief):** model weights (`models/`), audio recordings (`*.wav`), per-phrase voice embeddings, secrets.
+
+**Reproducing the measurements:** the app, the unit tests and the CPU benchmark run from a fresh clone. The ASR/MT experiments, speaker calibration/evaluation and mic replay need **our audio recordings, which are not committed** (they contain people's voices). Their inputs are described in `eval/` and their raw outputs are in `results/`, so the numbers can be checked, and the scripts can be rerun on your own recordings with the same manifest format.

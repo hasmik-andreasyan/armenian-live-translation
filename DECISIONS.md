@@ -381,6 +381,11 @@ So int8 is required, and an efficient runtime matters. A later optimisation is t
 - `requirements.txt` pins the **exact versions every measurement used** (Windows 10 64-bit, Python 3.12.3). The earlier `requirements-*.txt` files (per experiment) stay as history.
 - **Status:** Implemented.
 
+## D-037 · The float32 MT conversion is optional
+- **Problem:** `tools/prepare_nllb.py` always built both CTranslate2 models. The app only uses int8 (D-018); float32 was the accuracy reference for EXP-02. On a fresh install that's ~2.5 GB of extra disk and a second conversion at peak RAM on an 8 GB laptop.
+- **Decision:** int8 only by default; `--with-float32` builds the reference as before. No change to the app or to any measurement.
+- **Status:** Implemented 2026-10-29.
+
 ## D-015 · Microphone for evaluation and demo
 - **Decision:** Jabra headset, MME device 1, the Windows default input. Windows' MME layer delivers 16 kHz mono directly.
 - **Not used:** AirPods for recording. When their mic is in use, Bluetooth switches to a low-quality call mode, which is likely to hurt ASR. We can measure this later if needed. The built-in Realtek mic (device 2) is a backup.

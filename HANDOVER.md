@@ -1,5 +1,7 @@
 # HANDOVER.md: where we are and what comes next
 
+> **Historical working note.** Kept as it was during development (last full update Mon 2026-10-26). Since then: the speaker prior moved to `assets/` (D-035), requirements were pinned (D-036), float32 MT conversion became optional (D-037), and README.md + TESTS.md were written. **README.md is the current documentation.**
+
 Last updated: **Mon 2026-10-26, 23:50** (day 2, evening). **Deadline: Sun 2026-11-01.**
 
 > **UPDATE 23:50: speaker ID decided (D-034).** Window embeddings were rejected (D-032). Fixed thresholds didn't transfer (0.10 merged, 0.40 over-split on a new video, LIVE-04a). The app now uses a **confirm-new-speaker rule, prior weight 10, threshold 0.30**, chosen by **balanced accuracy** on 3 labelled recordings: mean 0.90, worst 0.79, 2–3 speakers found for 2 real people. **Next: the real call test (LIVE-04)**, the only independent test left. Then the README. Sections 2–3 below are partly superseded by this note.

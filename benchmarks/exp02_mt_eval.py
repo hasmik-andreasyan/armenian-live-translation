@@ -3,6 +3,7 @@
 Run once per precision, each in its own process, so RAM numbers don't mix:
     .venv\\Scripts\\python benchmarks\\exp02_mt_eval.py --precision int8
     .venv\\Scripts\\python benchmarks\\exp02_mt_eval.py --precision float32
+        (float32 needs: tools\\prepare_nllb.py --with-float32)
 
 Input conditions (D-017):
     A original   : Armenian with punctuation and capitals (eval/mt_sentences.csv)
