@@ -1,0 +1,24 @@
+# Live Armenian → English transcription: runtime + evaluation dependencies.
+# Pinned to the exact versions used for every measurement in EXPERIMENTS.md
+# (Windows 10 64-bit, Python 3.12.3, October 2026). Install into a venv:
+#     py -3.12 -m venv .venv
+#     .venv\Scripts\python -m pip install -r requirements.txt
+
+# Core numerics / models
+numpy==2.5.4
+torch==2.14.1               # PyPI's Windows wheel is CPU-only (what we want)
+transformers==5.20.2        # loads the omniASR CTC checkpoint (Wav2Vec2ForCTC) + NLLB tokenizer
+huggingface_hub==2.3.0      # model downloads (tools/)
+ctranslate2==4.8.4          # NLLB-200 int8 inference + converter
+sherpa-onnx==2.0.0          # speaker embeddings (pulls sherpa-onnx-core)
+
+# Audio
+PyAudioWPatch==0.2.12.9     # WASAPI loopback (system audio) + microphone, Windows only
+soxr==1.1.0                 # resampling to 16 kHz
+soundfile==0.14.0           # WAV I/O
+sounddevice==0.5.6          # tools only: recording / playing eval clips
+
+# Measurement / tools
+psutil==7.2.2               # RAM measurements
+sacrebleu==2.6.0            # chrF for the MT evaluation
+jiwer==4.0.0                # (installed for EXP-01; CER/WER is computed by app/metrics.py)

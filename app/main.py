@@ -28,7 +28,7 @@ THREADS = 4          # D-010
 BEAM_SIZE = 1        # D-018
 MAX_SEGMENT_S = 7.0  # D-014
 SPEAKER_MODEL = ROOT / "models" / "speaker" / "wespeaker_en_voxceleb_resnet34_LM.onnx"
-SPEAKER_PRIOR = ROOT / "models" / "speaker" / "prior_mean.npy"
+SPEAKER_PRIOR = ROOT / "assets" / "speaker_prior_mean.npy"   # committed (D-035); rebuilt by tools/build_speaker_prior.py
 SPEAKER_THRESHOLD = 0.30     # D-034 (3 labelled recordings, balanced accuracy; was 0.10 → 0.40)
 SPEAKER_PRIOR_WEIGHT = 10    # D-034
 SPEAKER_CONFIRM_NEW = True   # D-033/034: a new speaker needs a second similar phrase
@@ -75,7 +75,8 @@ def main() -> None:
     asr = OmniCtcAsr(ASR_DIR, threads=THREADS, precision="int8")
     mt = NllbTranslator(MT_DIR, MT_TOKENIZER_DIR, compute_type="int8", threads=THREADS)
     if not SPEAKER_PRIOR.exists():
-        raise SystemExit(f"{SPEAKER_PRIOR} missing: run tools/speaker_calibrate.py first.")
+        raise SystemExit(f"{SPEAKER_PRIOR} missing: it is part of the repository (or rebuild it with "
+                         "tools/build_speaker_prior.py).")
     embedder = SpeakerEmbedder(SPEAKER_MODEL, threads=THREADS)
     tracker = SpeakerTracker(threshold=args.speaker_threshold, prior_mean=np.load(SPEAKER_PRIOR),
                              prior_weight=SPEAKER_PRIOR_WEIGHT, confirm_new=SPEAKER_CONFIRM_NEW)

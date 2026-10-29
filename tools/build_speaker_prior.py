@@ -1,4 +1,9 @@
-"""Rebuild the speaker prior mean (models/speaker/prior_mean.npy) from ALL calibration audio.
+"""Rebuild the speaker prior mean (assets/speaker_prior_mean.npy) from ALL calibration audio.
+
+The result is committed to the repository (D-035): it is one average of 256
+numbers over ~50 phrases from several recordings, not a voice print of anyone,
+and without it a fresh clone could not run speaker identification (the
+calibration audio itself is never committed).
 
 The prior is the mean speaker embedding the live tracker subtracts before
 comparing voices (D-026). The working threshold depends on it (D-032), so it
@@ -26,7 +31,7 @@ from app.vad import SAMPLE_RATE, segment_audio  # noqa: E402
 MODEL = ROOT / "models" / "speaker" / "wespeaker_en_voxceleb_resnet34_LM.onnx"
 SOURCES = ["eval/speakers/loopback.wav", "results/session_20261026_164715_loopback.wav",
            "eval/capture/loopback.wav", "eval/audio/clip01.wav", "eval/audio/clip02.wav", "eval/audio/clip03.wav"]
-OUT = ROOT / "models" / "speaker" / "prior_mean.npy"
+OUT = ROOT / "assets" / "speaker_prior_mean.npy"
 
 
 def main() -> None:
@@ -49,12 +54,13 @@ def main() -> None:
         report.append(f"{rel}: {n} phrases")
         print(f"  {rel}: {n} phrases")
     prior = np.mean(np.stack(embs), axis=0).astype(np.float32)
-    np.save(OUT, prior)
     digest = hashlib.sha256(prior.tobytes()).hexdigest()[:16]
-    (OUT.parent / "PRIOR.txt").write_text(
+    OUT.parent.mkdir(exist_ok=True)
+    np.save(OUT, prior)
+    OUT.with_suffix(".txt").write_text(
         f"built {datetime.now():%Y-%m-%d %H:%M} from {len(embs)} phrases\n" + "\n".join(report) +
         f"\nsha256[:16] of the float32 vector = {digest}\n", encoding="utf-8")
-    print(f"Prior from {len(embs)} phrases → {OUT} (sha256[:16] {digest}); details in PRIOR.txt")
+    print(f"Prior from {len(embs)} phrases → {OUT} (sha256[:16] {digest}); details in {OUT.with_suffix('.txt').name}")
 
 
 if __name__ == "__main__":

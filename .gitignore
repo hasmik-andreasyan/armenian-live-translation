@@ -22,6 +22,8 @@ eval/audio/
 # Voice embeddings (derived from recordings of people): never commit
 *.npz
 *.npy
+# ...except the speaker prior: ONE average over ~50 phrases, needed by a fresh clone (D-035)
+!assets/speaker_prior_mean.npy
 
 # Secrets
 .env

@@ -12,8 +12,8 @@
    setting against your labels:
      speakers found · purity (each found speaker is one real person)
      · coverage (each real person is one found speaker) · F = harmonic mean
-5. Writes models/speaker/prior_mean.npy for the live app: the mean over ALL
-   calibration embeddings, target included (most data = most stable prior).
+5. Does NOT touch the live app's prior (assets/speaker_prior_mean.npy). That
+   one is built only by tools/build_speaker_prior.py (D-035).
 
 Usage:
     .venv\\Scripts\\python tools\\speaker_calibrate.py
@@ -143,15 +143,13 @@ def main() -> None:
         extra = f"{r['speakers_found']:5d} {r['purity']:6.2f} {r['coverage']:6.2f} {r['F']:5.2f}" if truth else " " * 25
         print(f"{r['setting']:16s} {r['threshold']:5.2f}  {extra}  {r['labels']}")
 
-    final_prior = np.concatenate(prior_parts + [E]).mean(axis=0)
-    np.save(ROOT / "models" / "speaker" / "prior_mean.npy", final_prior)
     out = ROOT / "results" / f"cal02_speakers_{datetime.now():%Y%m%d_%H%M%S}.json"
     out.write_text(json.dumps({"timestamp": datetime.now().isoformat(timespec="seconds"), "wav": str(args.wav),
                                "prior_wavs": args.prior_wavs, "n_prior": int(sum(len(x) for x in prior_parts)),
                                "phrases": [[round(s.t_start, 2), round(s.t_end, 2), s.speech_s] for s in phrases],
                                "truth": truth, "embed_ms_median": round(float(np.median(ms))), "results": rows},
                               indent=2), encoding="utf-8")
-    print(f"\nSaved: {out}\nPrior for the live app: models/speaker/prior_mean.npy ({len(final_prior)} dims)")
+    print(f"\nSaved: {out}")
 
 
 if __name__ == "__main__":

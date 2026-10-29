@@ -1,0 +1,8 @@
+built 2026-10-26 23:19 from 49 phrases
+eval/speakers/loopback.wav: 25 phrases
+results/session_20261026_164715_loopback.wav: 14 phrases
+eval/capture/loopback.wav: 6 phrases
+eval/audio/clip01.wav: 1 phrases
+eval/audio/clip02.wav: 1 phrases
+eval/audio/clip03.wav: 2 phrases
+sha256[:16] of the float32 vector = c4ee0e7567a04db0

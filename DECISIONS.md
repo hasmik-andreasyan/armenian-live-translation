@@ -371,6 +371,16 @@ So int8 is required, and an efficient runtime matters. A later optimisation is t
   - **All 3 labelled recordings were used to choose this, so the real call is the only independent test left.**
 - **Status:** Implemented. Real-call test next.
 
+## D-035 · Commit the speaker prior so a fresh clone works
+- **Problem:** the app needs the prior mean embedding. It lived in `models/` (gitignored) and can only be rebuilt from our calibration recordings, which are never committed. A fresh clone couldn't run speaker identification.
+- **Decision:** the prior moves to **`assets/speaker_prior_mean.npy`** and is **committed**, through an explicit `.gitignore` exception. Provenance is in `assets/speaker_prior_mean.txt`. It's **one average of 256 numbers over 49 phrases** from several recordings (two videos, one capture, the EXP-01 clips): a channel/population mean, not a voice print of any individual. Per-phrase embeddings (`*.npz`) stay uncommitted.
+- **Only `tools/build_speaker_prior.py` writes it.** `tools/speaker_calibrate.py` no longer overwrites it.
+- **Status:** Implemented 2026-10-29 (copied unchanged: same MD5 as the prior used in D-034).
+
+## D-036 · Pinned requirements
+- `requirements.txt` pins the **exact versions every measurement used** (Windows 10 64-bit, Python 3.12.3). The earlier `requirements-*.txt` files (per experiment) stay as history.
+- **Status:** Implemented.
+
 ## D-015 · Microphone for evaluation and demo
 - **Decision:** Jabra headset, MME device 1, the Windows default input. Windows' MME layer delivers 16 kHz mono directly.
 - **Not used:** AirPods for recording. When their mic is in use, Bluetooth switches to a low-quality call mode, which is likely to hurt ASR. We can measure this later if needed. The built-in Realtek mic (device 2) is a backup.
