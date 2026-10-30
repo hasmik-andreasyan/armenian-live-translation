@@ -218,18 +218,18 @@ Every choice below was **measured on this laptop**. The numbers come from `EXPER
 | LIVE-04a | new 2-person video, 23 lines | max 5.2 s (1 line); speaker over-split → fixed by D-033/034 |
 | SPK-EVAL2 | speaker settings on 3 labelled recordings | balanced accuracy mean 0.90, worst 0.79 |
 | CLONE-01 | fresh clone following this README, 1-person video + mic (19 lines) | install + 21 tests OK; latency **median 4.0 s**, max 5.5 s, **3 over 5 s** (long call-side phrases); 1 speaker → 1 label; no lost audio |
-| **LIVE-04** | **real call, ≥ 2 Armenian speakers** | **see EXPERIMENTS.md** |
+| **LIVE-04** | **real Zoom call**, the user + 1 Armenian speaker on a phone, ~5 min, 43 lines | **median 3.6 s, p95 4.9 s, 2 over 5 s** (max 5.5); no lost audio; long sentences good; short words unreliable; 1 spurious extra speaker (2 of 16 phrases) |
 
 ---
 
 ## 5. Known limitations (honest list)
 
-1. **Isolated single words (< ~1 s, e.g. «Բարև» alone) are usually not recognised.** They're shown as *unclear* instead of being mistranslated. Sentences and two-word phrases work.
+1. **Isolated single words (< ~1 s, e.g. «Բարև», «Ողջույն», «Հա» alone) are unreliable:** sometimes recognised, otherwise shown as *unclear* instead of being mistranslated (LIVE-03b, LIVE-04). Sentences and two-word phrases work. **Phone audio on the call side** (compressed, lower quality) is recognised worse than a headset.
 2. **Yes/no questions become statements.** The ASR never outputs `՞`, which is often the only written question marker in Armenian («Դու ինձ լսո՞ւմ ես» → "You hear me.").
 3. **ASR errors can change the meaning** while the English stays fluent (one dropped letter turned "friends" into "classmates"). Fast, informal speech is clearly worse than read speech.
 4. **English words come out in Armenian letters** (`Python` → `փայսոն`). NLLB usually recovers them.
-5. **Speaker identification degrades with fast cross-talk.** Phrases containing two voices get one label. A new person's *first* phrase shows the previous label (the confirmation delay). Occasionally one extra speaker appears.
-6. **The 5 s limit is met on median, not on every line.** Median latency is 4.0–4.3 s, but about 1 in 6 long, uninterrupted phrases from the call side arrives at **5.0–5.5 s** (CLONE-01: 3 of 19 lines). The time is spread over waiting for the speaker to pause, ASR and MT, so no single setting fixes it (§6, items 4–5 would). Your own lines are typically ~2 s.
+5. **Speaker identification degrades with fast cross-talk.** Phrases containing two voices get one label. A new person's *first* phrase shows the previous label (the confirmation delay). Occasionally one extra speaker appears (LIVE-04: 2 of 16 phrases from one person got a second label). **A real call with 2 people on the call side was not tested** (only videos).
+6. **The 5 s limit is met on median, not on every line.** Median latency is 3.6–4.3 s, but some long, uninterrupted phrases from the call side arrive at **5.0–5.5 s** (CLONE-01: 3 of 19 lines; real Zoom call LIVE-04: 2 of 43). The time is spread over waiting for the speaker to pause, ASR and MT, so no single setting fixes it (§6, items 4–5 would). Your own lines are typically ~2 s.
 7. **Overlapping speech on both sides** makes phrases queue behind each other: one worker, 4 cores. In LIVE-02 one line reached 7 s while the user spoke over a video.
 8. **Long monologues are cut at ~7 s,** at the quietest point; a cut can still fall mid-sentence.
 9. **Windows only** (WASAPI loopback); **headset required** (no echo cancellation).

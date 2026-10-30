@@ -331,6 +331,20 @@ Raw file: `results/spk_eval_20261026_234241.json`. Phrase-level embeddings; prio
 - **Environment matters:** a run started right after copying 4 GB of models and installing the venv was ~40 % slower in both models (9 / 17 over 5 s). A later run of the same clone in the same conditions gave the result above. So: don't demo right after an install; do one warm-up run.
 - **Decision:** code frozen; result documented as a known limitation (README §5).
 
+## LIVE-04 · Real Zoom call, the final end-to-end test (2026-10-30, evening)
+- **Setup:** Zoom call between the user (Jabra headset, laptop) and **one** other Armenian speaker, **who was on her phone**. Laptop plugged in, Best performance, warm-up run first. Committed code `2849542` (no changes since CLONE-01). Natural conversation with turn-taking.
+- **Evidence:** the summary the app prints at the end, plus the user's observations. **The run was without `--log`**, so there's no per-line file. The breakdown below is limited to what the summary contains.
+- **Result (app summary):**
+  - **43 lines; latency median 3.6 s, p95 4.9 s, max 5.5 s; 2 / 43 over 5 s.** The best result of any live session with call audio.
+  - **No lost audio** on either side (longest gap 0.08 s, no overflow, ~5 min of both streams).
+  - Call side: **Speaker 1: 14 phrases, Speaker 2: 2 phrases**, for **one real person**, so 1 extra speaker on 2 of 16 phrases (≈ 88 % of her phrases under one label). The remaining ~27 lines were the user's mic, all labelled `Me` by design.
+- **User's observations:**
+  - **Long sentences worked well,** on both sides.
+  - **Short single words** (`բարև`, `ողջույն`, `հա`) were **sometimes recognised, sometimes not.** That's the known limit from LIVE-03b and D-030: isolated words under ~1 s have low confidence and are shown as *unclear* or dropped.
+  - Recognition was **better on the Jabra headset (the user) than on the other side's phone audio** (lower quality, compressed by the call).
+- **Not tested here:** 2 people on the call side (only 1 was available). That case is covered only by the recorded videos (SPK-EVAL2, CLONE-01).
+- **Decision:** no further changes. The results are documented (README §4–5, TESTS.md); the code stays frozen for submission.
+
 ## ASR runs (EXP-01 onwards)
 
 **Latency** = ASR time for one clip (median of 3 warm runs). **RTF** = latency / clip length. **Peak RAM** = process peak working set. CER/WER are normalised (lowercase, punctuation removed).

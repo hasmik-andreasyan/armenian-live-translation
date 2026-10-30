@@ -9,17 +9,17 @@ Status: ✅ met · 🟡 met with documented limits · ⬜ pending.
 |---|---|---|---|---|
 | R1 | Capture the microphone **and** system output **at the same time** | `tools/capture_test.py`: 30 s of both, completeness/gaps/overflow; listened to both WAVs | Spike 1: both 100 % complete, max gap 0.06 s, no overflow; the mic shows no call audio (−64 dBFS while the video plays); playback normal. All live sessions: no overflow (LIVE-03b, LIVE-04a) | ✅ |
 | R2 | The user can **pick the input devices** | `--list-devices`, `--mic N`, `--loopback N` (a non-loopback device is rejected) | Manual check; defaults = Windows default input + loopback of the default output | ✅ |
-| R3 | Spoken Armenian → Armenian text | EXP-01 (CER vs reference), live replay vs what was actually said | EXP-01: CER 6.3 % (int8). LIVE-03b: all sentences correct, confidence 0.87–0.98. **Isolated words < 1 s fail** (shown as unclear, D-030) | 🟡 |
+| R3 | Spoken Armenian → Armenian text | EXP-01 (CER vs reference), live replay vs what was actually said, real call | EXP-01: CER 6.3 % (int8). LIVE-03b: all sentences correct, confidence 0.87–0.98. LIVE-04: long sentences good on both sides. **Isolated words < 1 s are unreliable** (`բարև`, `ողջույն`, `հա`: sometimes recognised; otherwise shown as unclear, D-030). Phone audio on the call side is recognised worse than the headset | 🟡 |
 | R4 | Each segment translated to English | EXP-02: 11 sentences × 3 input variants, blind human rating | 10/11 understandable on ASR-style input; failures: lost question marking, ASR errors propagate | 🟡 |
 | R5 | Mic is labelled **Me** | Code path (`CallSpeakerLabeler`: mic → "Me") + every live log | All `mic` lines in all session logs are `Me` | ✅ |
-| R6 | System-audio speakers → **Speaker 1, 2, …**, stable for the session | Phrase-level human labels on 3 recordings; balanced accuracy | SPK-EVAL2: mean 0.90, worst 0.79, 2–3 speakers found for 2. Mixed phrases get one label; a new person's first phrase keeps the previous label | 🟡 |
+| R6 | System-audio speakers → **Speaker 1, 2, …**, stable for the session | Phrase-level human labels on 3 recordings; balanced accuracy; real call | SPK-EVAL2: mean 0.90, worst 0.79, 2–3 speakers found for 2. CLONE-01: 1 person → 1 label. **LIVE-04 (real Zoom call, 1 person on the call side): 14 phrases Speaker 1 + 2 phrases a spurious Speaker 2.** Mixed phrases get one label; a new person's first phrase keeps the previous label. **2 call-side people in a real call: not tested** | 🟡 |
 | R7 | Live output: time, speaker, Armenian, English | Every live session | Format `[hh:mm:ss] Label (latency)`, `HY:`, `EN:` | ✅ |
 
 ## Constraints
 
 | # | Constraint | How it's tested | Evidence | Status |
 |---|---|---|---|---|
-| C1 | **≤ 5 s** from the end of a phrase to the English line | Latency measured per line on the session clock; summary prints median / p95 / max / count over 5 s | LIVE-01: 0/45 over 5 s (max 4.4). LIVE-03b: 0/22 (max 4.8). LIVE-04a: 1/23 (5.2 s). **CLONE-01: median 4.0 s, 3/19 over 5 s (max 5.5 s)**, all long call-side phrases; mic lines ≤ 2.5 s. LIVE-02: 1 line at 7.0 s when **both sides spoke at once**. Median always under 5 s; about 1 in 6 long, uninterrupted call-side phrases arrives at 5.0–5.5 s (documented limitation) | 🟡 |
+| C1 | **≤ 5 s** from the end of a phrase to the English line | Latency measured per line on the session clock; summary prints median / p95 / max / count over 5 s | LIVE-01: 0/45 over 5 s (max 4.4). LIVE-03b: 0/22 (max 4.8). LIVE-04a: 1/23 (5.2 s). **CLONE-01: median 4.0 s, 3/19 over 5 s (max 5.5 s)**, all long call-side phrases; mic lines ≤ 2.5 s. **LIVE-04 (real Zoom call): median 3.6 s, p95 4.9 s, 2/43 over 5 s (max 5.5 s)**, no lost audio. LIVE-02: 1 line at 7.0 s when **both sides spoke at once**. Median always under 5 s; about 1 in 6 long, uninterrupted call-side phrases arrives at 5.0–5.5 s (documented limitation) | 🟡 |
 | C2 | Transcription, translation, speaker ID **run locally** | All models load from local folders (`local_files_only=True`, CTranslate2/sherpa local paths) | No network needed after the one-time download | ✅ |
 | C3 | Python, runs on **this laptop** | All measurements on the i5-8250U / 8 GB / Windows 10 | RAM for all models ≈ 2 GB; 4 threads | ✅ |
 | C4 | Models chosen deliberately, explained | README §3, DECISIONS.md | Every choice backed by a measurement on this laptop | ✅ |
@@ -38,6 +38,6 @@ Status: ✅ met · 🟡 met with documented limits · ⬜ pending.
 
 | Check | Why | Status |
 |---|---|---|
-| **LIVE-04: real call** (Zoom/Meet/Telegram) with ≥ 2 Armenian speakers on the call side + the user | The only independent test of speaker ID (all labelled recordings were used for tuning), and the closest to the interview | ⬜ |
+| **LIVE-04: real call** (Zoom/Meet/Telegram) with ≥ 2 Armenian speakers on the call side + the user | The only independent test of speaker ID (all labelled recordings were used for tuning), and the closest to the interview | 🟡 Done with **1** person on the call side (on a phone): 2/43 over 5 s, 1 spurious extra speaker. Run without `--log` (summary only) |
 | **Fresh-clone install** following the README on this laptop (new folder) | Proves the setup instructions and the committed prior work | ✅ CLONE-01 (models copied, not re-downloaded) |
-| **Rehearsal** under demo conditions (plugged in, Best performance, headset, call app running) | Latency and RAM with the call app open | ⬜ |
+| **Rehearsal** under demo conditions (plugged in, Best performance, headset, call app running) | Latency and RAM with the call app open | ✅ LIVE-04 ran under these conditions with Zoom open (RAM not measured separately) |
